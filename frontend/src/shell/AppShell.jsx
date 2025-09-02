@@ -20,8 +20,8 @@ export default function AppShell() {
     <>
       {/* Navbar: fixed at the top */}
       <header className="fixed inset-x-0 top-0 z-50">
-        <div className="bg-zinc-950/70 border-b border-white/10 w-full">
-          <div className="flex items-center justify-between h-14 w-screen px-0">
+        <div className="bg-blue-900 border-b border-white/10 w-full" style={{ backgroundColor: '#1e3a8a' }}>
+          <div className="flex items-center justify-between h-14 w-screen pl-0 pr-8">
             {/* Hamburger (left) */}
             <button
               type="button"
@@ -63,8 +63,8 @@ export default function AppShell() {
               >
                 <path
                   d="M3 10.5 12 3l9 7.5V21a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-10.5z"
-                  stroke="currentColor"
-                  strokeWidth="2"
+                  stroke="black"
+                  strokeWidth="3"
                   strokeLinecap="round"
                   strokeLinejoin="round"
                 />
@@ -79,7 +79,9 @@ export default function AppShell() {
             role="menu"
             aria-label="Primary"
             tabIndex="-1"
-            className="absolute left-0 top-14 z-50 w-72 rounded-xl border border-white/10 bg-zinc-900/95 shadow-xl"
+            className="absolute left-0 top-14 z-50 w-72 rounded-xl border border-gray-200 bg-white backdrop-blur-none shadow-xl text-black"
+            style={{ backgroundColor: 'white' }}
+
           >
             <ul className="flex flex-col p-2 gap-1">
               <MenuLink to="/profile" onClick={() => setOpen(false)}>
@@ -97,8 +99,8 @@ export default function AppShell() {
       </header>
 
       {/* Main content (centered, with top padding for navbar) */}
-      <div className="min-h-screen bg-zinc-950 text-zinc-100">
-        <main className="max-w-6xl mx-auto px-4 pt-16 pb-10">
+      <div className="min-h-screen bg-white text-slate-900" style={{ paddingTop: '56px' }}>
+        <main className="max-w-6xl mx-auto px-4 pb-10">
           <Outlet />
         </main>
         <footer className="border-t border-white/10 mt-10 py-6 text-center text-sm text-zinc-400">
@@ -111,8 +113,8 @@ export default function AppShell() {
 
 function MenuLink({ to, children, onClick }) {
   const base =
-    "block w-full text-left px-3 py-2 rounded-lg hover:bg-white/5 focus:outline-none focus:ring-2 focus:ring-white/20";
-  const active = "bg-white/10";
+    "block w-full text-left px-3 py-2 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-300";
+  const active = "bg-gray-200";
   return (
     <li>
       <NavLink

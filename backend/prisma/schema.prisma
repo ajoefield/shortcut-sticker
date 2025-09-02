@@ -1,0 +1,77 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  firstName String
+  lastName  String
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  layouts   Layout[]
+  
+  @@map("users")
+}
+
+model App {
+  id          String @id @default(cuid())
+  name        String @unique
+  category    String
+  description String?
+  iconColor   String @default("#64748b")
+  
+  shortcuts   Shortcut[]
+  
+  @@map("apps")
+}
+
+model Shortcut {
+  id          String @id @default(cuid())
+  keys        String
+  description String
+  platform    String @default("mac") // mac, windows, both
+  
+  appId       String
+  app         App @relation(fields: [appId], references: [id])
+  
+  layoutShortcuts LayoutShortcut[]
+  
+  @@map("shortcuts")
+}
+
+model Layout {
+  id        String   @id @default(cuid())
+  name      String
+  size      String   // "3x3", "3.75x3.75", "mousepad"
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  userId    String
+  user      User @relation(fields: [userId], references: [id])
+  
+  shortcuts LayoutShortcut[]
+  
+  @@map("layouts")
+}
+
+model LayoutShortcut {
+  id         String @id @default(cuid())
+  position   Int    // 0-8 for 3x3, 0-15 for 4x4, etc.
+  
+  layoutId   String
+  layout     Layout @relation(fields: [layoutId], references: [id])
+  
+  shortcutId String
+  shortcut   Shortcut @relation(fields: [shortcutId], references: [id])
+  
+  @@unique([layoutId, position])
+  @@map("layout_shortcuts")
+}
