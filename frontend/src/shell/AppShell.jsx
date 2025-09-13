@@ -1,8 +1,21 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, createContext, useContext } from "react";
 import { NavLink, Link, Outlet, useLocation } from "react-router-dom";
+
+const DarkModeContext = createContext();
+
+export const useDarkMode = () => {
+  const context = useContext(DarkModeContext);
+  if (!context) {
+    throw new Error('useDarkMode must be used within DarkModeProvider');
+  }
+  return context;
+};
 
 export default function AppShell() {
   const [open, setOpen] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(() => 
+    window.matchMedia('(prefers-color-scheme: dark)').matches
+  );
   const location = useLocation();
 
   useEffect(() => {
@@ -16,94 +29,288 @@ export default function AppShell() {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const handleChange = (e) => setIsDarkMode(e.matches);
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, []);
+
+  useEffect(() => {
+    document.body.style.backgroundColor = isDarkMode ? '#0f172a' : '#ffffff';
+    document.body.style.color = isDarkMode ? '#ffffff' : '#0f172a';
+  }, [isDarkMode]);
+
   return (
     <>
-      {/* Navbar: fixed at the top */}
-      <header className="fixed inset-x-0 top-0 z-50">
-        <div className="bg-blue-900 border-b border-white/10 w-full" style={{ backgroundColor: '#1e3a8a' }}>
-          <div className="flex items-center justify-between h-14 w-screen pl-0 pr-8">
-            {/* Hamburger (left) */}
-            <button
-              type="button"
-              aria-label="Open menu"
-              aria-expanded={open}
-              aria-controls="primary-menu"
-              onClick={() => setOpen((o) => !o)}
-              className="shrink-0 p-4 rounded-none hover:bg-white/5 border-0"
-            >
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                aria-hidden="true"
-                focusable="false"
+      {/* Navbar */}
+      <header style={{
+        position: 'sticky',
+        top: 0,
+        zIndex: 50,
+        backdropFilter: 'blur(8px)',
+        background: isDarkMode ? 'color-mix(in oklab, #0f172a 70%, transparent)' : 'color-mix(in oklab, #ffffff 70%, transparent)',
+        borderBottom: isDarkMode ? '1px solid #374151' : '1px solid #e2e8f0',
+        color: isDarkMode ? '#ffffff' : '#0f172a'
+      }}>
+        <div style={{
+          maxWidth: '1200px',
+          padding: '0 20px',
+          margin: '0 auto',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: '16px',
+          padding: '12px 20px'
+        }}>
+          <Link to="/" style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            fontWeight: '700',
+            textDecoration: 'none',
+            color: 'inherit'
+          }}>
+            <span style={{
+              width: '32px',
+              height: '32px',
+              display: 'grid',
+              placeItems: 'center',
+              borderRadius: '10px',
+              background: '#0f172a',
+              color: '#fff'
+            }}>SD</span>
+            <span>Shortcut Designer</span>
+            <span style={{
+              display: 'inline-block',
+              border: '1px solid #e2e8f0',
+              borderRadius: '999px',
+              padding: '3px 8px',
+              fontSize: '12px'
+            }}>Beta</span>
+          </Link>
+          
+          <div style={{
+            display: window.innerWidth >= 768 ? 'flex' : 'none',
+            alignItems: 'center',
+            gap: '24px'
+          }}>
+            <nav style={{
+              display: 'flex',
+              gap: '24px',
+              fontSize: '14px'
+            }}>
+              <Link to="/browse" style={{ color: 'inherit', textDecoration: 'none' }}>Browse Shortcuts</Link>
+              <Link to="/create" style={{ color: 'inherit', textDecoration: 'none' }}>Create Layout</Link>
+              <Link to="/profile" style={{ color: 'inherit', textDecoration: 'none' }}>Profile</Link>
+            </nav>
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+              <button
+                onClick={() => setIsDarkMode(!isDarkMode)}
+                style={{
+                  padding: '8px',
+                  border: isDarkMode ? '1px solid #374151' : '1px solid #e2e8f0',
+                  borderRadius: '8px',
+                  background: isDarkMode ? '#374151' : '#ffffff',
+                  color: isDarkMode ? '#ffffff' : '#0f172a',
+                  cursor: 'pointer',
+                  fontSize: '16px'
+                }}
+                title={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
               >
-                <path
-                  d="M3 6h18M3 12h18M3 18h18"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                />
-              </svg>
-            </button>
-            {/* Home (right) */}
-            <Link
-              to="/"
-              aria-label="Home"
-              className="shrink-0 p-4 rounded-none hover:bg-white/5 border-0 mr-6"
-            >
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                aria-hidden="true"
-                focusable="false"
-              >
-                <path
-                  d="M3 10.5 12 3l9 7.5V21a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-10.5z"
-                  stroke="black"
-                  strokeWidth="3"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </Link>
+                {isDarkMode ? '☀️' : '🌙'}
+              </button>
+              <Link to="/signin" style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '10px 14px',
+                borderRadius: '12px',
+                border: isDarkMode ? '1px solid #374151' : '1px solid #e2e8f0',
+                background: isDarkMode ? '#374151' : '#ffffff',
+                color: isDarkMode ? '#ffffff' : '#0f172a',
+                fontWeight: '600',
+                textDecoration: 'none',
+                transition: 'background 0.2s ease'
+              }}>Sign in</Link>
+              <Link to="/signup" style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '10px 14px',
+                borderRadius: '12px',
+                background: isDarkMode ? '#ffffff' : '#0f172a',
+                color: isDarkMode ? '#0f172a' : '#fff',
+                fontWeight: '600',
+                textDecoration: 'none',
+                transition: 'opacity 0.2s ease'
+              }}>Sign up</Link>
+            </div>
           </div>
-        </div>
-        {/* Dropdown menu */}
-        {open && (
-          <nav
-            id="primary-menu"
-            role="menu"
-            aria-label="Primary"
-            tabIndex="-1"
-            className="absolute left-0 top-14 z-50 w-72 rounded-xl border border-gray-200 bg-white backdrop-blur-none shadow-xl text-black"
-            style={{ backgroundColor: 'white' }}
-
+          
+          <button
+            type="button"
+            aria-label="Open menu"
+            aria-expanded={open}
+            aria-controls="primary-menu"
+            onClick={() => setOpen((o) => !o)}
+            style={{
+              display: window.innerWidth >= 768 ? 'none' : 'block',
+              padding: '8px',
+              border: 'none',
+              background: 'transparent',
+              cursor: 'pointer'
+            }}
           >
-            <ul className="flex flex-col p-2 gap-1">
-              <MenuLink to="/profile" onClick={() => setOpen(false)}>
-                My Profile
-              </MenuLink>
-              <MenuLink to="/browse" onClick={() => setOpen(false)}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M3 6h18M3 12h18M3 18h18"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+              />
+            </svg>
+          </button>
+        </div>
+        {/* Mobile menu */}
+        {open && (
+          <nav style={{
+            position: 'absolute',
+            left: '20px',
+            right: '20px',
+            top: '100%',
+            zIndex: 50,
+            borderRadius: '16px',
+            border: '1px solid #e2e8f0',
+            background: '#ffffff',
+            boxShadow: '0 10px 24px rgba(2, 6, 23, 0.08)',
+            padding: '8px'
+          }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              <Link
+                to="/browse"
+                onClick={() => setOpen(false)}
+                style={{
+                  display: 'block',
+                  padding: '12px 16px',
+                  borderRadius: '12px',
+                  textDecoration: 'none',
+                  color: 'inherit',
+                  transition: 'background 0.2s ease'
+                }}
+                onMouseEnter={(e) => e.target.style.background = '#f8fafc'}
+                onMouseLeave={(e) => e.target.style.background = 'transparent'}
+              >
                 Browse Shortcuts
-              </MenuLink>
-              <MenuLink to="/create" onClick={() => setOpen(false)}>
-                Create shortcuts layout
-              </MenuLink>
-            </ul>
+              </Link>
+              <Link
+                to="/create"
+                onClick={() => setOpen(false)}
+                style={{
+                  display: 'block',
+                  padding: '12px 16px',
+                  borderRadius: '12px',
+                  textDecoration: 'none',
+                  color: 'inherit',
+                  transition: 'background 0.2s ease'
+                }}
+                onMouseEnter={(e) => e.target.style.background = '#f8fafc'}
+                onMouseLeave={(e) => e.target.style.background = 'transparent'}
+              >
+                Create Layout
+              </Link>
+              <Link
+                to="/profile"
+                onClick={() => setOpen(false)}
+                style={{
+                  display: 'block',
+                  padding: '12px 16px',
+                  borderRadius: '12px',
+                  textDecoration: 'none',
+                  color: 'inherit',
+                  transition: 'background 0.2s ease'
+                }}
+                onMouseEnter={(e) => e.target.style.background = '#f8fafc'}
+                onMouseLeave={(e) => e.target.style.background = 'transparent'}
+              >
+                Profile
+              </Link>
+              <div style={{
+                borderTop: '1px solid #e2e8f0',
+                margin: '8px 0',
+                paddingTop: '8px',
+                display: 'flex',
+                gap: '8px'
+              }}>
+                <Link
+                  to="/signin"
+                  onClick={() => setOpen(false)}
+                  style={{
+                    flex: 1,
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    padding: '10px 14px',
+                    borderRadius: '12px',
+                    border: '1px solid #e2e8f0',
+                    background: '#ffffff',
+                    color: '#0f172a',
+                    fontWeight: '600',
+                    textDecoration: 'none'
+                  }}
+                >
+                  Sign in
+                </Link>
+                <Link
+                  to="/signup"
+                  onClick={() => setOpen(false)}
+                  style={{
+                    flex: 1,
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    padding: '10px 14px',
+                    borderRadius: '12px',
+                    background: '#0f172a',
+                    color: '#fff',
+                    fontWeight: '600',
+                    textDecoration: 'none'
+                  }}
+                >
+                  Sign up
+                </Link>
+              </div>
+            </div>
           </nav>
         )}
       </header>
 
-      {/* Main content (centered, with top padding for navbar) */}
-      <div className="min-h-screen bg-white text-slate-900" style={{ paddingTop: '56px' }}>
-        <main className="max-w-6xl mx-auto px-4 pb-10">
-          <Outlet />
+      {/* Main content */}
+      <div style={{
+        minHeight: '100vh',
+        background: isDarkMode ? '#0f172a' : '#ffffff',
+        color: isDarkMode ? '#ffffff' : '#0f172a',
+        width: '100%'
+      }}>
+        <main style={{
+          maxWidth: '1200px',
+          margin: '0 auto',
+          padding: '0 20px 40px',
+          background: isDarkMode ? '#0f172a' : '#ffffff',
+          minHeight: '100vh'
+        }}>
+          <DarkModeContext.Provider value={{ isDarkMode, setIsDarkMode }}>
+            <Outlet />
+          </DarkModeContext.Provider>
         </main>
-        <footer className="border-t border-white/10 mt-10 py-6 text-center text-sm text-zinc-400">
+        <footer style={{
+          borderTop: isDarkMode ? '1px solid #374151' : '1px solid #e2e8f0',
+          marginTop: '40px',
+          padding: '24px 0',
+          textAlign: 'center',
+          fontSize: '14px',
+          color: isDarkMode ? '#9ca3af' : '#475569'
+        }}>
           © {new Date().getFullYear()} Shortcut Designer
         </footer>
       </div>
@@ -111,20 +318,4 @@ export default function AppShell() {
   );
 }
 
-function MenuLink({ to, children, onClick }) {
-  const base =
-    "block w-full text-left px-3 py-2 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-300";
-  const active = "bg-gray-200";
-  return (
-    <li>
-      <NavLink
-        to={to}
-        onClick={onClick}
-        className={({ isActive }) => `${base} ${isActive ? active : ""}`}
-        role="menuitem"
-      >
-        {children}
-      </NavLink>
-    </li>
-  );
-}
+

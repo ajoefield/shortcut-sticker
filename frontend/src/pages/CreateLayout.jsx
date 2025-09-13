@@ -1,112 +1,162 @@
+import { useState } from 'react';
+import { useDarkMode } from '../shell/AppShell';
+
 export default function CreateLayout() {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [activeTab, setActiveTab] = useState('all');
+  const { isDarkMode } = useDarkMode();
+
+  const shortcuts = [
+    { app: 'VS Code', command: 'Copy', key: '⌘C' },
+    { app: 'VS Code', command: 'Paste', key: '⌘V' },
+    { app: 'VS Code', command: 'Undo', key: '⌘Z' },
+    { app: 'Photoshop', command: 'New Layer', key: '⌘⇧N' },
+    { app: 'Figma', command: 'Duplicate', key: '⌘D' },
+  ];
+
   return (
-    <div className="container mx-auto px-5 py-8">
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-slate-900 mb-2">Create Layout</h1>
-        <p className="text-slate-600">Design your custom shortcut sticker layout</p>
-      </div>
-
-      <div className="grid lg:grid-cols-3 gap-8">
-        {/* Left Sidebar - Size & Options */}
-        <div className="space-y-6">
-          {/* Size Selection */}
-          <div className="bg-white border border-slate-200 rounded-2xl p-6">
-            <h3 className="font-semibold text-slate-900 mb-4">Layout Size</h3>
-            <div className="space-y-3">
-              <label className="flex items-center gap-3 cursor-pointer">
-                <input type="radio" name="size" className="text-slate-900" defaultChecked />
-                <span className="text-slate-700">3.00 × 3.00 in (9 shortcuts)</span>
-              </label>
-              <label className="flex items-center gap-3 cursor-pointer">
-                <input type="radio" name="size" className="text-slate-900" />
-                <span className="text-slate-700">3.75 × 3.75 in (16 shortcuts)</span>
-              </label>
-              <label className="flex items-center gap-3 cursor-pointer">
-                <input type="radio" name="size" className="text-slate-900" />
-                <span className="text-slate-700">Mousepad (42 shortcuts)</span>
-              </label>
-            </div>
-          </div>
-
-          {/* Selected Shortcuts */}
-          <div className="bg-white border border-slate-200 rounded-2xl p-6">
-            <h3 className="font-semibold text-slate-900 mb-4">Selected Shortcuts</h3>
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between items-center py-2 border-b border-slate-100">
-                <span className="text-slate-600">Copy</span>
-                <kbd className="px-2 py-1 bg-slate-100 rounded text-xs font-mono">⌘C</kbd>
-              </div>
-              <div className="flex justify-between items-center py-2 border-b border-slate-100">
-                <span className="text-slate-600">Paste</span>
-                <kbd className="px-2 py-1 bg-slate-100 rounded text-xs font-mono">⌘V</kbd>
-              </div>
-              <div className="flex justify-between items-center py-2 border-b border-slate-100">
-                <span className="text-slate-600">Undo</span>
-                <kbd className="px-2 py-1 bg-slate-100 rounded text-xs font-mono">⌘Z</kbd>
-              </div>
-            </div>
-            <button className="w-full mt-4 px-4 py-2 border border-slate-200 rounded-xl text-slate-600 hover:bg-slate-50">
-              + Add More Shortcuts
-            </button>
-          </div>
-        </div>
-
-        {/* Center - Canvas */}
-        <div className="lg:col-span-2">
-          <div className="bg-white border border-slate-200 rounded-2xl p-6">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="font-semibold text-slate-900">Layout Preview</h3>
-              <span className="px-3 py-1 bg-slate-100 rounded-full text-sm text-slate-600">3.00 × 3.00 in</span>
-            </div>
+    <div style={{
+      background: isDarkMode ? '#0f172a' : 'radial-gradient(80% 60% at 50% -20%, #e2f2ff 0%, transparent 60%), linear-gradient(to bottom, #ffffff, transparent 40%), #ffffff',
+      minHeight: '100vh',
+      minWidth: '1400px',
+      color: isDarkMode ? '#ffffff' : '#0f172a'
+    }}>
+      <div style={{
+        maxWidth: '1200px',
+        padding: '0 20px',
+        margin: '0 auto',
+        paddingTop: '40px',
+        paddingBottom: '40px'
+      }}>
+        
+        {/* Main Container */}
+        <div style={{
+          background: isDarkMode ? '#1f2937' : '#ffffff',
+          border: isDarkMode ? '1px solid #374151' : '1px solid #e2e8f0',
+          borderRadius: '16px',
+          boxShadow: '0 10px 24px rgba(2, 6, 23, 0.08)',
+          overflow: 'hidden'
+        }}>
+          
+          <div style={{ display: 'flex', height: '600px' }}>
             
-            {/* Grid Canvas */}
-            <div className="border-2 border-dashed border-slate-300 rounded-xl p-8 bg-slate-50">
-              <div className="grid grid-cols-3 gap-4 max-w-md mx-auto">
-                {/* Filled Shortcuts */}
-                <div className="aspect-square border border-slate-200 rounded-lg bg-white p-3 flex flex-col justify-center items-center shadow-sm">
-                  <div className="font-bold text-sm text-slate-900">⌘C</div>
-                  <div className="text-xs text-slate-600 mt-1">Copy</div>
-                </div>
-                <div className="aspect-square border border-slate-200 rounded-lg bg-white p-3 flex flex-col justify-center items-center shadow-sm">
-                  <div className="font-bold text-sm text-slate-900">⌘V</div>
-                  <div className="text-xs text-slate-600 mt-1">Paste</div>
-                </div>
-                <div className="aspect-square border border-slate-200 rounded-lg bg-white p-3 flex flex-col justify-center items-center shadow-sm">
-                  <div className="font-bold text-sm text-slate-900">⌘Z</div>
-                  <div className="text-xs text-slate-600 mt-1">Undo</div>
+            {/* Left Sidebar */}
+            <div style={{
+              width: '300px',
+              borderRight: isDarkMode ? '1px solid #374151' : '1px solid #e2e8f0',
+              display: 'flex',
+              flexDirection: 'column'
+            }}>
+              
+              {/* Search Bar */}
+              <div style={{
+                padding: '16px',
+                borderBottom: isDarkMode ? '1px solid #374151' : '1px solid #e2e8f0'
+              }}>
+                <input
+                  type="text"
+                  placeholder="Search"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '12px 16px',
+                    border: isDarkMode ? '1px solid #374151' : '1px solid #e2e8f0',
+                    borderRadius: '12px',
+                    fontSize: '16px',
+                    outline: 'none'
+                  }}
+                />
+              </div>
+              
+              {/* Tabs */}
+              <div style={{
+                display: 'flex',
+                padding: '16px',
+                gap: '16px',
+                borderBottom: isDarkMode ? '1px solid #374151' : '1px solid #e2e8f0'
+              }}>
+                <button
+                  onClick={() => setActiveTab('all')}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    fontSize: '16px',
+                    fontWeight: '600',
+                    color: activeTab === 'all' ? '#0f172a' : '#64748b',
+                    cursor: 'pointer',
+                    padding: '4px 0',
+                    borderBottom: activeTab === 'all' ? '2px solid #0f172a' : 'none'
+                  }}
+                >
+                  All apps
+                </button>
+                <button
+                  onClick={() => setActiveTab('favorites')}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    fontSize: '16px',
+                    fontWeight: '600',
+                    color: activeTab === 'favorites' ? '#0f172a' : '#64748b',
+                    cursor: 'pointer',
+                    padding: '4px 0',
+                    borderBottom: activeTab === 'favorites' ? '2px solid #0f172a' : 'none'
+                  }}
+                >
+                  Favorites
+                </button>
+              </div>
+
+              {/* App List */}
+              <div style={{
+                flex: 1,
+                overflow: 'auto'
+              }}>
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 1fr',
+                  fontSize: '14px',
+                  fontWeight: '600',
+                  padding: '12px 16px',
+                  borderBottom: '1px solid #e2e8f0',
+                  background: isDarkMode ? '#374151' : '#f8fafc'
+                }}>
+                  <div>App Name</div>
+                  <div>Command</div>
                 </div>
                 
-                {/* Empty Slots */}
-                <div className="aspect-square border-2 border-dashed border-slate-300 rounded-lg bg-slate-100 flex items-center justify-center">
-                  <span className="text-slate-400 text-2xl">+</span>
-                </div>
-                <div className="aspect-square border-2 border-dashed border-slate-300 rounded-lg bg-slate-100 flex items-center justify-center">
-                  <span className="text-slate-400 text-2xl">+</span>
-                </div>
-                <div className="aspect-square border-2 border-dashed border-slate-300 rounded-lg bg-slate-100 flex items-center justify-center">
-                  <span className="text-slate-400 text-2xl">+</span>
-                </div>
-                <div className="aspect-square border-2 border-dashed border-slate-300 rounded-lg bg-slate-100 flex items-center justify-center">
-                  <span className="text-slate-400 text-2xl">+</span>
-                </div>
-                <div className="aspect-square border-2 border-dashed border-slate-300 rounded-lg bg-slate-100 flex items-center justify-center">
-                  <span className="text-slate-400 text-2xl">+</span>
-                </div>
-                <div className="aspect-square border-2 border-dashed border-slate-300 rounded-lg bg-slate-100 flex items-center justify-center">
-                  <span className="text-slate-400 text-2xl">+</span>
-                </div>
+                {shortcuts.map((shortcut, index) => (
+                  <div key={index} style={{
+                    display: 'grid',
+                    gridTemplateColumns: '1fr 1fr',
+                    padding: '12px 16px',
+                    borderBottom: '1px solid #e2e8f0',
+                    cursor: 'pointer',
+                    transition: 'background-color 0.2s ease'
+                  }}
+                  onMouseEnter={(e) => e.target.style.backgroundColor = '#f8fafc'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
+                  >
+                    <div style={{ fontSize: '14px', color: isDarkMode ? '#ffffff' : '#0f172a' }}>{shortcut.app}</div>
+                    <div style={{ fontSize: '14px', color: isDarkMode ? '#9ca3af' : '#64748b' }}>{shortcut.command}</div>
+                  </div>
+                ))}
               </div>
             </div>
 
-            {/* Action Buttons */}
-            <div className="flex gap-3 mt-6">
-              <button className="flex-1 px-6 py-3 bg-slate-900 text-white rounded-xl font-semibold hover:opacity-90">
-                Preview & Export
-              </button>
-              <button className="px-6 py-3 border border-slate-200 rounded-xl text-slate-700 hover:bg-slate-50">
-                Save Draft
-              </button>
+            {/* Canvas Area */}
+            <div style={{
+              flex: 1,
+              background: '#0f172a',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#e97316',
+              fontSize: '36px',
+              fontWeight: '800'
+            }}>
+              Sticker Layout
             </div>
           </div>
         </div>

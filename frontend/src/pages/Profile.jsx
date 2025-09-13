@@ -1,145 +1,366 @@
+import { useState, useRef } from 'react';
+import { Link } from 'react-router-dom';
+import { useDarkMode } from '../shell/AppShell';
+
 export default function Profile() {
+  const [formData, setFormData] = useState({
+    firstName: 'John',
+    lastName: 'Doe',
+    email: 'john.doe@email.com',
+    password: '',
+    confirmPassword: ''
+  });
+
+  const [searchTerm, setSearchTerm] = useState('');
+  const [isMenuCollapsed, setIsMenuCollapsed] = useState(false);
+  const myInfoRef = useRef(null);
+  const myLayoutsRef = useRef(null);
+  const myShortcutsRef = useRef(null);
+  const { isDarkMode } = useDarkMode();
+
+  const scrollToSection = (ref) => {
+    ref.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const handleInputChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Handle form submission
+    console.log('Form submitted:', formData);
+  };
+
   return (
-    <div className="container mx-auto px-5 py-8">
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-slate-900 mb-2">My Profile</h1>
-        <p className="text-slate-600">Manage your account and saved layouts</p>
-      </div>
+    <div style={{
+      background: isDarkMode ? '#0f172a' : 'radial-gradient(80% 60% at 50% -20%, #e2f2ff 0%, transparent 60%), linear-gradient(to bottom, #ffffff, transparent 40%), #ffffff',
+      minHeight: '100vh',
+      minWidth: '1400px',
+      color: isDarkMode ? '#ffffff' : '#0f172a'
+    }}>
+      <div style={{
+        maxWidth: '1200px',
+        padding: '0 20px',
+        margin: '0 auto',
+        paddingTop: '40px',
+        paddingBottom: '40px'
+      }}>
 
-      <div className="grid lg:grid-cols-3 gap-8">
-        {/* Left Column - Profile Info */}
-        <div className="space-y-6">
-          {/* Profile Card */}
-          <div className="bg-white border border-slate-200 rounded-2xl p-6">
-            <div className="flex items-center gap-4 mb-6">
-              <div className="w-16 h-16 bg-slate-900 rounded-full flex items-center justify-center text-white font-bold text-xl">
-                JD
-              </div>
-              <div>
-                <h3 className="font-semibold text-slate-900 text-lg">John Doe</h3>
-                <p className="text-slate-600">john.doe@email.com</p>
-              </div>
-            </div>
-            <button className="w-full px-4 py-2 border border-slate-200 rounded-xl text-slate-700 hover:bg-slate-50">
-              Edit Profile
-            </button>
-          </div>
 
-          {/* Account Stats */}
-          <div className="bg-white border border-slate-200 rounded-2xl p-6">
-            <h3 className="font-semibold text-slate-900 mb-4">Account Stats</h3>
-            <div className="space-y-3">
-              <div className="flex justify-between">
-                <span className="text-slate-600">Layouts Created</span>
-                <span className="font-semibold text-slate-900">12</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-slate-600">Stickers Printed</span>
-                <span className="font-semibold text-slate-900">8</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-slate-600">Member Since</span>
-                <span className="font-semibold text-slate-900">Jan 2024</span>
-              </div>
-            </div>
-          </div>
+        {/* Floating Navigation Menu */}
+        <div style={{
+          position: 'fixed',
+          top: '100px',
+          left: '20px',
+          background: isDarkMode ? '#1f2937' : '#ffffff',
+          border: isDarkMode ? '1px solid #374151' : '1px solid #e2e8f0',
+          borderRadius: '12px',
+          padding: '16px',
+          boxShadow: '0 10px 24px rgba(2, 6, 23, 0.08)',
+          zIndex: 1000,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '12px'
+        }}>
+          <button
+            onClick={() => setIsMenuCollapsed(!isMenuCollapsed)}
+            style={{
+              background: 'none',
+              border: 'none',
+              fontSize: '16px',
+              cursor: 'pointer',
+              padding: '4px',
+              alignSelf: 'flex-end',
+              color: isDarkMode ? '#ffffff' : '#0f172a'
+            }}
+          >
+            {isMenuCollapsed ? '▼' : '▲'}
+          </button>
+          {!isMenuCollapsed && (<>
+          <button
+            onClick={() => scrollToSection(myInfoRef)}
+            style={{
+              background: 'none',
+              border: 'none',
+              fontSize: '14px',
+              fontWeight: '600',
+              color: isDarkMode ? '#ffffff' : '#0f172a',
+              cursor: 'pointer',
+              padding: '8px 12px',
+              borderRadius: '8px',
+              transition: 'background-color 0.2s ease'
+            }}
+            onMouseEnter={(e) => e.target.style.backgroundColor = '#f1f5f9'}
+            onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
+          >
+            My Info
+          </button>
+          <button
+            onClick={() => scrollToSection(myLayoutsRef)}
+            style={{
+              background: 'none',
+              border: 'none',
+              fontSize: '14px',
+              fontWeight: '600',
+              color: isDarkMode ? '#ffffff' : '#0f172a',
+              cursor: 'pointer',
+              padding: '8px 12px',
+              borderRadius: '8px',
+              transition: 'background-color 0.2s ease'
+            }}
+            onMouseEnter={(e) => e.target.style.backgroundColor = '#f1f5f9'}
+            onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
+          >
+            My Layouts
+          </button>
+          <button
+            onClick={() => scrollToSection(myShortcutsRef)}
+            style={{
+              background: 'none',
+              border: 'none',
+              fontSize: '14px',
+              fontWeight: '600',
+              color: isDarkMode ? '#ffffff' : '#0f172a',
+              cursor: 'pointer',
+              padding: '8px 12px',
+              borderRadius: '8px',
+              transition: 'background-color 0.2s ease'
+            }}
+            onMouseEnter={(e) => e.target.style.backgroundColor = '#f1f5f9'}
+            onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
+          >
+            My Favorite Shortcuts
+          </button>
+          </>
+          )}
         </div>
 
-        {/* Right Column - Saved Layouts */}
-        <div className="lg:col-span-2">
-          <div className="bg-white border border-slate-200 rounded-2xl p-6">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="font-semibold text-slate-900 text-lg">Saved Layouts</h3>
-              <button className="px-4 py-2 bg-slate-900 text-white rounded-xl font-semibold hover:opacity-90">
-                Create New
-              </button>
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+
+          {/* Main Content */}
+          <div style={{
+            background: isDarkMode ? '#1f2937' : '#ffffff',
+            border: isDarkMode ? '1px solid #374151' : '1px solid #e2e8f0',
+            borderRadius: '16px',
+            padding: '32px',
+            boxShadow: '0 10px 24px rgba(2, 6, 23, 0.08)',
+            maxWidth: '1000px',
+            width: '100%'
+          }}>
+            <div style={{
+              maxWidth: '800px',
+              margin: '0 auto'
+            }}>
+            {/* My Info Section */}
+            <div ref={myInfoRef} style={{ marginBottom: '40px' }}>
+              <h2 style={{
+                fontSize: '20px',
+                fontWeight: '700',
+                color: isDarkMode ? '#ffffff' : '#0f172a',
+                margin: '0 0 24px 0'
+              }}>My Info</h2>
+              
+              <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                  <div>
+                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '600', color: isDarkMode ? '#ffffff' : '#0f172a' }}>First Name:</label>
+                    <input
+                      type="text"
+                      name="firstName"
+                      value={formData.firstName}
+                      onChange={handleInputChange}
+                      style={{
+                        width: '100%',
+                        padding: '12px 16px',
+                        border: '1px solid #e2e8f0',
+                        borderRadius: '12px',
+                        fontSize: '16px',
+                        outline: 'none'
+                      }}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '600', color: isDarkMode ? '#ffffff' : '#0f172a' }}>Last Name:</label>
+                    <input
+                      type="text"
+                      name="lastName"
+                      value={formData.lastName}
+                      onChange={handleInputChange}
+                      style={{
+                        width: '100%',
+                        padding: '12px 16px',
+                        border: '1px solid #e2e8f0',
+                        borderRadius: '12px',
+                        fontSize: '16px',
+                        outline: 'none'
+                      }}
+                    />
+                  </div>
+                </div>
+                
+                <div>
+                  <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '600', color: isDarkMode ? '#ffffff' : '#0f172a' }}>Email Address:</label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    style={{
+                      width: '100%',
+                      padding: '12px 16px',
+                      border: '1px solid #e2e8f0',
+                      borderRadius: '12px',
+                      fontSize: '16px',
+                      outline: 'none'
+                    }}
+                  />
+                </div>
+                
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                  <div>
+                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '600', color: isDarkMode ? '#ffffff' : '#0f172a' }}>Change Password:</label>
+                    <input
+                      type="password"
+                      name="password"
+                      value={formData.password}
+                      onChange={handleInputChange}
+                      style={{
+                        width: '100%',
+                        padding: '12px 16px',
+                        border: '1px solid #e2e8f0',
+                        borderRadius: '12px',
+                        fontSize: '16px',
+                        outline: 'none'
+                      }}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '600', color: isDarkMode ? '#ffffff' : '#0f172a' }}>Confirm Password:</label>
+                    <input
+                      type="password"
+                      name="confirmPassword"
+                      value={formData.confirmPassword}
+                      onChange={handleInputChange}
+                      style={{
+                        width: '100%',
+                        padding: '12px 16px',
+                        border: '1px solid #e2e8f0',
+                        borderRadius: '12px',
+                        fontSize: '16px',
+                        outline: 'none'
+                      }}
+                    />
+                  </div>
+                </div>
+                
+                <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                  <button
+                    type="submit"
+                    style={{
+                      padding: '12px 24px',
+                      background: '#0f172a',
+                      color: '#ffffff',
+                      border: 'none',
+                      borderRadius: '12px',
+                      fontSize: '14px',
+                      fontWeight: '600',
+                      cursor: 'pointer',
+                      transition: 'opacity 0.2s ease'
+                    }}
+                    onMouseEnter={(e) => e.target.style.opacity = '0.9'}
+                    onMouseLeave={(e) => e.target.style.opacity = '1'}
+                  >
+                    SUBMIT
+                  </button>
+                </div>
+              </form>
             </div>
 
-            {/* Layout Grid */}
-            <div className="grid md:grid-cols-2 gap-6">
-              {/* Layout Card 1 */}
-              <div className="border border-slate-200 rounded-xl p-4 hover:shadow-md transition-shadow">
-                <div className="flex items-center justify-between mb-3">
-                  <h4 className="font-semibold text-slate-900">VS Code Shortcuts</h4>
-                  <span className="px-2 py-1 bg-slate-100 rounded text-xs text-slate-600">3×3</span>
-                </div>
+            {/* My Layouts Section */}
+            <div ref={myLayoutsRef} style={{ marginBottom: '40px' }}>
+              <h2 style={{
+                fontSize: '20px',
+                fontWeight: '700',
+                color: '#0f172a',
+                margin: '0 0 24px 0'
+              }}>My Layouts</h2>
+              
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px' }}>
+                {/* Layout thumbnails */}
+                {[1, 2, 3].map((layout) => (
+                  <div key={layout} style={{
+                    border: '1px solid #e2e8f0',
+                    borderRadius: '12px',
+                    padding: '16px',
+                    background: '#f8fafc',
+                    textAlign: 'center',
+                    minHeight: '120px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                  }}>
+                    <div style={{
+                      fontSize: '12px',
+                      color: '#64748b',
+                      lineHeight: '1.4'
+                    }}>
+                      Thumbnail<br/>
+                      image of<br/>
+                      saved<br/>
+                      layout
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* My Favorite Shortcuts Section */}
+            <div ref={myShortcutsRef}>
+              <h2 style={{
+                fontSize: '20px',
+                fontWeight: '700',
+                color: '#0f172a',
+                margin: '0 0 24px 0'
+              }}>My Favorite Shortcuts</h2>
+              
+              <div style={{
+                border: '1px solid #e2e8f0',
+                borderRadius: '16px',
+                padding: '24px',
+                background: '#f8fafc'
+              }}>
+                <input
+                  type="text"
+                  placeholder="Search"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '12px 16px',
+                    border: '1px solid #e2e8f0',
+                    borderRadius: '12px',
+                    fontSize: '16px',
+                    outline: 'none',
+                    background: '#ffffff'
+                  }}
+                />
                 
-                {/* Mini Preview Grid */}
-                <div className="grid grid-cols-3 gap-1 mb-4">
-                  <div className="aspect-square bg-slate-100 rounded text-xs flex items-center justify-center">
-                    <span className="font-mono">⌘C</span>
-                  </div>
-                  <div className="aspect-square bg-slate-100 rounded text-xs flex items-center justify-center">
-                    <span className="font-mono">⌘V</span>
-                  </div>
-                  <div className="aspect-square bg-slate-100 rounded text-xs flex items-center justify-center">
-                    <span className="font-mono">⌘Z</span>
-                  </div>
-                  <div className="aspect-square bg-slate-100 rounded text-xs flex items-center justify-center">
-                    <span className="font-mono">⌘S</span>
-                  </div>
-                  <div className="aspect-square bg-slate-100 rounded text-xs flex items-center justify-center">
-                    <span className="font-mono">⌘P</span>
-                  </div>
-                  <div className="aspect-square bg-slate-50 rounded border-2 border-dashed border-slate-300"></div>
-                </div>
-
-                <div className="flex gap-2">
-                  <button className="flex-1 px-3 py-2 bg-slate-900 text-white rounded-lg text-sm font-semibold hover:opacity-90">
-                    Edit
-                  </button>
-                  <button className="flex-1 px-3 py-2 border border-slate-200 rounded-lg text-sm text-slate-700 hover:bg-slate-50">
-                    Export
-                  </button>
+                <div style={{
+                  marginTop: '20px',
+                  padding: '40px',
+                  textAlign: 'center',
+                  color: '#64748b',
+                  fontSize: '14px'
+                }}>
+                  Your favorite shortcuts will appear here
                 </div>
               </div>
-
-              {/* Layout Card 2 */}
-              <div className="border border-slate-200 rounded-xl p-4 hover:shadow-md transition-shadow">
-                <div className="flex items-center justify-between mb-3">
-                  <h4 className="font-semibold text-slate-900">Design Tools</h4>
-                  <span className="px-2 py-1 bg-slate-100 rounded text-xs text-slate-600">3×3</span>
-                </div>
-                
-                {/* Mini Preview Grid */}
-                <div className="grid grid-cols-3 gap-1 mb-4">
-                  <div className="aspect-square bg-slate-100 rounded text-xs flex items-center justify-center">
-                    <span className="font-mono">R</span>
-                  </div>
-                  <div className="aspect-square bg-slate-100 rounded text-xs flex items-center justify-center">
-                    <span className="font-mono">T</span>
-                  </div>
-                  <div className="aspect-square bg-slate-100 rounded text-xs flex items-center justify-center">
-                    <span className="font-mono">⌘D</span>
-                  </div>
-                  <div className="aspect-square bg-slate-100 rounded text-xs flex items-center justify-center">
-                    <span className="font-mono">⌘G</span>
-                  </div>
-                  <div className="aspect-square bg-slate-50 rounded border-2 border-dashed border-slate-300"></div>
-                  <div className="aspect-square bg-slate-50 rounded border-2 border-dashed border-slate-300"></div>
-                </div>
-
-                <div className="flex gap-2">
-                  <button className="flex-1 px-3 py-2 bg-slate-900 text-white rounded-lg text-sm font-semibold hover:opacity-90">
-                    Edit
-                  </button>
-                  <button className="flex-1 px-3 py-2 border border-slate-200 rounded-lg text-sm text-slate-700 hover:bg-slate-50">
-                    Export
-                  </button>
-                </div>
-              </div>
-
-              {/* Empty State Card */}
-              <div className="border-2 border-dashed border-slate-300 rounded-xl p-8 flex flex-col items-center justify-center text-center">
-                <div className="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center mb-3">
-                  <span className="text-slate-400 text-2xl">+</span>
-                </div>
-                <p className="text-slate-600 mb-3">Create your first layout</p>
-                <button className="px-4 py-2 bg-slate-900 text-white rounded-lg text-sm font-semibold hover:opacity-90">
-                  Get Started
-                </button>
-              </div>
+            </div>
             </div>
           </div>
         </div>
