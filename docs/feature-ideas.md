@@ -3,6 +3,8 @@
 *Comprehensive feature roadmap from entire development history*
 
 ## 🚀 High Priority (MVP Features)
+- [ ] Process existing PDF collection through AWS pipeline
+- [ ] Integrate AWS-generated CSVs into main database seeding
 - [ ] User authentication system (JWT + bcrypt)
 - [ ] Persistent favorites (save to database with user association)
 - [ ] Layout builder with drag-and-drop functionality
@@ -45,6 +47,16 @@
 - [ ] Progressive web app (PWA) capabilities
 
 ## 🔧 Technical Improvements
+- [ ] [2025-12-09] AWS Infrastructure Enhancements (High Priority)
+  - Implement CloudWatch monitoring for Lambda functions
+  - Add DLQ (Dead Letter Queue) for failed PDF processing
+  - Set up CloudFormation/Terraform state management
+  - Create automated backup system for S3 buckets
+- [ ] [2025-12-09] PDF Processing Pipeline Improvements (Medium Priority)
+  - Add support for more PDF formats and layouts
+  - Implement OCR fallback for image-based PDFs
+  - Create quality scoring for extracted shortcuts
+  - Add batch processing UI for manual uploads
 - [ ] TypeScript migration for better type safety
 - [ ] Redis caching for frequently accessed shortcuts
 - [ ] Unit and integration testing (Jest + React Testing Library)
@@ -88,6 +100,15 @@
 - [ ] Referral system
 
 ## 🔍 Development Workflow
+- [ ] [2025-12-09] AWS Profile Management (High Priority)
+  - Resolve AWS profile name issues with quotes in config
+  - Standardize environment variable handling across tools
+  - Create consistent CLI command patterns
+- [ ] [2025-12-09] Infrastructure as Code Best Practices (High Priority)
+  - Migrate all AWS resources to Terraform management
+  - Implement proper state file management and locking
+  - Create separate environments (dev/staging/prod)
+  - Add Terraform validation and planning workflows
 - [ ] [2025-12-09] Chat session management strategy
   - Context memory limitations in long development sessions
   - Automated documentation updates

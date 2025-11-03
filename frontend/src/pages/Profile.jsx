@@ -174,11 +174,11 @@ export default function Profile() {
                       value={formData.firstName}
                       onChange={handleInputChange}
                       style={{
-                        width: '100%',
-                        padding: '12px 16px',
+                        width: '90%',
+                        padding: '8px 12px',
                         border: '1px solid #e2e8f0',
                         borderRadius: '12px',
-                        fontSize: '16px',
+                        fontSize: '14px',
                         outline: 'none'
                       }}
                     />
@@ -191,11 +191,11 @@ export default function Profile() {
                       value={formData.lastName}
                       onChange={handleInputChange}
                       style={{
-                        width: '100%',
-                        padding: '12px 16px',
+                        width: '90%',
+                        padding: '8px 12px',
                         border: '1px solid #e2e8f0',
                         borderRadius: '12px',
-                        fontSize: '16px',
+                        fontSize: '14px',
                         outline: 'none'
                       }}
                     />
@@ -210,11 +210,11 @@ export default function Profile() {
                     value={formData.email}
                     onChange={handleInputChange}
                     style={{
-                      width: '100%',
-                      padding: '12px 16px',
+                      width: '90%',
+                      padding: '8px 12px',
                       border: '1px solid #e2e8f0',
                       borderRadius: '12px',
-                      fontSize: '16px',
+                      fontSize: '14px',
                       outline: 'none'
                     }}
                   />
@@ -229,11 +229,11 @@ export default function Profile() {
                       value={formData.password}
                       onChange={handleInputChange}
                       style={{
-                        width: '100%',
-                        padding: '12px 16px',
+                        width: '90%',
+                        padding: '8px 12px',
                         border: '1px solid #e2e8f0',
                         borderRadius: '12px',
-                        fontSize: '16px',
+                        fontSize: '14px',
                         outline: 'none'
                       }}
                     />
@@ -246,11 +246,11 @@ export default function Profile() {
                       value={formData.confirmPassword}
                       onChange={handleInputChange}
                       style={{
-                        width: '100%',
-                        padding: '12px 16px',
+                        width: '90%',
+                        padding: '8px 12px',
                         border: '1px solid #e2e8f0',
                         borderRadius: '12px',
-                        fontSize: '16px',
+                        fontSize: '14px',
                         outline: 'none'
                       }}
                     />

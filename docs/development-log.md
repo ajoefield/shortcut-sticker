@@ -95,14 +95,38 @@
 - PDF text extraction and data cleaning
 - Duplicate prevention in seeding process
 
+## 2025-12-09 AWS Infrastructure Session
+### [17:30 MT] PDF to CSV Converter Infrastructure
+- ✅ Built complete AWS infrastructure using Terraform for PDF processing
+- ✅ Created S3 bucket (`pdf-shortcut-converter-8caf30ba`) with automatic Lambda triggers
+- ✅ Implemented Lambda function with Textract + Bedrock Claude integration
+- ✅ Added error handling for unsupported PDF formats with graceful fallbacks
+- ✅ Set up batch processing capability for testing multiple PDFs
+- ✅ Created Python upload script to sync PDFs from local folder to S3
+
+### [18:00 MT] Terraform Infrastructure Management
+- ✅ Migrated from bash deployment scripts to Terraform for better state management
+- ✅ Configured IAM roles with proper permissions for Lambda, S3, Textract, and Bedrock
+- ✅ Set up S3 event notifications to trigger Lambda on PDF uploads to `pdfs/` folder
+- ✅ Implemented declarative infrastructure with version control
+
+### [18:30 MT] Lambda Function Error Handling
+- ✅ Fixed Lambda crashes when processing unsupported PDF formats
+- ✅ Added proper error checking before accessing success-only fields
+- ✅ Implemented fallback from `analyze_document` to `detect_document_text`
+- ✅ Created comprehensive error responses for failed processing
+
 ## Current Status
 - **Frontend**: All core pages implemented with interactive features
 - **Backend**: Express server with Prisma + PostgreSQL, seeded with 2 apps
 - **Database**: 200+ shortcuts across VS Code and Vim
 - **UI/UX**: Consistent design system with responsive navigation
 - **Data Pipeline**: Automated PDF → CSV → Database workflow
+- **AWS Infrastructure**: Complete serverless PDF processing pipeline with Terraform
 
 ## Next Development Priorities
+- [ ] Process existing PDF collection through AWS pipeline
+- [ ] Integrate AWS-generated CSVs into main database
 - [ ] User authentication backend implementation
 - [ ] Persistent favorites (database integration)
 - [ ] Layout builder with drag-and-drop functionality

@@ -156,6 +156,39 @@ User's final insight: "should i be using inline in the long run for web developm
 6. **Browser APIs are powerful** - `prefers-color-scheme` detection makes apps feel native
 7. **Consistency matters more than perfection** - A cohesive experience with inline styles beats inconsistent "proper" CSS
 
+## 2025-12-09 AWS Infrastructure Session Stories
+
+### [17:30] The AWS Infrastructure Pivot
+Started a new session focused on scaling the PDF processing pipeline. The realization: manually processing PDFs doesn't scale. The solution: build a complete AWS serverless infrastructure. What began as "let's automate PDF processing" became a full infrastructure-as-code project with Terraform, Lambda, S3, Textract, and Bedrock Claude.
+
+### [18:00] The Terraform vs Bash Scripts Decision
+Faced a choice: quick bash deployment scripts or proper Terraform infrastructure. Chose Terraform for state management and declarative configuration. This decision will pay dividends as the infrastructure grows. Sometimes the "harder" path upfront saves countless hours later.
+
+### [18:15] The AWS Profile Name Nightmare
+Discovered the AWS profile was named `'developer playground'` with quotes in the config file. This caused mysterious authentication failures across multiple tools. The lesson: AWS profile names with spaces and quotes are more trouble than they're worth. Simple names save debugging time.
+
+### [18:30] The S3 Trigger Magic Moment
+Configured S3 to automatically trigger Lambda when PDFs are uploaded to the `pdfs/` folder. Watching a file upload instantly trigger processing felt like magic. This is the power of event-driven architecture - no polling, no manual triggers, just seamless automation.
+
+### [18:45] The Textract Format Reality Check
+Hit the wall with unsupported PDF formats. Textract couldn't process certain PDFs, causing Lambda crashes. The solution: graceful error handling with fallbacks from `analyze_document` to `detect_document_text`. Not all PDFs are created equal, and your code needs to handle that reality.
+
+### [19:00] The Error Handling Breakthrough
+Fixed a critical bug where Lambda tried to access `csv_location` from failed processing results. The fix: check `result['success']` before accessing success-only fields. This taught us that error handling isn't just about catching exceptions - it's about designing data structures that make errors explicit.
+
+### [19:15] The Infrastructure as Code Victory
+Successfully deployed the entire AWS infrastructure with a single `terraform apply` command. IAM roles, S3 bucket, Lambda function, event notifications - all created declaratively. This is why infrastructure as code matters: reproducible, version-controlled, and auditable infrastructure.
+
+## Key Insights from AWS Infrastructure Session
+
+1. **Serverless scales effortlessly** - S3 triggers + Lambda handle any volume of PDFs without server management
+2. **Terraform beats bash scripts** - Declarative infrastructure is worth the initial complexity
+3. **AWS profile names matter** - Avoid spaces and quotes in profile names to prevent authentication issues
+4. **Error handling is data structure design** - Make success/failure explicit in your response objects
+5. **Event-driven architecture feels magical** - File uploads triggering processing automatically is incredibly satisfying
+6. **Textract has limitations** - Not all PDFs are processable, plan for graceful failures
+7. **Infrastructure as code enables confidence** - Knowing you can recreate your entire infrastructure with one command is powerful
+
 ## Template for Future Entries
 ```
 ### [HH:MM] Descriptive Title
