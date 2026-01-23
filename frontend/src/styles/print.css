@@ -1,0 +1,60 @@
+/* Print styles for sticker layouts */
+
+@media print {
+
+    /* Hide everything except the canvas */
+    body * {
+        visibility: hidden;
+    }
+
+    /* Show only the canvas and its children */
+    [data-print-canvas],
+    [data-print-canvas] * {
+        visibility: visible;
+    }
+
+    /* Position canvas at top-left */
+    [data-print-canvas] {
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
+
+    /* Set page size based on sticker size */
+    @page {
+        size: 4in 4in;
+        /* Default for 3.75" sticker */
+        margin: 0.125in;
+        /* Bleed area */
+    }
+
+    /* Hide edit controls during print */
+    .no-export {
+        display: none !important;
+    }
+
+    /* Ensure colors print */
+    * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        color-adjust: exact !important;
+    }
+
+    /* Remove shadows for cleaner print */
+    * {
+        box-shadow: none !important;
+    }
+}
+
+/* Print size classes */
+@media print {
+    .print-size-3-75 {
+        width: 3.75in !important;
+        height: 3.75in !important;
+    }
+
+    .print-size-3 {
+        width: 3in !important;
+        height: 3in !important;
+    }
+}

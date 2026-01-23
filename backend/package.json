@@ -6,7 +6,11 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
-    "seed": "node seed.js"
+    "seed": "node seed.js",
+    "load-shortcuts": "node database_loader.js load",
+    "clear-shortcuts": "node database_loader.js clear",
+    "reload-shortcuts": "node database_loader.js reload",
+    "verify-shortcuts": "node database_loader.js verify"
   },
   "dependencies": {
     "express": "^4.18.2",
@@ -14,7 +18,8 @@
     "bcryptjs": "^2.4.3",
     "jsonwebtoken": "^9.0.2",
     "@prisma/client": "^5.7.1",
-    "dotenv": "^16.3.1"
+    "dotenv": "^16.3.1",
+    "csv-parser": "^3.0.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.2",

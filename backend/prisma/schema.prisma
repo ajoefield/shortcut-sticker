@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -15,21 +15,21 @@ model User {
   password  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
-  layouts   Layout[]
-  
+
+  layouts Layout[]
+
   @@map("users")
 }
 
 model App {
-  id          String @id @default(cuid())
-  name        String @unique
+  id          String  @id @default(cuid())
+  name        String  @unique
   category    String
   description String?
-  iconColor   String @default("#64748b")
-  
-  shortcuts   Shortcut[]
-  
+  iconColor   String  @default("#64748b")
+
+  shortcuts Shortcut[]
+
   @@map("apps")
 }
 
@@ -38,12 +38,12 @@ model Shortcut {
   keys        String
   description String
   platform    String @default("mac") // mac, windows, both
-  
-  appId       String
-  app         App @relation(fields: [appId], references: [id])
-  
+
+  appId String
+  app   App    @relation(fields: [appId], references: [id])
+
   layoutShortcuts LayoutShortcut[]
-  
+
   @@unique([keys, appId, platform], name: "keys_appId_platform")
   @@map("shortcuts")
 }
@@ -51,28 +51,28 @@ model Shortcut {
 model Layout {
   id        String   @id @default(cuid())
   name      String
-  size      String   // "3x3", "3.75x3.75", "mousepad"
+  size      String // "3x3", "3.75x3.75", "mousepad"
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
-  userId    String
-  user      User @relation(fields: [userId], references: [id])
-  
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
   shortcuts LayoutShortcut[]
-  
+
   @@map("layouts")
 }
 
 model LayoutShortcut {
-  id         String @id @default(cuid())
-  position   Int    // 0-8 for 3x3, 0-15 for 4x4, etc.
-  
-  layoutId   String
-  layout     Layout @relation(fields: [layoutId], references: [id])
-  
+  id       String @id @default(cuid())
+  position Int // 0-8 for 3x3, 0-15 for 4x4, etc.
+
+  layoutId String
+  layout   Layout @relation(fields: [layoutId], references: [id])
+
   shortcutId String
   shortcut   Shortcut @relation(fields: [shortcutId], references: [id])
-  
+
   @@unique([layoutId, position])
   @@map("layout_shortcuts")
 }
