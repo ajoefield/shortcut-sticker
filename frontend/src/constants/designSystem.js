@@ -72,21 +72,21 @@ export const TYPOGRAPHY = {
   },
   sizes: {
     small: {
-      sectionHeader: '11px',
-      shortcutKey: '9px',
-      description: '8px',
+      sectionHeader: '18px',  // was 11px
+      shortcutKey: '15px',    // was 9px
+      description: '13px',    // was 8px
       lineHeight: 1.3
     },
     medium: {
-      sectionHeader: '13px',
-      shortcutKey: '11px',
-      description: '10px',
+      sectionHeader: '22px',  // was 13px
+      shortcutKey: '18px',    // was 11px
+      description: '16px',    // was 10px
       lineHeight: 1.3
     },
     large: {
-      sectionHeader: '16px',
-      shortcutKey: '14px',
-      description: '12px',
+      sectionHeader: '26px',  // was 16px
+      shortcutKey: '22px',    // was 14px
+      description: '19px',    // was 12px
       lineHeight: 1.4
     }
   },
@@ -207,15 +207,24 @@ export const TEXT_SIZES = [
   { id: 'large', name: 'Large Text', description: 'Fewer shortcuts, larger text' }
 ];
 
-// Section Limits
+// Section Limits - Based on proven working designs
+// These limits ensure text remains legible when printed
 export const SECTION_LIMITS = {
   maxSections: {
-    small: 6,
-    medium: 4,
-    large: 4
+    small: 4,   // 4 sections for small text
+    medium: 4,  // 4 sections for medium text
+    large: 4    // 4 sections for large text
   },
-  maxShortcutsPerSection: 12,
-  maxTotalShortcuts: 60
+  maxShortcutsPerSection: {
+    small: 10,   // 4 sections × 10 = 40 shortcuts max
+    medium: 8,   // 4 sections × 8 = 32 shortcuts max
+    large: 6     // 4 sections × 6 = 24 shortcuts max
+  },
+  maxTotalShortcuts: {
+    small: 40,   // Conservative limit for legibility
+    medium: 32,  // Balanced
+    large: 24    // Large text, fewer shortcuts
+  }
 };
 
 // Helper function to format shortcut keys with symbols
@@ -252,12 +261,14 @@ export const formatShortcutKey = (key, platform = 'macos') => {
     formatted = formatted.replace(regex, replacements[key]);
   });
   
-  // Add spacing between keys with "+"
-  // Replace common separators (-, +, space) with " + "
+  // Normalize spacing between keys
+  // Handle various separator formats: +, -, space, or no separator
   formatted = formatted
-    .replace(/\s*\+\s*/g, ' + ')  // Normalize existing + signs
-    .replace(/\s*-\s*/g, ' + ')   // Replace - with +
-    .replace(/\s{2,}/g, ' ')      // Remove multiple spaces
+    .replace(/\s*\+\s*/g, ' + ')     // Normalize existing + signs with spaces
+    .replace(/\s*-\s*/g, ' + ')      // Replace - with +
+    .replace(/([⌘⌥⌃⇧⊞])([A-Z0-9])/g, '$1 + $2')  // Add + between symbol and letter (⌘K → ⌘ + K)
+    .replace(/([A-Z])([⌘⌥⌃⇧⊞])/g, '$1 + $2')    // Add + between letter and symbol
+    .replace(/\s{2,}/g, ' ')         // Remove multiple spaces
     .trim();
   
   return formatted;
@@ -265,11 +276,15 @@ export const formatShortcutKey = (key, platform = 'macos') => {
 
 // Helper function to get max shortcuts for current configuration
 export const getMaxShortcuts = (imageSize, textSize) => {
-  const size = IMAGE_SIZES[imageSize];
-  return size ? size.shortcuts[textSize] : 42;
+  return SECTION_LIMITS.maxTotalShortcuts[textSize] || 32;
 };
 
 // Helper function to get max sections for text size
 export const getMaxSections = (textSize) => {
   return SECTION_LIMITS.maxSections[textSize] || 4;
+};
+
+// Helper function to get max shortcuts per section
+export const getMaxShortcutsPerSection = (textSize) => {
+  return SECTION_LIMITS.maxShortcutsPerSection[textSize] || 8;
 };

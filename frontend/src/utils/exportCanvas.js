@@ -15,8 +15,8 @@ export const exportToPNG = async (canvasElement, imageSize, filename = 'sticker-
 
   // Get export dimensions at 300 DPI
   const exportDimensions = {
-    '3.75': { width: 1125, height: 1125 },
-    '3': { width: 900, height: 900 }
+    '3.75': { width: 1125, height: 1125, displayWidth: 600, displayHeight: 600 },
+    '3': { width: 900, height: 900, displayWidth: 480, displayHeight: 480 }
   };
 
   const dimensions = exportDimensions[imageSize];
@@ -24,9 +24,9 @@ export const exportToPNG = async (canvasElement, imageSize, filename = 'sticker-
     throw new Error(`Invalid image size: ${imageSize}`);
   }
 
-  // Get current display dimensions
-  const displayWidth = canvasElement.offsetWidth;
-  const displayHeight = canvasElement.offsetHeight;
+  // Use design system dimensions instead of measuring (to avoid zoom issues)
+  const displayWidth = dimensions.displayWidth;
+  const displayHeight = dimensions.displayHeight;
 
   // Calculate scale factor
   const scaleX = dimensions.width / displayWidth;
@@ -36,6 +36,10 @@ export const exportToPNG = async (canvasElement, imageSize, filename = 'sticker-
     // Hide elements with no-export class before capture
     const noExportElements = canvasElement.querySelectorAll('.no-export');
     noExportElements.forEach(el => el.style.display = 'none');
+
+    console.log('📐 Export dimensions:', dimensions.width, '×', dimensions.height, 'px');
+    console.log('📏 Display dimensions:', displayWidth, '×', displayHeight, 'px');
+    console.log('🔍 Scale factor:', scaleX.toFixed(2), 'x');
 
     // Capture canvas with html2canvas
     const canvas = await html2canvas(canvasElement, {
@@ -49,6 +53,8 @@ export const exportToPNG = async (canvasElement, imageSize, filename = 'sticker-
         return element.classList && element.classList.contains('no-export');
       }
     });
+
+    console.log('✅ Canvas created:', canvas.width, '×', canvas.height, 'px');
 
     // Restore hidden elements
     noExportElements.forEach(el => el.style.display = '');
@@ -119,7 +125,7 @@ export const exportToSVG = (canvasElement, imageSize, layoutData, filename = 'st
  */
 const generateSVG = (layoutData, dimensions) => {
   const { width, height } = dimensions;
-  const { palette, spacing, typography, sections, imageSize } = layoutData;
+  const { palette, spacing, typography, sections, imageSize, title } = layoutData;
 
   // Calculate scale factor from display to export
   const displaySizes = {
@@ -127,6 +133,14 @@ const generateSVG = (layoutData, dimensions) => {
     '3': 480
   };
   const scale = width / displaySizes[imageSize];
+  
+  // Parse typography sizes (remove 'px' and convert to numbers)
+  const parsePx = (str) => parseFloat(str.replace('px', ''));
+  const fontSizes = {
+    sectionHeader: parsePx(typography.sectionHeader),
+    shortcutKey: parsePx(typography.shortcutKey),
+    description: parsePx(typography.description)
+  };
 
   // Start SVG
   let svg = `<?xml version="1.0" encoding="UTF-8"?>
@@ -149,27 +163,44 @@ const generateSVG = (layoutData, dimensions) => {
         rx="${spacing.borderRadius * scale}"/>
 `;
 
+  // Add title if present
+  let currentY = spacing.outerPadding * scale;
+  if (title) {
+    const titleSize = fontSizes.sectionHeader * scale * 1.5;
+    currentY += titleSize + spacing.sectionGap * scale;
+    svg += `
+  <!-- Title -->
+  <text x="${width / 2}" y="${currentY}" 
+        font-size="${titleSize}" font-weight="700" fill="${palette.text}" text-anchor="middle">
+    ${escapeXML(title)}
+  </text>
+`;
+    currentY += spacing.sectionGap * scale;
+  }
+
   // Add sections
   const sectionWidth = (width - spacing.outerPadding * 2 * scale - spacing.sectionGap * scale) / 2;
   const sectionX = spacing.outerPadding * scale;
-  const sectionY = spacing.outerPadding * scale;
+  const sectionY = currentY;
+  const shortcutRowHeight = fontSizes.description * scale + (spacing.shortcutRowGap.medium || 3) * scale;
 
   sections.forEach((section, index) => {
     const col = index % 2;
     const row = Math.floor(index / 2);
     const x = sectionX + col * (sectionWidth + spacing.sectionGap * scale);
-    const y = sectionY + row * 200 * scale; // Approximate section height
+    const y = sectionY + row * (fontSizes.sectionHeader * scale + 20 * scale + section.shortcuts.length * shortcutRowHeight + spacing.sectionPadding * 2 * scale + spacing.sectionGap * scale);
 
     // Section background
+    const sectionHeight = fontSizes.sectionHeader * scale + 20 * scale + section.shortcuts.length * shortcutRowHeight + spacing.sectionPadding * 2 * scale;
     svg += `
   <!-- Section ${index + 1} -->
-  <rect x="${x}" y="${y}" width="${sectionWidth}" height="180" 
+  <rect x="${x}" y="${y}" width="${sectionWidth}" height="${sectionHeight}" 
         fill="${palette.sectionBackground}" stroke="${palette.sectionBorder}" 
         stroke-width="${spacing.sectionBorderWidth * scale}" rx="${spacing.sectionBorderRadius * scale}"/>
   
   <!-- Section Header -->
-  <text x="${x + spacing.sectionPadding * scale}" y="${y + spacing.sectionPadding * scale + typography.sectionHeader * scale}" 
-        font-size="${typography.sectionHeader * scale}" font-weight="700" fill="${palette.text}">
+  <text x="${x + spacing.sectionPadding * scale}" y="${y + spacing.sectionPadding * scale + fontSizes.sectionHeader * scale}" 
+        font-size="${fontSizes.sectionHeader * scale}" font-weight="700" fill="${palette.text}">
     ${escapeXML(section.name)}
   </text>
 `;
@@ -178,16 +209,18 @@ const generateSVG = (layoutData, dimensions) => {
     section.shortcuts.forEach((shortcut, shortcutIndex) => {
       if (!shortcut) return;
       
-      const shortcutY = y + spacing.sectionPadding * scale + typography.sectionHeader * scale + 10 * scale + 
-                        shortcutIndex * (typography.description * scale + spacing.shortcutRowGap * scale);
+      const shortcutY = y + spacing.sectionPadding * scale + fontSizes.sectionHeader * scale + 15 * scale + 
+                        shortcutIndex * shortcutRowHeight + fontSizes.description * scale;
       
       svg += `
   <text x="${x + spacing.sectionPadding * scale}" y="${shortcutY}" 
-        font-size="${typography.shortcutKey * scale}" font-weight="600" fill="${palette.text}" class="mono">
+        font-size="${fontSizes.shortcutKey * scale}" font-weight="600" fill="${palette.text}" 
+        font-family="SF Mono, Consolas, monospace">
     ${escapeXML(shortcut.key)}
   </text>
-  <text x="${x + spacing.sectionPadding * scale + 60 * scale}" y="${shortcutY}" 
-        font-size="${typography.description * scale}" font-weight="400" fill="${palette.textSecondary || palette.text}">
+  <text x="${x + spacing.sectionPadding * scale + 100 * scale}" y="${shortcutY}" 
+        font-size="${fontSizes.description * scale}" font-weight="400" fill="${palette.textSecondary || palette.text}"
+        font-family="Inter, SF Pro, system-ui, sans-serif">
     ${escapeXML(shortcut.command)}
   </text>
 `;

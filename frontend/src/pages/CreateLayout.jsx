@@ -8,9 +8,18 @@ import {
   getSpacing,
   formatShortcutKey,
   getMaxShortcuts,
-  getMaxSections
+  getMaxSections,
+  getMaxShortcutsPerSection
 } from '../constants/designSystem';
-import { exportToPNG } from '../utils/exportCanvas';
+import { exportToPNG, exportToSVG } from '../utils/exportCanvas';
+import {
+  saveLayoutToFile,
+  loadLayoutFromFile,
+  saveToLocalStorage,
+  loadFromLocalStorage,
+  serializeLayout,
+  validateLayout
+} from '../utils/layoutStorage';
 import '../styles/print.css';
 
 export default function CreateLayout() {
@@ -50,9 +59,17 @@ export default function CreateLayout() {
   ]);
   const [editingSection, setEditingSection] = useState(null);
   const [layoutTitle, setLayoutTitle] = useState('');
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [stickerPosition, setStickerPosition] = useState({ x: 100, y: 100 });
+  const [stickerZoom, setStickerZoom] = useState(1);
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const [canvasZoom, setCanvasZoom] = useState(1);
+  const [touchStartDistance, setTouchStartDistance] = useState(0);
+  const [touchStartZoom, setTouchStartZoom] = useState(1);
 
 
-  const MAX_SHORTCUTS_PER_SECTION = 12;
+  const MAX_SHORTCUTS_PER_SECTION = getMaxShortcutsPerSection(textSize);
   const MAX_TOTAL_SHORTCUTS = getMaxShortcuts(imageSize, textSize);
 
   const getTotalShortcuts = () => {
@@ -94,35 +111,59 @@ export default function CreateLayout() {
     // For canvas tab, we don't need to fetch - we use local state
     if (activeTab === 'canvas') return;
 
-    // Check if we have any apps selected based on layout type
-    const hasSelectedApps = layoutType === 'single' ? selectedApp : selectedApps.length > 0;
-    if (!hasSelectedApps) return;
+    console.log('🔍 fetchShortcuts called with search:', search); // DEBUG
 
     setLoading(true);
     try {
       const url = `http://localhost:3001/api/shortcuts?search=${encodeURIComponent(search)}`;
+      console.log('📡 Fetching URL:', url); // DEBUG
       const response = await fetch(url);
+
+      // Check if response is ok
+      if (!response.ok) {
+        console.error('Backend error:', response.status, response.statusText);
+        setShortcuts([]);
+        setLoading(false);
+        return;
+      }
+
       const data = await response.json();
+      console.log('📦 Received data:', data.length, 'shortcuts'); // DEBUG
 
-      let filteredData;
+      // Ensure data is an array
+      if (!Array.isArray(data)) {
+        console.error('Invalid data format:', data);
+        setShortcuts([]);
+        setLoading(false);
+        return;
+      }
 
-      // For "All Apps" tab or when searching, show results from all apps
-      if (activeTab === 'all' || search.trim()) {
-        // Show all matching shortcuts from any app
-        filteredData = data;
+      // If there's a search term, show all matching shortcuts across all apps
+      // If no search term, filter by selected apps
+      let filteredData = data;
+
+      if (!search.trim()) {
+        // No search term - filter by selected apps
+        const hasSelectedApps = layoutType === 'single' ? selectedApp : selectedApps.length > 0;
+        if (hasSelectedApps) {
+          const appsToFilter = layoutType === 'single' ? [selectedApp] : selectedApps;
+          filteredData = data.filter(shortcut => appsToFilter.includes(shortcut.app));
+          console.log('🔧 Filtered by apps:', appsToFilter, '→', filteredData.length, 'results'); // DEBUG
+        }
+
+        // Only filter by platform when NOT searching
+        if (selectedPlatforms.length > 0) {
+          const beforePlatformFilter = filteredData.length;
+          filteredData = filteredData.filter(shortcut =>
+            selectedPlatforms.includes(shortcut.platform) || !shortcut.platform
+          );
+          console.log('🖥️  Filtered by platforms:', selectedPlatforms, '→', beforePlatformFilter, '→', filteredData.length, 'results'); // DEBUG
+        }
       } else {
-        // For other tabs when not searching, only show shortcuts from selected apps
-        const appsToFilter = layoutType === 'single' ? [selectedApp] : selectedApps;
-        filteredData = data.filter(shortcut => appsToFilter.includes(shortcut.app));
+        console.log('🔎 Search mode - showing all', filteredData.length, 'results (no platform filter)'); // DEBUG
       }
 
-      // Filter by platform if platforms are selected
-      if (selectedPlatforms.length > 0) {
-        filteredData = filteredData.filter(shortcut =>
-          selectedPlatforms.includes(shortcut.platform) || !shortcut.platform
-        );
-      }
-
+      console.log('✅ Final shortcuts to display:', filteredData.length); // DEBUG
       setShortcuts(filteredData);
     } catch (error) {
       console.error('Error fetching shortcuts:', error);
@@ -168,8 +209,7 @@ export default function CreateLayout() {
   };
 
   useEffect(() => {
-    const hasSelectedApps = layoutType === 'single' ? selectedApp : selectedApps.length > 0;
-    if (hasSelectedApps && showLayout) {
+    if (showLayout && activeTab !== 'canvas') {
       if (searchTerm.trim() === '') {
         fetchShortcuts('');
       } else {
@@ -290,8 +330,12 @@ export default function CreateLayout() {
 
     setIsExporting(true);
 
-    // Wait for React to re-render and hide empty slots
-    await new Promise(resolve => setTimeout(resolve, 100));
+    // Save current zoom level and reset to 100% for export
+    const originalZoom = canvasZoom;
+    setCanvasZoom(1);
+
+    // Wait for zoom reset and React to re-render
+    await new Promise(resolve => setTimeout(resolve, 200));
 
     try {
       const appNames = layoutType === 'single' ? selectedApp : selectedApps.join('-');
@@ -303,6 +347,165 @@ export default function CreateLayout() {
       alert('Export failed. Please try again.');
     } finally {
       setIsExporting(false);
+      // Restore original zoom level
+      setCanvasZoom(originalZoom);
+    }
+  };
+
+  const handleExportSVG = () => {
+    if (!canvasRef.current) {
+      alert('Canvas not found');
+      return;
+    }
+
+    try {
+      const appNames = layoutType === 'single' ? selectedApp : selectedApps.join('-');
+      const filename = `sticker-${appNames}-${imageSize}-${textSize}-${colorPalette}.svg`;
+
+      // Prepare layout data for SVG generation
+      const layoutData = {
+        palette,
+        spacing,
+        typography,
+        imageSize,
+        sections: customSections.map(section => ({
+          ...section,
+          shortcuts: (selectedShortcuts[section.id] || []).filter(s => s)
+        })),
+        title: layoutTitle
+      };
+
+      exportToSVG(canvasRef.current, imageSize, layoutData, filename);
+      alert('SVG exported successfully!');
+    } catch (error) {
+      console.error('SVG export failed:', error);
+      alert('SVG export failed. Please try again.');
+    }
+  };
+
+  const handleSaveLayout = () => {
+    const layoutData = serializeLayout({
+      layoutType,
+      selectedApp,
+      selectedApps,
+      imageSize,
+      textSize,
+      colorPalette,
+      layoutTitle,
+      customSections,
+      selectedShortcuts,
+      selectedPlatforms
+    });
+
+    const appNames = layoutType === 'single' ? selectedApp : selectedApps.join('-');
+    const filename = `layout-${appNames}-${new Date().toISOString().split('T')[0]}.json`;
+
+    // Save to both file and localStorage
+    saveLayoutToFile(layoutData, filename);
+    saveToLocalStorage(layoutData);
+
+    alert('Layout saved! File downloaded and saved to browser.');
+  };
+
+  const handleLoadLayout = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    try {
+      const layoutData = await loadLayoutFromFile(file);
+
+      if (!validateLayout(layoutData)) {
+        alert('Invalid layout file');
+        return;
+      }
+
+      // Restore state
+      setLayoutType(layoutData.layoutType);
+      setSelectedApp(layoutData.selectedApp || '');
+      setSelectedApps(layoutData.selectedApps || []);
+      setImageSize(layoutData.imageSize);
+      setTextSize(layoutData.textSize);
+      setColorPalette(layoutData.colorPalette);
+      setLayoutTitle(layoutData.layoutTitle || '');
+      setCustomSections(layoutData.customSections);
+      setSelectedShortcuts(layoutData.selectedShortcuts);
+      setSelectedPlatforms(layoutData.selectedPlatforms || []);
+      setShowLayout(true);
+
+      alert('Layout loaded successfully!');
+    } catch (error) {
+      console.error('Failed to load layout:', error);
+      alert('Failed to load layout. Please check the file.');
+    }
+
+    // Reset file input
+    event.target.value = '';
+  };
+
+  const handleStickerMouseDown = (e) => {
+    if (e.target.closest('.sticker-content')) {
+      setIsDragging(true);
+      setDragStart({
+        x: e.clientX - stickerPosition.x,
+        y: e.clientY - stickerPosition.y
+      });
+    }
+  };
+
+  const handleStickerMouseMove = (e) => {
+    if (isDragging) {
+      setStickerPosition({
+        x: e.clientX - dragStart.x,
+        y: e.clientY - dragStart.y
+      });
+    }
+  };
+
+  const handleStickerMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  const handleWheel = (e) => {
+    if (e.ctrlKey || e.metaKey) {
+      e.preventDefault();
+      const delta = e.deltaY > 0 ? -0.1 : 0.1;
+      setCanvasZoom(prev => Math.max(0.5, Math.min(2, prev + delta)));
+    }
+  };
+
+  const setZoomLevel = (level) => {
+    setCanvasZoom(level);
+  };
+
+  // Calculate distance between two touch points
+  const getTouchDistance = (touches) => {
+    const dx = touches[0].clientX - touches[1].clientX;
+    const dy = touches[0].clientY - touches[1].clientY;
+    return Math.sqrt(dx * dx + dy * dy);
+  };
+
+  const handleTouchStart = (e) => {
+    if (e.touches.length === 2) {
+      e.preventDefault();
+      const distance = getTouchDistance(e.touches);
+      setTouchStartDistance(distance);
+      setTouchStartZoom(canvasZoom);
+    }
+  };
+
+  const handleTouchMove = (e) => {
+    if (e.touches.length === 2) {
+      e.preventDefault();
+      const distance = getTouchDistance(e.touches);
+      const scale = distance / touchStartDistance;
+      const newZoom = touchStartZoom * scale;
+      setCanvasZoom(Math.max(0.5, Math.min(2, newZoom)));
+    }
+  };
+
+  const handleTouchEnd = (e) => {
+    if (e.touches.length < 2) {
+      setTouchStartDistance(0);
     }
   };
 
@@ -628,7 +831,7 @@ export default function CreateLayout() {
                 <input
                   type="text"
                   placeholder={
-                    activeTab === 'all' ? "Search all shortcuts..." :
+                    activeTab === 'all' ? "Search apps, shortcuts, or commands..." :
                       activeTab === 'favorites' ? "Search favorites..." :
                         "Search canvas shortcuts..."
                   }
@@ -655,10 +858,10 @@ export default function CreateLayout() {
                   textAlign: 'center',
                   margin: '6px 0 0 0'
                 }}>
-                  {activeTab === 'all' && 'Search across all applications'}
+                  {activeTab === 'all' && !searchTerm && 'Showing shortcuts from selected app(s)'}
+                  {activeTab === 'all' && searchTerm && 'Searching apps, shortcuts, and commands'}
                   {activeTab === 'favorites' && 'Search your favorite shortcuts'}
                   {activeTab === 'canvas' && 'Shortcuts currently on your canvas'}
-                  {searchTerm && activeTab !== 'canvas' && ' (filtered)'}
                 </p>
               </div>
 
@@ -723,16 +926,21 @@ export default function CreateLayout() {
               <div style={{
                 flex: 1,
                 overflow: 'auto',
-                border: '1px solid #e2e8f0'
+                border: '1px solid #e2e8f0',
+                position: 'relative'
               }}>
+                {/* Sticky Header */}
                 <div style={{
                   display: 'grid',
-                  gridTemplateColumns: '40px 80px 1fr 30px',
+                  gridTemplateColumns: '40px 120px 1fr 30px',
                   fontSize: '14px',
                   fontWeight: '600',
                   padding: '12px 16px',
                   borderBottom: '1px solid #e2e8f0',
-                  background: isDarkMode ? '#374151' : '#f8fafc'
+                  background: isDarkMode ? '#374151' : '#f8fafc',
+                  position: 'sticky',
+                  top: 0,
+                  zIndex: 10
                 }}>
                   <div style={{ borderRight: '1px solid #e2e8f0', padding: '0 8px', textAlign: 'center' }}>App</div>
                   <div style={{ borderRight: '1px solid #e2e8f0', padding: '0 8px' }}>Key</div>
@@ -748,7 +956,7 @@ export default function CreateLayout() {
                   return (
                     <div key={shortcutKey} style={{
                       display: 'grid',
-                      gridTemplateColumns: '40px 80px 1fr 30px',
+                      gridTemplateColumns: '40px 120px 1fr 30px',
                       padding: '12px 16px',
                       borderBottom: '1px solid #e2e8f0',
                       cursor: 'pointer',
@@ -803,14 +1011,25 @@ export default function CreateLayout() {
                             color: 'white',
                             fontWeight: 'bold',
                             fontSize: '10px',
-                            cursor: 'help'
+                            cursor: 'default'
                           }}
                           title={shortcut.app}
                         >
                           {getAppIcon(shortcut.app).text}
                         </div>
                       </div>
-                      <div style={{ fontSize: '12px', color: isUsed ? '#3b82f6' : (isDarkMode ? '#ffffff' : '#0f172a'), borderRight: '1px solid #e2e8f0', padding: '0 8px', fontWeight: '600', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                      <div style={{
+                        fontSize: '11px',
+                        color: isUsed ? '#3b82f6' : (isDarkMode ? '#ffffff' : '#0f172a'),
+                        borderRight: '1px solid #e2e8f0',
+                        padding: '0 8px',
+                        fontWeight: '600',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'flex-start',
+                        wordBreak: 'break-word',
+                        lineHeight: '1.3'
+                      }}>
                         {shortcut.key}
                         {isUsed && (
                           <span
@@ -935,7 +1154,47 @@ export default function CreateLayout() {
                     <span>Text:</span>
                     <select
                       value={textSize}
-                      onChange={(e) => setTextSize(e.target.value)}
+                      onChange={(e) => {
+                        const newSize = e.target.value;
+                        const maxSections = getMaxSections(newSize);
+
+                        // If switching to a size with fewer max sections, trim sections
+                        if (customSections.length > maxSections) {
+                          const trimmedSections = customSections.slice(0, maxSections);
+                          setCustomSections(trimmedSections);
+
+                          // Also remove shortcuts from deleted sections
+                          setSelectedShortcuts(prev => {
+                            const newShortcuts = {};
+                            trimmedSections.forEach(section => {
+                              if (prev[section.id]) {
+                                newShortcuts[section.id] = prev[section.id];
+                              }
+                            });
+                            return newShortcuts;
+                          });
+
+                          alert(`Switched to ${newSize} text. Reduced to ${maxSections} sections to fit.`);
+                        }
+
+                        // Trim shortcuts per section if exceeding new limit
+                        const newMaxPerSection = getMaxShortcutsPerSection(newSize);
+                        setSelectedShortcuts(prev => {
+                          const trimmedShortcuts = {};
+                          Object.keys(prev).forEach(sectionId => {
+                            const sectionShortcuts = prev[sectionId].filter(s => s);
+                            if (sectionShortcuts.length > newMaxPerSection) {
+                              trimmedShortcuts[sectionId] = sectionShortcuts.slice(0, newMaxPerSection);
+                              console.warn(`Section ${sectionId} trimmed from ${sectionShortcuts.length} to ${newMaxPerSection} shortcuts`);
+                            } else {
+                              trimmedShortcuts[sectionId] = prev[sectionId];
+                            }
+                          });
+                          return trimmedShortcuts;
+                        });
+
+                        setTextSize(newSize);
+                      }}
                       style={{
                         padding: '6px 10px',
                         border: '1px solid #e2e8f0',
@@ -995,14 +1254,113 @@ export default function CreateLayout() {
                     + Add Section
                   </button>
                   <div style={{
-                    fontSize: '11px',
-                    color: '#64748b'
+                    fontSize: '13px',
+                    fontWeight: '600',
+                    padding: '6px 12px',
+                    borderRadius: '6px',
+                    background: getTotalShortcuts() > MAX_TOTAL_SHORTCUTS * 0.9
+                      ? '#fef2f2'
+                      : getTotalShortcuts() > MAX_TOTAL_SHORTCUTS * 0.7
+                        ? '#fffbeb'
+                        : '#f0fdf4',
+                    color: getTotalShortcuts() > MAX_TOTAL_SHORTCUTS * 0.9
+                      ? '#dc2626'
+                      : getTotalShortcuts() > MAX_TOTAL_SHORTCUTS * 0.7
+                        ? '#d97706'
+                        : '#16a34a',
+                    border: `1px solid ${getTotalShortcuts() > MAX_TOTAL_SHORTCUTS * 0.9
+                      ? '#fecaca'
+                      : getTotalShortcuts() > MAX_TOTAL_SHORTCUTS * 0.7
+                        ? '#fde68a'
+                        : '#bbf7d0'
+                      }`
                   }}>
                     {getTotalShortcuts()}/{MAX_TOTAL_SHORTCUTS} shortcuts
+                    {getTotalShortcuts() > MAX_TOTAL_SHORTCUTS * 0.9 && ' ⚠️'}
+                    {getTotalShortcuts() > MAX_TOTAL_SHORTCUTS * 0.7 && getTotalShortcuts() <= MAX_TOTAL_SHORTCUTS * 0.9 && ' ⚡'}
                   </div>
                 </div>
 
-                <div style={{ display: 'flex', gap: '8px' }}>
+                <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                  {/* Zoom Controls */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginRight: '8px' }}>
+                    <button
+                      onClick={() => setZoomLevel(0.5)}
+                      style={{
+                        padding: '4px 8px',
+                        background: canvasZoom === 0.5 ? '#3b82f6' : '#e2e8f0',
+                        color: canvasZoom === 0.5 ? 'white' : '#64748b',
+                        border: 'none',
+                        borderRadius: '4px',
+                        fontSize: '11px',
+                        cursor: 'pointer',
+                        fontWeight: '500'
+                      }}
+                    >
+                      50%
+                    </button>
+                    <button
+                      onClick={() => setZoomLevel(0.75)}
+                      style={{
+                        padding: '4px 8px',
+                        background: canvasZoom === 0.75 ? '#3b82f6' : '#e2e8f0',
+                        color: canvasZoom === 0.75 ? 'white' : '#64748b',
+                        border: 'none',
+                        borderRadius: '4px',
+                        fontSize: '11px',
+                        cursor: 'pointer',
+                        fontWeight: '500'
+                      }}
+                    >
+                      75%
+                    </button>
+                    <button
+                      onClick={() => setZoomLevel(1)}
+                      style={{
+                        padding: '4px 8px',
+                        background: canvasZoom === 1 ? '#3b82f6' : '#e2e8f0',
+                        color: canvasZoom === 1 ? 'white' : '#64748b',
+                        border: 'none',
+                        borderRadius: '4px',
+                        fontSize: '11px',
+                        cursor: 'pointer',
+                        fontWeight: '500'
+                      }}
+                    >
+                      100%
+                    </button>
+                    <button
+                      onClick={() => setZoomLevel(1.5)}
+                      style={{
+                        padding: '4px 8px',
+                        background: canvasZoom === 1.5 ? '#3b82f6' : '#e2e8f0',
+                        color: canvasZoom === 1.5 ? 'white' : '#64748b',
+                        border: 'none',
+                        borderRadius: '4px',
+                        fontSize: '11px',
+                        cursor: 'pointer',
+                        fontWeight: '500'
+                      }}
+                    >
+                      150%
+                    </button>
+                    <button
+                      onClick={() => setZoomLevel(2)}
+                      style={{
+                        padding: '4px 8px',
+                        background: canvasZoom === 2 ? '#3b82f6' : '#e2e8f0',
+                        color: canvasZoom === 2 ? 'white' : '#64748b',
+                        border: 'none',
+                        borderRadius: '4px',
+                        fontSize: '11px',
+                        cursor: 'pointer',
+                        fontWeight: '500'
+                      }}
+                    >
+                      200%
+                    </button>
+                  </div>
+
                   <button
                     onClick={handleExportPNG}
                     disabled={isExporting || getTotalShortcuts() === 0}
@@ -1019,6 +1377,59 @@ export default function CreateLayout() {
                   >
                     {isExporting ? 'Exporting...' : '📥 Export PNG'}
                   </button>
+                  <button
+                    onClick={handleExportSVG}
+                    disabled={getTotalShortcuts() === 0}
+                    style={{
+                      padding: '6px 12px',
+                      background: getTotalShortcuts() === 0 ? '#94a3b8' : '#8b5cf6',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '4px',
+                      fontSize: '12px',
+                      cursor: getTotalShortcuts() === 0 ? 'not-allowed' : 'pointer',
+                      fontWeight: '600'
+                    }}
+                  >
+                    📄 Export SVG
+                  </button>
+                  <button
+                    onClick={handleSaveLayout}
+                    disabled={getTotalShortcuts() === 0}
+                    style={{
+                      padding: '6px 12px',
+                      background: getTotalShortcuts() === 0 ? '#94a3b8' : '#3b82f6',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '4px',
+                      fontSize: '12px',
+                      cursor: getTotalShortcuts() === 0 ? 'not-allowed' : 'pointer',
+                      fontWeight: '600'
+                    }}
+                  >
+                    💾 Save Layout
+                  </button>
+                  <label
+                    style={{
+                      padding: '6px 12px',
+                      background: '#f59e0b',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '4px',
+                      fontSize: '12px',
+                      cursor: 'pointer',
+                      fontWeight: '600',
+                      display: 'inline-block'
+                    }}
+                  >
+                    📂 Load Layout
+                    <input
+                      type="file"
+                      accept=".json"
+                      onChange={handleLoadLayout}
+                      style={{ display: 'none' }}
+                    />
+                  </label>
                   <button
                     onClick={() => {
                       setSelectedShortcuts({});
@@ -1070,148 +1481,295 @@ export default function CreateLayout() {
               </div>
 
               {/* Layout Grid */}
-              <div style={{
-                flex: 1,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}>
-                <div
-                  ref={canvasRef}
-                  data-print-canvas
-                  className={`print-size-${imageSize.replace('.', '-')}`}
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    position: 'relative',
-                    width: `${IMAGE_SIZES[imageSize].displayWidth}px`,
-                    minHeight: `${IMAGE_SIZES[imageSize].displayHeight}px`,
-                    padding: `${spacing.outerPadding}px`,
-                    background: palette.background,
-                    border: `${spacing.borderWidth}px solid ${palette.border}`,
-                    borderRadius: `${spacing.borderRadius}px`,
-                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
-                  }}>
-                  {/* Layout Title */}
-                  {layoutTitle && (
-                    <div style={{
-                      fontSize: textSize === 'large' ? '20px' : textSize === 'medium' ? '18px' : '16px',
-                      fontWeight: TYPOGRAPHY.fontWeights.bold,
-                      color: palette.text,
-                      textAlign: 'center',
-                      marginBottom: `${spacing.sectionGap}px`,
-                      fontFamily: TYPOGRAPHY.fontFamily.primary
+              <div
+                style={{
+                  flex: 1,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  overflow: 'auto',
+                  touchAction: 'none'
+                }}
+                onWheel={handleWheel}
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
+              >
+                <div style={{
+                  transform: `scale(${canvasZoom})`,
+                  transformOrigin: 'center',
+                  transition: 'transform 0.2s ease'
+                }}>
+                  <div
+                    ref={canvasRef}
+                    data-print-canvas
+                    className={`print-size-${imageSize.replace('.', '-')}`}
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      position: 'relative',
+                      width: `${IMAGE_SIZES[imageSize].displayWidth}px`,
+                      height: `${IMAGE_SIZES[imageSize].displayHeight}px`,
+                      padding: `${spacing.outerPadding}px`,
+                      background: palette.background,
+                      border: `${spacing.borderWidth}px solid ${palette.border}`,
+                      borderRadius: `${spacing.borderRadius}px`,
+                      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
                     }}>
-                      {layoutTitle}
-                    </div>
-                  )}
-
-                  {/* Sections Grid */}
-                  <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(2, 1fr)',
-                    gap: `${spacing.sectionGap}px`,
-                    flex: 1
-                  }}>
-                    {customSections.map((section) => (
-                      <div key={section.id} style={{
-                        background: palette.sectionBackground,
-                        border: `${spacing.sectionBorderWidth}px solid ${palette.sectionBorder}`,
-                        borderRadius: `${spacing.sectionBorderRadius}px`,
-                        padding: `${spacing.sectionPadding}px`,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        position: 'relative'
+                    {/* Layout Title */}
+                    {layoutTitle && (
+                      <div style={{
+                        fontSize: textSize === 'large' ? '20px' : textSize === 'medium' ? '18px' : '16px',
+                        fontWeight: TYPOGRAPHY.fontWeights.bold,
+                        color: palette.text,
+                        textAlign: 'center',
+                        marginBottom: `${spacing.sectionGap}px`,
+                        fontFamily: TYPOGRAPHY.fontFamily.primary
                       }}>
-                        <div
-                          style={{
-                            margin: '0 0 10px 0',
-                            fontSize: typography.sectionHeader,
-                            fontWeight: TYPOGRAPHY.fontWeights.bold,
-                            color: palette.text,
-                            fontFamily: TYPOGRAPHY.fontFamily.primary,
-                            lineHeight: 1.5,
-                            paddingBottom: '4px'
-                          }}
-                        >
-                          {section.name}
-                        </div>
-                        {customSections.length > 1 && !isExporting && (
-                          <button
-                            onClick={() => removeSection(section.id)}
-                            className="no-export"
+                        {layoutTitle}
+                      </div>
+                    )}
+
+                    {/* Sections Grid */}
+                    <div style={{
+                      display: 'grid',
+                      gridTemplateColumns: 'repeat(2, 1fr)',
+                      gap: `${spacing.sectionGap}px`,
+                      flex: 1,
+                      overflow: 'hidden',
+                      minHeight: 0
+                    }}>
+                      {customSections.map((section) => (
+                        <div key={section.id} style={{
+                          background: palette.sectionBackground,
+                          border: `${spacing.sectionBorderWidth}px solid ${palette.sectionBorder}`,
+                          borderRadius: `${spacing.sectionBorderRadius}px`,
+                          padding: `${spacing.sectionPadding}px`,
+                          display: 'flex',
+                          flexDirection: 'column',
+                          position: 'relative',
+                          overflow: 'hidden',
+                          minHeight: 0
+                        }}>
+                          <div
                             style={{
-                              position: 'absolute',
-                              top: '4px',
-                              right: '4px',
-                              background: '#ef4444',
-                              color: 'white',
-                              border: 'none',
-                              borderRadius: '50%',
-                              width: '16px',
-                              height: '16px',
-                              fontSize: '10px',
-                              cursor: 'pointer'
+                              margin: '0 0 10px 0',
+                              fontSize: typography.sectionHeader,
+                              fontWeight: TYPOGRAPHY.fontWeights.bold,
+                              color: palette.text,
+                              fontFamily: TYPOGRAPHY.fontFamily.primary,
+                              lineHeight: 1.5,
+                              paddingBottom: '4px',
+                              display: 'flex',
+                              justifyContent: 'space-between',
+                              alignItems: 'center'
                             }}
                           >
-                            ×
-                          </button>
-                        )}
-                        <div
-                          style={{
-                            flex: 1,
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: '2px'
-                          }}
-                          onDoubleClick={() => setEditingSection(editingSection === section.id ? null : section.id)}
-                        >
-                          {/* Only show filled shortcuts, or show empty slots in edit mode */}
-                          {(selectedShortcuts[section.id] || [])
-                            .map((shortcut, slotIndex) => ({ shortcut, slotIndex }))
-                            .filter(({ shortcut }) => shortcut || !isExporting) // Filter out null during export
-                            .map(({ shortcut, slotIndex }) => {
-                              const sectionShortcuts = (selectedShortcuts[section.id] || []).filter(s => s).length;
-                              // Calculate character limit based on actual available space in section
-                              const sectionWidth = (IMAGE_SIZES[imageSize].displayWidth - spacing.outerPadding * 2 - spacing.sectionGap) / 2;
-                              const availableWidth = sectionWidth - spacing.sectionPadding * 2 - 60; // section width - padding - key width
-                              const charWidth = textSize === 'large' ? 6 : textSize === 'medium' ? 5 : 4.5;
-                              const maxChars = Math.max(15, Math.floor(availableWidth / charWidth));
+                            <span>{section.name}</span>
+                            {!isExporting && (() => {
+                              const sectionCount = (selectedShortcuts[section.id] || []).filter(s => s).length;
+                              const percentage = (sectionCount / MAX_SHORTCUTS_PER_SECTION) * 100;
+                              const color = percentage >= 100 ? '#ef4444' : percentage >= 75 ? '#f59e0b' : '#10b981';
+                              return (
+                                <span style={{
+                                  fontSize: '10px',
+                                  fontWeight: TYPOGRAPHY.fontWeights.regular,
+                                  color: color,
+                                  fontFamily: TYPOGRAPHY.fontFamily.primary
+                                }}>
+                                  {sectionCount}/{MAX_SHORTCUTS_PER_SECTION}
+                                </span>
+                              );
+                            })()}
+                          </div>
+                          {customSections.length > 1 && !isExporting && (
+                            <button
+                              onClick={() => removeSection(section.id)}
+                              className="no-export"
+                              style={{
+                                position: 'absolute',
+                                top: '4px',
+                                right: '4px',
+                                background: '#ef4444',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '50%',
+                                width: '16px',
+                                height: '16px',
+                                fontSize: '10px',
+                                cursor: 'pointer'
+                              }}
+                            >
+                              ×
+                            </button>
+                          )}
+                          <div
+                            style={{
+                              flex: 1,
+                              display: 'flex',
+                              flexDirection: 'column',
+                              gap: '2px',
+                              overflow: 'auto',
+                              minHeight: 0
+                            }}
+                            onDoubleClick={() => setEditingSection(editingSection === section.id ? null : section.id)}
+                          >
+                            {/* Only show filled shortcuts, or show empty slots in edit mode */}
+                            {(selectedShortcuts[section.id] || [])
+                              .map((shortcut, slotIndex) => ({ shortcut, slotIndex }))
+                              .filter(({ shortcut }) => shortcut || !isExporting) // Filter out null during export
+                              .map(({ shortcut, slotIndex }) => {
+                                const sectionShortcuts = (selectedShortcuts[section.id] || []).filter(s => s).length;
+                                // Calculate character limit based on actual available space in section
+                                const sectionWidth = (IMAGE_SIZES[imageSize].displayWidth - spacing.outerPadding * 2 - spacing.sectionGap) / 2;
+                                const availableWidth = sectionWidth - spacing.sectionPadding * 2 - 60; // section width - padding - key width
+                                const charWidth = textSize === 'large' ? 6 : textSize === 'medium' ? 5 : 4.5;
+                                const maxChars = Math.max(15, Math.floor(availableWidth / charWidth));
 
-                              // Format the shortcut key with symbols
-                              const formattedKey = shortcut ? formatShortcutKey(shortcut.key, shortcut.platform || 'macos') : 'Key';
+                                // Format the shortcut key with symbols
+                                const formattedKey = shortcut ? formatShortcutKey(shortcut.key, shortcut.platform || 'macos') : 'Key';
+
+                                return (
+                                  <div
+                                    key={slotIndex}
+                                    style={{
+                                      background: 'transparent',
+                                      border: 'none',
+                                      borderRadius: '0px',
+                                      minHeight: textSize === 'large' ? '22px' : textSize === 'medium' ? '20px' : '18px',
+                                      display: shortcut ? 'flex' : (isExporting ? 'none' : 'flex'),
+                                      alignItems: 'flex-start',
+                                      justifyContent: 'flex-start',
+                                      padding: `${spacing.shortcutRowGap[textSize]}px 0px`,
+                                      fontSize: typography.description,
+                                      color: shortcut ? palette.text : palette.placeholder,
+                                      fontWeight: TYPOGRAPHY.fontWeights.regular,
+                                      lineHeight: typography.lineHeight,
+                                      fontFamily: TYPOGRAPHY.fontFamily.primary,
+                                      letterSpacing: TYPOGRAPHY.letterSpacing
+                                    }}
+                                    onDrop={(e) => {
+                                      e.preventDefault();
+                                      const droppedShortcut = JSON.parse(e.dataTransfer.getData('text/plain'));
+
+                                      // Check limits
+                                      if (sectionShortcuts >= MAX_SHORTCUTS_PER_SECTION) {
+                                        alert(`Maximum ${MAX_SHORTCUTS_PER_SECTION} shortcuts per section`);
+                                        return;
+                                      }
+                                      if (getTotalShortcuts() >= MAX_TOTAL_SHORTCUTS) {
+                                        alert(`Maximum ${MAX_TOTAL_SHORTCUTS} total shortcuts`);
+                                        return;
+                                      }
+
+                                      setSelectedShortcuts(prev => {
+                                        const newShortcuts = [...(prev[section.id] || [])];
+                                        newShortcuts[slotIndex] = droppedShortcut;
+                                        return {
+                                          ...prev,
+                                          [section.id]: newShortcuts
+                                        };
+                                      });
+                                    }}
+                                    onDragOver={(e) => e.preventDefault()}
+                                  >
+                                    {shortcut ? (
+                                      <div style={{
+                                        display: 'flex',
+                                        width: '100%',
+                                        gap: `${spacing.keyDescriptionGap}px`,
+                                        alignItems: 'flex-start'
+                                      }}>
+                                        <div style={{
+                                          fontWeight: TYPOGRAPHY.fontWeights.semibold,
+                                          fontSize: typography.shortcutKey,
+                                          minWidth: '60px',
+                                          fontFamily: TYPOGRAPHY.fontFamily.monospace,
+                                          color: palette.text,
+                                          whiteSpace: 'nowrap',
+                                          textAlign: 'left'
+                                        }}>
+                                          {formattedKey}
+                                        </div>
+                                        <div style={{
+                                          fontSize: typography.description,
+                                          color: palette.textSecondary || palette.text,
+                                          overflow: 'hidden',
+                                          flex: 1,
+                                          fontFamily: TYPOGRAPHY.fontFamily.primary,
+                                          textAlign: 'left',
+                                          lineHeight: typography.lineHeight,
+                                          wordBreak: 'break-word',
+                                          hyphens: 'auto'
+                                        }}>
+                                          {shortcut.command}
+                                        </div>
+                                      </div>
+                                    ) : (
+                                      !isExporting && <div style={{
+                                        display: 'flex',
+                                        width: '100%',
+                                        gap: `${spacing.keyDescriptionGap}px`,
+                                        alignItems: 'center'
+                                      }}>
+                                        <div style={{
+                                          fontWeight: TYPOGRAPHY.fontWeights.semibold,
+                                          fontSize: typography.shortcutKey,
+                                          minWidth: '60px',
+                                          color: palette.placeholder,
+                                          fontFamily: TYPOGRAPHY.fontFamily.monospace
+                                        }}>
+                                          Key
+                                        </div>
+                                        <div style={{
+                                          fontSize: typography.description,
+                                          color: palette.placeholder,
+                                          flex: 1,
+                                          fontFamily: TYPOGRAPHY.fontFamily.primary
+                                        }}>
+                                          Description
+                                        </div>
+                                      </div>
+                                    )}
+                                  </div>
+                                );
+                              })}
+
+                            {/* Add empty slots for editing (limited by MAX_SHORTCUTS_PER_SECTION) */}
+                            {!isExporting && Array.from({
+                              length: Math.max(
+                                0,
+                                Math.min(
+                                  3 - (selectedShortcuts[section.id] || []).filter(s => s).length,
+                                  MAX_SHORTCUTS_PER_SECTION - (selectedShortcuts[section.id] || []).filter(s => s).length
+                                )
+                              )
+                            }).map((_, emptyIndex) => {
+                              const slotIndex = (selectedShortcuts[section.id] || []).length + emptyIndex;
+                              const sectionShortcuts = (selectedShortcuts[section.id] || []).filter(s => s).length;
 
                               return (
                                 <div
-                                  key={slotIndex}
+                                  key={`empty-${slotIndex}`}
                                   style={{
                                     background: 'transparent',
                                     border: 'none',
-                                    borderRadius: '0px',
-                                    height: 'auto',
                                     minHeight: textSize === 'large' ? '22px' : textSize === 'medium' ? '20px' : '18px',
-                                    display: shortcut ? 'flex' : (isExporting ? 'none' : 'flex'),
+                                    display: 'flex',
                                     alignItems: 'center',
-                                    justifyContent: 'flex-start',
-                                    padding: `${spacing.shortcutRowGap[textSize]}px 0px`,
-                                    fontSize: typography.description,
-                                    color: shortcut ? palette.text : palette.placeholder,
-                                    fontWeight: TYPOGRAPHY.fontWeights.regular,
-                                    lineHeight: typography.lineHeight,
-                                    fontFamily: TYPOGRAPHY.fontFamily.primary,
-                                    letterSpacing: TYPOGRAPHY.letterSpacing
+                                    padding: `${spacing.shortcutRowGap[textSize]}px 0px`
                                   }}
                                   onDrop={(e) => {
                                     e.preventDefault();
                                     const droppedShortcut = JSON.parse(e.dataTransfer.getData('text/plain'));
 
-                                    // Check limits
+                                    // Check limits before adding
                                     if (sectionShortcuts >= MAX_SHORTCUTS_PER_SECTION) {
-                                      alert(`Maximum ${MAX_SHORTCUTS_PER_SECTION} shortcuts per section`);
+                                      alert(`Maximum ${MAX_SHORTCUTS_PER_SECTION} shortcuts per section for ${textSize} text size`);
                                       return;
                                     }
                                     if (getTotalShortcuts() >= MAX_TOTAL_SHORTCUTS) {
-                                      alert(`Maximum ${MAX_TOTAL_SHORTCUTS} total shortcuts`);
+                                      alert(`Maximum ${MAX_TOTAL_SHORTCUTS} total shortcuts for ${textSize} text size`);
                                       return;
                                     }
 
@@ -1226,153 +1784,59 @@ export default function CreateLayout() {
                                   }}
                                   onDragOver={(e) => e.preventDefault()}
                                 >
-                                  {shortcut ? (
+                                  <div style={{
+                                    display: 'flex',
+                                    width: '100%',
+                                    gap: `${spacing.keyDescriptionGap}px`,
+                                    alignItems: 'center'
+                                  }}>
                                     <div style={{
-                                      display: 'flex',
-                                      width: '100%',
-                                      gap: `${spacing.keyDescriptionGap}px`,
-                                      alignItems: 'center'
+                                      fontWeight: TYPOGRAPHY.fontWeights.semibold,
+                                      fontSize: typography.shortcutKey,
+                                      minWidth: '60px',
+                                      color: palette.placeholder,
+                                      fontFamily: TYPOGRAPHY.fontFamily.monospace
                                     }}>
-                                      <div style={{
-                                        fontWeight: TYPOGRAPHY.fontWeights.semibold,
-                                        fontSize: typography.shortcutKey,
-                                        minWidth: '60px',
-                                        fontFamily: TYPOGRAPHY.fontFamily.monospace,
-                                        color: palette.text,
-                                        whiteSpace: 'nowrap',
-                                        textAlign: 'left'
-                                      }}>
-                                        {formattedKey}
-                                      </div>
-                                      <div style={{
-                                        fontSize: typography.description,
-                                        color: palette.textSecondary || palette.text,
-                                        overflow: 'hidden',
-                                        textOverflow: 'ellipsis',
-                                        whiteSpace: 'nowrap',
-                                        flex: 1,
-                                        fontFamily: TYPOGRAPHY.fontFamily.primary,
-                                        textAlign: 'left'
-                                      }}>
-                                        {shortcut.command.substring(0, maxChars)}
-                                      </div>
+                                      Key
                                     </div>
-                                  ) : (
-                                    !isExporting && <div style={{
-                                      display: 'flex',
-                                      width: '100%',
-                                      gap: `${spacing.keyDescriptionGap}px`,
-                                      alignItems: 'center'
+                                    <div style={{
+                                      fontSize: typography.description,
+                                      color: palette.placeholder,
+                                      flex: 1,
+                                      fontFamily: TYPOGRAPHY.fontFamily.primary
                                     }}>
-                                      <div style={{
-                                        fontWeight: TYPOGRAPHY.fontWeights.semibold,
-                                        fontSize: typography.shortcutKey,
-                                        minWidth: '60px',
-                                        color: palette.placeholder,
-                                        fontFamily: TYPOGRAPHY.fontFamily.monospace
-                                      }}>
-                                        Key
-                                      </div>
-                                      <div style={{
-                                        fontSize: typography.description,
-                                        color: palette.placeholder,
-                                        flex: 1,
-                                        fontFamily: TYPOGRAPHY.fontFamily.primary
-                                      }}>
-                                        Description
-                                      </div>
+                                      Description
                                     </div>
-                                  )}
+                                  </div>
                                 </div>
                               );
                             })}
-
-                          {/* Add empty slots for editing (show at least 3 slots in first 2 sections) */}
-                          {!isExporting && Array.from({
-                            length: Math.max(
-                              3 - (selectedShortcuts[section.id] || []).filter(s => s).length,
-                              section.id < 2 ? 1 : 0
-                            )
-                          }).map((_, emptyIndex) => {
-                            const slotIndex = (selectedShortcuts[section.id] || []).length + emptyIndex;
-                            return (
-                              <div
-                                key={`empty-${slotIndex}`}
-                                style={{
-                                  background: 'transparent',
-                                  border: 'none',
-                                  minHeight: textSize === 'large' ? '22px' : textSize === 'medium' ? '20px' : '18px',
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  padding: `${spacing.shortcutRowGap[textSize]}px 0px`
-                                }}
-                                onDrop={(e) => {
-                                  e.preventDefault();
-                                  const droppedShortcut = JSON.parse(e.dataTransfer.getData('text/plain'));
-
-                                  setSelectedShortcuts(prev => {
-                                    const newShortcuts = [...(prev[section.id] || [])];
-                                    newShortcuts[slotIndex] = droppedShortcut;
-                                    return {
-                                      ...prev,
-                                      [section.id]: newShortcuts
-                                    };
-                                  });
-                                }}
-                                onDragOver={(e) => e.preventDefault()}
-                              >
-                                <div style={{
-                                  display: 'flex',
-                                  width: '100%',
-                                  gap: `${spacing.keyDescriptionGap}px`,
-                                  alignItems: 'center'
-                                }}>
-                                  <div style={{
-                                    fontWeight: TYPOGRAPHY.fontWeights.semibold,
-                                    fontSize: typography.shortcutKey,
-                                    minWidth: '60px',
-                                    color: palette.placeholder,
-                                    fontFamily: TYPOGRAPHY.fontFamily.monospace
-                                  }}>
-                                    Key
-                                  </div>
-                                  <div style={{
-                                    fontSize: typography.description,
-                                    color: palette.placeholder,
-                                    flex: 1,
-                                    fontFamily: TYPOGRAPHY.fontFamily.primary
-                                  }}>
-                                    Description
-                                  </div>
-                                </div>
-                              </div>
-                            );
-                          })}
+                          </div>
                         </div>
-                      </div>
-                    ))}
-                    {/* Bottom spacer to ensure padding */}
-                    <div style={{ gridColumn: '1 / -1', height: '1px' }}></div>
-                  </div>
+                      ))}
+                      {/* Bottom spacer to ensure padding */}
+                      <div style={{ gridColumn: '1 / -1', height: '1px' }}></div>
+                    </div>
 
-                  {/* Logo at bottom right */}
-                  <div style={{
-                    position: 'absolute',
-                    bottom: `${spacing.outerPadding / 2}px`,
-                    right: `${spacing.outerPadding / 2}px`,
-                    width: textSize === 'large' ? '60px' : textSize === 'medium' ? '50px' : '40px',
-                    height: 'auto',
-                    opacity: 0.7
-                  }}>
-                    <img
-                      src="/logo.png"
-                      alt="Logo"
-                      style={{
-                        width: '100%',
-                        height: 'auto',
-                        display: 'block'
-                      }}
-                    />
+                    {/* Logo at bottom right */}
+                    <div style={{
+                      position: 'absolute',
+                      bottom: `${spacing.outerPadding / 2}px`,
+                      right: `${spacing.outerPadding / 2}px`,
+                      width: textSize === 'large' ? '60px' : textSize === 'medium' ? '50px' : '40px',
+                      height: 'auto',
+                      opacity: 0.7
+                    }}>
+                      <img
+                        src="/logo.png"
+                        alt="Logo"
+                        style={{
+                          width: '100%',
+                          height: 'auto',
+                          display: 'block'
+                        }}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>

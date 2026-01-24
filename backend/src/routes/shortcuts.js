@@ -12,35 +12,23 @@ router.get('/', async (req, res) => {
     let shortcuts;
     
     if (search) {
-      // Smart search with word boundaries and relevance
-      const searchWords = search.toLowerCase().split(' ').filter(word => word.length > 0);
-      
-      shortcuts = await prisma.shortcut.findMany({
-        where: {
-          OR: [
-            // Exact word matches in description
-            ...searchWords.map(word => ({
-              description: {
-                contains: ` ${word} `,
-                mode: 'insensitive'
-              }
-            })),
-            // Word at start of description
-            ...searchWords.map(word => ({
-              description: {
-                startsWith: word,
-                mode: 'insensitive'
-              }
-            })),
-            // Exact key matches
-            { keys: { equals: search, mode: 'insensitive' } },
-            // App name matches
-            { app: { name: { contains: search, mode: 'insensitive' } } }
-          ]
-        },
+      // Get all shortcuts with app info
+      const allShortcuts = await prisma.shortcut.findMany({
         include: {
           app: true
         }
+      });
+      
+      // Filter in JavaScript for more flexible search
+      const searchLower = search.toLowerCase();
+      shortcuts = allShortcuts.filter(shortcut => {
+        const appName = shortcut.app?.name?.toLowerCase() || '';
+        const description = shortcut.description?.toLowerCase() || '';
+        const keys = shortcut.keys?.toLowerCase() || '';
+        
+        return appName.includes(searchLower) || 
+               description.includes(searchLower) || 
+               keys.includes(searchLower);
       });
     } else {
       shortcuts = await prisma.shortcut.findMany({
