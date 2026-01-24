@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useDarkMode } from '../shell/AppShell';
+import { useAuth } from '../contexts/AuthContext';
 import {
   COLOR_PALETTES,
   TYPOGRAPHY,
@@ -20,6 +21,7 @@ import {
   serializeLayout,
   validateLayout
 } from '../utils/layoutStorage';
+import SaveModal from '../components/SaveModal';
 import '../styles/print.css';
 
 export default function CreateLayout() {
@@ -41,7 +43,10 @@ export default function CreateLayout() {
   const [selectedPlatforms, setSelectedPlatforms] = useState([]);
   const [availablePlatforms, setAvailablePlatforms] = useState([]);
   const [isExporting, setIsExporting] = useState(false);
+  const [showSaveModal, setShowSaveModal] = useState(false);
+  const [saveLayoutName, setSaveLayoutName] = useState('');
   const { isDarkMode } = useDarkMode();
+  const { isAuthenticated, token } = useAuth();
   const canvasRef = useRef(null);
 
   // Get current palette
@@ -384,6 +389,90 @@ export default function CreateLayout() {
   };
 
   const handleSaveLayout = () => {
+    // Generate default name if not set
+    if (!saveLayoutName) {
+      const appNames = layoutType === 'single' ? selectedApp : selectedApps.join('-');
+      setSaveLayoutName(`${appNames} Layout`);
+    }
+    setShowSaveModal(true);
+  };
+
+  const handleSaveToAccount = async () => {
+    if (!saveLayoutName) {
+      alert('Please enter a layout name');
+      return;
+    }
+
+    const layoutData = serializeLayout({
+      layoutType,
+      selectedApp,
+      selectedApps,
+      imageSize,
+      textSize,
+      colorPalette,
+      layoutTitle,
+      customSections,
+      selectedShortcuts,
+      selectedPlatforms
+    });
+
+    try {
+      const response = await fetch('http://localhost:3001/api/layouts', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          name: saveLayoutName,
+          data: layoutData
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to save layout');
+      }
+
+      alert('Layout saved to your account!');
+      setShowSaveModal(false);
+      setSaveLayoutName('');
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+
+  const handleSaveToBrowser = () => {
+    if (!saveLayoutName) {
+      alert('Please enter a layout name');
+      return;
+    }
+
+    const layoutData = serializeLayout({
+      layoutType,
+      selectedApp,
+      selectedApps,
+      imageSize,
+      textSize,
+      colorPalette,
+      layoutTitle,
+      customSections,
+      selectedShortcuts,
+      selectedPlatforms
+    });
+
+    saveToLocalStorage(layoutData);
+    alert('Layout saved to browser! (Temporary storage)');
+    setShowSaveModal(false);
+  };
+
+  const handleDownloadJSON = () => {
+    if (!saveLayoutName) {
+      alert('Please enter a layout name');
+      return;
+    }
+
     const layoutData = serializeLayout({
       layoutType,
       selectedApp,
@@ -398,13 +487,20 @@ export default function CreateLayout() {
     });
 
     const appNames = layoutType === 'single' ? selectedApp : selectedApps.join('-');
-    const filename = `layout-${appNames}-${new Date().toISOString().split('T')[0]}.json`;
+    const filename = `${saveLayoutName.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.json`;
 
-    // Save to both file and localStorage
     saveLayoutToFile(layoutData, filename);
-    saveToLocalStorage(layoutData);
+    alert('Layout downloaded as JSON!');
+  };
 
-    alert('Layout saved! File downloaded and saved to browser.');
+  const handleExportPNGFromModal = async () => {
+    setShowSaveModal(false);
+    await handleExportPNG();
+  };
+
+  const handleExportSVGFromModal = async () => {
+    setShowSaveModal(false);
+    await handleExportSVG();
   };
 
   const handleLoadLayout = async (event) => {
@@ -413,6 +509,7 @@ export default function CreateLayout() {
 
     try {
       const layoutData = await loadLayoutFromFile(file);
+
 
       if (!validateLayout(layoutData)) {
         alert('Invalid layout file');
@@ -511,6 +608,39 @@ export default function CreateLayout() {
 
   useEffect(() => {
     fetchApps();
+  }, []);
+
+  // Check for layout to load from UserHome
+  useEffect(() => {
+    const loadLayoutData = localStorage.getItem('loadLayout');
+    if (loadLayoutData) {
+      try {
+        const layout = JSON.parse(loadLayoutData);
+        const layoutData = layout.data;
+
+        if (validateLayout(layoutData)) {
+          // Restore state
+          setLayoutType(layoutData.layoutType);
+          setSelectedApp(layoutData.selectedApp || '');
+          setSelectedApps(layoutData.selectedApps || []);
+          setImageSize(layoutData.imageSize);
+          setTextSize(layoutData.textSize);
+          setColorPalette(layoutData.colorPalette);
+          setLayoutTitle(layoutData.layoutTitle || '');
+          setCustomSections(layoutData.customSections);
+          setSelectedShortcuts(layoutData.selectedShortcuts);
+          setSelectedPlatforms(layoutData.selectedPlatforms || []);
+          setSaveLayoutName(layout.name || '');
+          setShowLayout(true);
+
+          // Clear the localStorage item after loading
+          localStorage.removeItem('loadLayout');
+        }
+      } catch (error) {
+        console.error('Failed to load layout from UserHome:', error);
+        localStorage.removeItem('loadLayout');
+      }
+    }
   }, []);
 
   if (!showLayout) {
@@ -1844,6 +1974,19 @@ export default function CreateLayout() {
           </div>
         </div>
       </div>
+
+      {/* Save Modal */}
+      <SaveModal
+        isOpen={showSaveModal}
+        onClose={() => setShowSaveModal(false)}
+        onSaveToAccount={handleSaveToAccount}
+        onSaveToBrowser={handleSaveToBrowser}
+        onDownloadJSON={handleDownloadJSON}
+        onExportPNG={handleExportPNGFromModal}
+        onExportSVG={handleExportSVGFromModal}
+        layoutName={saveLayoutName}
+        setLayoutName={setSaveLayoutName}
+      />
     </div>
   );
 }

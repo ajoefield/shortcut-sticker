@@ -40,9 +40,7 @@ model Shortcut {
   platform    String @default("mac") // mac, windows, both
 
   appId String
-  app   App    @relation(fields: [appId], references: [id])
-
-  layoutShortcuts LayoutShortcut[]
+  app   App    @relation(fields: [appId], references: [id], onDelete: Cascade)
 
   @@unique([keys, appId, platform], name: "keys_appId_platform")
   @@map("shortcuts")
@@ -51,28 +49,12 @@ model Shortcut {
 model Layout {
   id        String   @id @default(cuid())
   name      String
-  size      String // "3x3", "3.75x3.75", "mousepad"
+  data      String // JSON string containing entire layout configuration
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   userId String
-  user   User   @relation(fields: [userId], references: [id])
-
-  shortcuts LayoutShortcut[]
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("layouts")
-}
-
-model LayoutShortcut {
-  id       String @id @default(cuid())
-  position Int // 0-8 for 3x3, 0-15 for 4x4, etc.
-
-  layoutId String
-  layout   Layout @relation(fields: [layoutId], references: [id])
-
-  shortcutId String
-  shortcut   Shortcut @relation(fields: [shortcutId], references: [id])
-
-  @@unique([layoutId, position])
-  @@map("layout_shortcuts")
 }

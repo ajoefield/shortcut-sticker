@@ -1,7 +1,42 @@
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 import { useDarkMode } from '../shell/AppShell';
 
-export default function SignUp(){
+export default function SignUp() {
   const { isDarkMode } = useDarkMode();
+  const { register, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  // Redirect if already logged in
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/profile');
+    }
+  }, [isAuthenticated, navigate]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    const result = await register(email, password, firstName, lastName);
+
+    if (result.success) {
+      navigate('/profile');
+    } else {
+      setError(result.error);
+    }
+
+    setLoading(false);
+  };
 
   return (
     <div style={{
@@ -34,8 +69,21 @@ export default function SignUp(){
             margin: '0'
           }}>Join HandsOnKeyboard today</p>
         </div>
-        
-        <form style={{ display: 'flex', flexDirection: 'column', gap: '20px', maxWidth: '300px', margin: '0 auto' }}>
+
+        {error && (
+          <div style={{
+            background: '#fee2e2',
+            color: '#991b1b',
+            padding: '12px',
+            borderRadius: '8px',
+            marginBottom: '16px',
+            fontSize: '14px'
+          }}>
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px', maxWidth: '300px', margin: '0 auto' }}>
           <div>
             <label style={{
               display: 'block',
@@ -44,20 +92,25 @@ export default function SignUp(){
               fontWeight: '600',
               color: isDarkMode ? '#ffffff' : '#0f172a'
             }}>First Name</label>
-            <input 
+            <input
               type="text"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              required
               style={{
                 width: '100%',
                 padding: '12px 16px',
-                border: '1px solid #e2e8f0',
+                border: isDarkMode ? '1px solid #374151' : '1px solid #e2e8f0',
                 borderRadius: '12px',
                 fontSize: '16px',
-                outline: 'none'
+                outline: 'none',
+                background: isDarkMode ? '#374151' : '#ffffff',
+                color: isDarkMode ? '#ffffff' : '#0f172a'
               }}
               placeholder="First name"
             />
           </div>
-          
+
           <div>
             <label style={{
               display: 'block',
@@ -66,20 +119,25 @@ export default function SignUp(){
               fontWeight: '600',
               color: isDarkMode ? '#ffffff' : '#0f172a'
             }}>Last Name</label>
-            <input 
+            <input
               type="text"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              required
               style={{
                 width: '100%',
                 padding: '12px 16px',
-                border: '1px solid #e2e8f0',
+                border: isDarkMode ? '1px solid #374151' : '1px solid #e2e8f0',
                 borderRadius: '12px',
                 fontSize: '16px',
-                outline: 'none'
+                outline: 'none',
+                background: isDarkMode ? '#374151' : '#ffffff',
+                color: isDarkMode ? '#ffffff' : '#0f172a'
               }}
               placeholder="Last name"
             />
           </div>
-          
+
           <div>
             <label style={{
               display: 'block',
@@ -88,20 +146,25 @@ export default function SignUp(){
               fontWeight: '600',
               color: isDarkMode ? '#ffffff' : '#0f172a'
             }}>Email</label>
-            <input 
+            <input
               type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
               style={{
                 width: '100%',
                 padding: '12px 16px',
-                border: '1px solid #e2e8f0',
+                border: isDarkMode ? '1px solid #374151' : '1px solid #e2e8f0',
                 borderRadius: '12px',
                 fontSize: '16px',
-                outline: 'none'
+                outline: 'none',
+                background: isDarkMode ? '#374151' : '#ffffff',
+                color: isDarkMode ? '#ffffff' : '#0f172a'
               }}
               placeholder="Enter your email"
             />
           </div>
-          
+
           <div>
             <label style={{
               display: 'block',
@@ -110,42 +173,49 @@ export default function SignUp(){
               fontWeight: '600',
               color: isDarkMode ? '#ffffff' : '#0f172a'
             }}>Password</label>
-            <input 
+            <input
               type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              minLength={6}
               style={{
                 width: '100%',
                 padding: '12px 16px',
-                border: '1px solid #e2e8f0',
+                border: isDarkMode ? '1px solid #374151' : '1px solid #e2e8f0',
                 borderRadius: '12px',
                 fontSize: '16px',
-                outline: 'none'
+                outline: 'none',
+                background: isDarkMode ? '#374151' : '#ffffff',
+                color: isDarkMode ? '#ffffff' : '#0f172a'
               }}
-              placeholder="Create a password"
+              placeholder="Create a password (min 6 characters)"
             />
           </div>
-          
-          <button 
+
+          <button
             type="submit"
+            disabled={loading}
             style={{
               width: '100%',
               padding: '12px 24px',
-              background: '#0f172a',
+              background: loading ? '#9ca3af' : '#0f172a',
               color: '#ffffff',
               border: 'none',
               borderRadius: '12px',
               fontSize: '16px',
               fontWeight: '600',
-              cursor: 'pointer',
+              cursor: loading ? 'not-allowed' : 'pointer',
               transition: 'opacity 0.2s ease',
               marginTop: '8px'
             }}
-            onMouseEnter={(e) => e.target.style.opacity = '0.9'}
+            onMouseEnter={(e) => !loading && (e.target.style.opacity = '0.9')}
             onMouseLeave={(e) => e.target.style.opacity = '1'}
           >
-            Create Account
+            {loading ? 'Creating account...' : 'Create Account'}
           </button>
         </form>
-        
+
         <p style={{
           textAlign: 'center',
           fontSize: '14px',
@@ -155,7 +225,7 @@ export default function SignUp(){
         }}>
           Already have an account?{' '}
           <a href="/signin" style={{
-            color: isDarkMode ? '#ffffff' : '#0f172a',
+            color: isDarkMode ? '#60a5fa' : '#3b82f6',
             fontWeight: '600',
             textDecoration: 'none'
           }}>
