@@ -1,0 +1,61 @@
+application_name,platform,key_combination,title,description,category,confidence_score,extraction_method
+macOS,macOS,Command-X,Cut the selected item and copy it to the Clipboard,Cut the selected item and copy it to the Clipboard,General,100.0,simple_ai_claude
+macOS,macOS,Command-C,Copy the selected item to the Clipboard,Copy the selected item to the Clipboard,General,100.0,simple_ai_claude
+macOS,macOS,Command-V,Paste the contents of the Clipboard into the current document or app,Paste the contents of the Clipboard into the current document or app,General,100.0,simple_ai_claude
+macOS,macOS,Command-Z,Undo the previous command,Undo the previous command,General,100.0,simple_ai_claude
+macOS,macOS,Shift-Command-Z,"Redo, reversing the undo command","Redo, reversing the undo command",General,100.0,simple_ai_claude
+macOS,macOS,Command-A,Select All items,Select All items,General,100.0,simple_ai_claude
+macOS,macOS,Command-F,Find items in a document or open a Find window,Find items in a document or open a Find window,General,100.0,simple_ai_claude
+macOS,macOS,Shift-Command-G,Find the previous occurrence of the item previously found,Find the previous occurrence of the item previously found,General,100.0,simple_ai_claude
+macOS,macOS,Command-H,Hide the windows of the front app,Hide the windows of the front app,General,100.0,simple_ai_claude
+macOS,macOS,Option-Command-H,View the front app but hide all other apps,View the front app but hide all other apps,General,100.0,simple_ai_claude
+macOS,macOS,Command-M,Minimize the front window to the Dock,Minimize the front window to the Dock,General,100.0,simple_ai_claude
+macOS,macOS,Option-Command-M,Minimize all windows of the front app,Minimize all windows of the front app,General,100.0,simple_ai_claude
+macOS,macOS,Command-O,"Open the selected item, or open a dialog to select a file to open","Open the selected item, or open a dialog to select a file to open",General,100.0,simple_ai_claude
+macOS,macOS,Command-P,Print the current document,Print the current document,General,100.0,simple_ai_claude
+macOS,macOS,Command-S,Save the current document,Save the current document,General,100.0,simple_ai_claude
+macOS,macOS,Command-T,Open a new tab,Open a new tab,General,100.0,simple_ai_claude
+macOS,macOS,Option-Command-W,Close all windows of the app,Close all windows of the app,General,100.0,simple_ai_claude
+macOS,macOS,Option-Command-Esc,Force quit an app,Force quit an app,General,100.0,simple_ai_claude
+macOS,macOS,Command-Space bar,Show or hide the Spotlight search field,Show or hide the Spotlight search field,General,100.0,simple_ai_claude
+macOS,macOS,Command-Option-Space bar,Perform a Spotlight search from a Finder window,Perform a Spotlight search from a Finder window,General,100.0,simple_ai_claude
+macOS,macOS,Control-Command-Space bar,"Show the Character Viewer, from which you can choose emoji and other symbols","Show the Character Viewer, from which you can choose emoji and other symbols",General,100.0,simple_ai_claude
+macOS,macOS,Control-Command-F,"Use the app in full screen, if supported by the app","Use the app in full screen, if supported by the app",General,100.0,simple_ai_claude
+macOS,macOS,Space bar,Use Quick Look to preview the selected item,Use Quick Look to preview the selected item,General,100.0,simple_ai_claude
+macOS,macOS,Command-Tab,Switch to the next most recently used app among your open apps,Switch to the next most recently used app among your open apps,General,100.0,simple_ai_claude
+macOS,macOS,Shift-Command-5,Take a screenshot or make a screen recording,Take a screenshot or make a screen recording,General,100.0,simple_ai_claude
+macOS,macOS,Shift-Command-3,Take a screenshot,Take a screenshot,General,100.0,simple_ai_claude
+macOS,macOS,Shift-Command-4,Take a screenshot,Take a screenshot,General,100.0,simple_ai_claude
+macOS,macOS,Shift-Command-N,Create a new folder in the Finder,Create a new folder in the Finder,General,100.0,simple_ai_claude
+macOS,macOS,"Command-Comma (,)",Open preferences for the front app,Open preferences for the front app,General,100.0,simple_ai_claude
+macOS,macOS,Power button,Turn on your Mac or wake it from sleep,Turn on your Mac or wake it from sleep,General,100.0,simple_ai_claude
+macOS,macOS,Option-Command-Power button,Put your Mac to sleep,Put your Mac to sleep,General,100.0,simple_ai_claude
+macOS,macOS,Option-Command-Media Eject,Put your Mac to sleep,Put your Mac to sleep,General,100.0,simple_ai_claude
+macOS,macOS,Control-Shift-Power button,Put your displays to sleep,Put your displays to sleep,General,100.0,simple_ai_claude
+macOS,macOS,Control-Shift-Media Eject,Put your displays to sleep,Put your displays to sleep,General,100.0,simple_ai_claude
+macOS,macOS,Control-Power button,"Display a dialog asking whether you want to restart, sleep, or shut down","Display a dialog asking whether you want to restart, sleep, or shut down",General,100.0,simple_ai_claude
+macOS,macOS,Control-Media Eject,"Display a dialog asking whether you want to restart, sleep, or shut down","Display a dialog asking whether you want to restart, sleep, or shut down",General,100.0,simple_ai_claude
+macOS,macOS,Control-Command-Power button,"Force your Mac to restart, without prompting to save any open and unsaved documents","Force your Mac to restart, without prompting to save any open and unsaved documents",General,100.0,simple_ai_claude
+macOS,macOS,Control-Command-Media Eject,"Quit all apps, then restart your Mac","Quit all apps, then restart your Mac",General,100.0,simple_ai_claude
+macOS,macOS,Control-Option-Command-Power button,"Quit all apps, then shut down your Mac","Quit all apps, then shut down your Mac",General,100.0,simple_ai_claude
+macOS,macOS,Control-Option-Command-Media Eject,"Quit all apps, then shut down your Mac","Quit all apps, then shut down your Mac",General,100.0,simple_ai_claude
+macOS,macOS,Control-Command-Q,Immediately lock your screen,Immediately lock your screen,General,100.0,simple_ai_claude
+macOS,macOS,Shift-Command-Q,Log out of your macOS user account,Log out of your macOS user account,General,100.0,simple_ai_claude
+macOS,macOS,Option-Shift-Command-Q,Log out of your macOS user account immediately without confirming,Log out of your macOS user account immediately without confirming,General,100.0,simple_ai_claude
+macOS,macOS,Command-D,Duplicate the selected files,Duplicate the selected files,General,100.0,simple_ai_claude
+macOS,macOS,Command-E,Eject the selected disk or volume,Eject the selected disk or volume,General,100.0,simple_ai_claude
+macOS,macOS,Command-F,Start a Spotlight search in the Finder window,Start a Spotlight search in the Finder window,General,100.0,simple_ai_claude
+macOS,macOS,Command-I,Show the Get Info window for a selected file,Show the Get Info window for a selected file,General,100.0,simple_ai_claude
+macOS,macOS,Command-R,"(1) Show the original file for the selected alias, (2) Refresh or reload the page in some apps, (3) Check for software updates again in Software Update preferences","(1) Show the original file for the selected alias, (2) Refresh or reload the page in some apps, (3) Check for software updates again in Software Update preferences",General,100.0,simple_ai_claude
+macOS,macOS,Shift-Command-C,Open the Computer window,Open the Computer window,General,100.0,simple_ai_claude
+macOS,macOS,Shift-Command-D,Open the desktop folder,Open the desktop folder,General,100.0,simple_ai_claude
+macOS,macOS,Shift-Command-F,"Open the Recents window, showing all of the files you viewed or changed recently","Open the Recents window, showing all of the files you viewed or changed recently",General,100.0,simple_ai_claude
+macOS,macOS,Shift-Command-G,Open a Go to Folder window,Open a Go to Folder window,General,100.0,simple_ai_claude
+macOS,macOS,Shift-Command-H,Open the Home folder of the current macOS user account,Open the Home folder of the current macOS user account,General,100.0,simple_ai_claude
+macOS,macOS,Shift-Command-I,Open iCloud Drive,Open iCloud Drive,General,100.0,simple_ai_claude
+macOS,macOS,Shift-Command-K,Open the Network window,Open the Network window,General,100.0,simple_ai_claude
+macOS,macOS,Option-Command-L,Open the Downloads folder,Open the Downloads folder,General,100.0,simple_ai_claude
+macOS,macOS,Shift-Command-N,Create a new folder,Create a new folder,General,100.0,simple_ai_claude
+macOS,macOS,Shift-Command-O,Open the Documents folder,Open the Documents folder,General,100.0,simple_ai_claude
+macOS,macOS,Shift-Command-P,Show or hide the Preview pane in Finder windows,Show or hide the Preview pane in Finder windows,General,100.0,simple_ai_claude
+macOS,macOS,Shift-Command-R,[No description provided],[No description provided],General,100.0,simple_ai_claude

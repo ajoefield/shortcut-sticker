@@ -1,0 +1,94 @@
+application_name,platform,key_combination,title,description,category,confidence_score,extraction_method
+IntelliJ IDEA,macOS,⌘+Space,Smart code completion,Smart code completion,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,"Double""",Search everywhere,Search everywhere,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌘+↩,Show intention actions and quick-fixes,Show intention actions and quick-fixes,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,"⌘+N, ⌥+↩",Generate code,Generate code,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌘+P,Parameter info,Parameter info,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌘+&,Extend selection,Extend selection,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌘+',Shrink selection,Shrink selection,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌘+E,Recent files popup,Recent files popup,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌥+F6,Rename,Rename,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌘+0...⌘+9,Open corresponding tool window,Open corresponding tool window,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌘+S,Save all,Save all,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌘+#Y,Synchronize,Synchronize,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌘+⌥+F12,Toggle maximizing editor,Toggle maximizing editor,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌘+⌥+I,Inspect current file with current profile,Inspect current file with current profile,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌥+`,Quick switch current scheme,Quick switch current scheme,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,"⌘+,",Open Settings dialog,Open Settings dialog,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌘+;,Open Project Structure dialog,Open Project Structure dialog,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌘+⌥+A,Find Action,Find Action,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,F8,Step over,Step over,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,F7,Step into,Step into,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌥+F7,Smart step into,Smart step into,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌥+F8,Step out,Step out,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌘+F9,Run to cursor,Run to cursor,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌘+F8,Evaluate expression,Evaluate expression,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌘+#R,Resume program,Resume program,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌘+F8,Toggle breakpoint,Toggle breakpoint,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌘+⌥+F8,View breakpoints,View breakpoints,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,"Double""",Search everywhere,Search everywhere,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌘+F,Find,Find,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌘+G,Find next,Find next,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌘+⌥+G,Find previous,Find previous,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌘+R,Replace,Replace,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌘+⌥+F,Find in path,Find in path,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌘+⌥+R,Replace in path,Replace in path,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌥+G,Select next occurrence,Select next occurrence,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌥+⌘+G,Select all occurrences,Select all occurrences,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌥+G,Unselect occurrence,Unselect occurrence,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌥+Space,Basic code completion,Basic code completion,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌘+⌥+↩,Complete statement,Complete statement,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌘+P,Parameter info,Parameter info,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,"⌘+J, F1",Quick documentation lookup,Quick documentation lookup,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌥+F1,External Doc,External Doc,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌘+Q,Brief Info,Brief Info,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌘+F1,Show descriptions of error at caret,Show descriptions of error at caret,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,"⌘+N, ⌥+↩",Generate code...,Generate code...,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌥+O,Override methods,Override methods,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌥+I,Implement methods,Implement methods,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌘+⌥+T,Surround with...,Surround with...,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌘+/,Comment/uncomment with line comment,Comment/uncomment with line comment,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌘+⌥+/,Comment/uncomment with block comment,Comment/uncomment with block comment,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌘+&,Extend selection,Extend selection,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌘+',Shrink selection,Shrink selection,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌥+Q,Context info,Context info,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌘+↩,Show intention actions and quick-fixes,Show intention actions and quick-fixes,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌘+⌥+L,Reformat code,Reformat code,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌥+⌘+O,Optimize imports,Optimize imports,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌥+⌘+I,Auto-indent line(s),Auto-indent line(s),General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,),Indent selected lines,Indent selected lines,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,"""",Unindent selected lines,Unindent selected lines,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌘+X,Cut current line to clipboard,Cut current line to clipboard,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌘+C,Copy current line to clipboard,Copy current line to clipboard,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌘+V,Paste from clipboard,Paste from clipboard,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌘+⌥+V,Paste from recent buffers...,Paste from recent buffers...,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌘+D,Duplicate current line,Duplicate current line,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌘+Y,Delete line at caret,Delete line at caret,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌥+J,Smart line join,Smart line join,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌘+↩,Smart line split,Smart line split,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,↩,Start new line,Start new line,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌘+⌥+U,Toggle case for word at caret or selected block,Toggle case for word at caret or selected block,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌘+⌥+[,Select till code block end,Select till code block end,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌘+⌥+],Select till code block start,Select till code block start,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌘+Delete,Delete to word end,Delete to word end,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌘+Backspace,Delete to word start,Delete to word start,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌘++,Expand code block,Expand code block,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌘+-,Collapse code block,Collapse code block,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,"⌘+""+",Expand all,Expand all,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,"⌘+""-",Collapse all,Collapse all,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌘+W,Close active editor tab,Close active editor tab,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,F5,Copy,Copy,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,F6,Move,Move,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌘+Delete,Safe Delete,Safe Delete,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌥+F6,Rename,Rename,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌥+T,Refactor this,Refactor this,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌘+F6,Change Signature,Change Signature,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌘+⌥+N,Inline,Inline,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌘+⌥+M,Extract Method,Extract Method,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌘+⌥+V,Extract Variable,Extract Variable,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌘+⌥+F,Extract Field,Extract Field,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌘+⌥+C,Extract Constant,Extract Constant,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌘+⌥+P,Extract Parameter,Extract Parameter,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌘+O,Go to class,Go to class,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌘+⌥+O,Go to file,Go to file,General,100.0,simple_ai_claude
+IntelliJ IDEA,macOS,⌘+⌥+O,Go to symbol,Go to symbol,General,100.0,simple_ai_claude

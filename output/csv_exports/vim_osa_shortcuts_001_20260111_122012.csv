@@ -1,0 +1,97 @@
+application_name,platform,key_combination,title,description,category,confidence_score,extraction_method,run_version,timestamp
+Vim,OSA,:h[elp] keyword,Open help for keyword,Open help for keyword,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,:sav[eas] file,Save file as,Save file as,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,:clo[se],Close current pane,Close current pane,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,:ter[minal],Open a terminal window,Open a terminal window,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,K,Open man page for word under the cursor,Open man page for word under the cursor,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,h,Move cursor left,Move cursor left,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,j,Move cursor down,Move cursor down,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,k,Move cursor up,Move cursor up,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,l,Move cursor right,Move cursor right,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,gj,Move cursor down (multi-line text),Move cursor down (multi-line text),General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,gk,Move cursor up (multi-line text),Move cursor up (multi-line text),General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,H,Move to top of screen,Move to top of screen,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,M,Move to middle of screen,Move to middle of screen,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,L,Move to bottom of screen,Move to bottom of screen,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,w,Jump forwards to the start of a word,Jump forwards to the start of a word,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,W,Jump forwards to the start of a word (words can contain punctuation),Jump forwards to the start of a word (words can contain punctuation),General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,e,Jump forwards to the end of a word,Jump forwards to the end of a word,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,E,Jump forwards to the end of a word (words can contain punctuation),Jump forwards to the end of a word (words can contain punctuation),General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,b,Jump backwards to the start of a word,Jump backwards to the start of a word,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,B,Jump backwards to the start of a word (words can contain punctuation),Jump backwards to the start of a word (words can contain punctuation),General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,ge,Jump backwards to the end of a word,Jump backwards to the end of a word,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,gE,Jump backwards to the end of a word (words can contain punctuation),Jump backwards to the end of a word (words can contain punctuation),General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,%,"Move to matching character (default supported pairs: '()', '{}', '[]' - use :h matchpairs in vim for more info)","Move to matching character (default supported pairs: '()', '{}', '[]' - use :h matchpairs in vim for more info)",General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,r,Replace a single character,Replace a single character,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,R,"Replace more than one character, until ESC is pressed","Replace more than one character, until ESC is pressed",General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,J,Join line below to the current one with one space in between,Join line below to the current one with one space in between,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,gJ,Join line below to the current one without space in between,Join line below to the current one without space in between,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,gwip,Reflow paragraph,Reflow paragraph,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,g~,Switch case up to motion,Switch case up to motion,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,gu,Change to lowercase up to motion,Change to lowercase up to motion,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,gU,Change to uppercase up to motion,Change to uppercase up to motion,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,cc,Change (replace) entire line,Change (replace) entire line,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,c$ or C,Change (replace) to the end of the line,Change (replace) to the end of the line,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,ciw,Change (replace) entire word,Change (replace) entire word,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,cw or ce,Change (replace) to the end of the word,Change (replace) to the end of the word,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,s,Delete character and substitute text,Delete character and substitute text,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,S,Delete line and substitute text (same as cc),Delete line and substitute text (same as cc),General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,xp,Transpose two letters (delete and paste),Transpose two letters (delete and paste),General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,u,Undo,Undo,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,U,Restore (undo) last changed line,Restore (undo) last changed line,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,Ctrl + r,Redo,Redo,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,.,Repeat last command,Repeat last command,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,v,"Start visual mode, mark lines, then do a command (like y-yank)","Start visual mode, mark lines, then do a command (like y-yank)",General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,V,Start linewise visual mode,Start linewise visual mode,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,o,Move to other end of marked area,Move to other end of marked area,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,Ctrl + v,Start visual block mode,Start visual block mode,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,qa,Record macro a,Record macro a,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,q,Stop recording macro,Stop recording macro,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,@a,Run macro a,Run macro a,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,@@,Rerun last run macro,Rerun last run macro,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,yy,Yank (copy) a line,Yank (copy) a line,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,2yy,Yank (copy) 2 lines,Yank (copy) 2 lines,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,yw,Yank (copy) the characters of the word from the cursor position to the start of the next word,Yank (copy) the characters of the word from the cursor position to the start of the next word,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,yiw,Yank (copy) word under the cursor,Yank (copy) word under the cursor,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,yaw,Yank (copy) word under the cursor and the space after or before it,Yank (copy) word under the cursor and the space after or before it,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,y$ or Y,Yank (copy) to end of line,Yank (copy) to end of line,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,p,Put (paste) the clipboard after cursor,Put (paste) the clipboard after cursor,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,P,Put (paste) before cursor,Put (paste) before cursor,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,gp,Put (paste) the clipboard after cursor and leave cursor after the new text,Put (paste) the clipboard after cursor and leave cursor after the new text,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,gP,Put (paste) before cursor and leave cursor after the new text,Put (paste) before cursor and leave cursor after the new text,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,dd,Delete (cut) a line,Delete (cut) a line,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,2dd,Delete (cut) 2 lines,Delete (cut) 2 lines,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,dw,Delete (cut) the characters of the word from the cursor position to the start of the next word,Delete (cut) the characters of the word from the cursor position to the start of the next word,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,diw,Delete (cut) word under the cursor,Delete (cut) word under the cursor,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,daw,Delete (cut) word under the cursor and the space after or before it,Delete (cut) word under the cursor and the space after or before it,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,d$ or D,Delete (cut) to the end of the line,Delete (cut) to the end of the line,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,x,Delete (cut) character,Delete (cut) character,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,>>,Indent (move right) line one shiftwidth,Indent (move right) line one shiftwidth,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,<<,De-indent (move left) line one shiftwidth,De-indent (move left) line one shiftwidth,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,:e[dit] file,Edit a file in a new buffer,Edit a file in a new buffer,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,:bn[ext],Go to the next buffer,Go to the next buffer,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,:bp[revious],Go to the previous buffer,Go to the previous buffer,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,:bd[elete],Delete a buffer (close a file),Delete a buffer (close a file),General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,:b[uffer]#,Go to a buffer by index #,Go to a buffer by index #,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,:b[uffer] file,Go to a buffer by file,Go to a buffer by file,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,:ls or :buffers,List all open buffers,List all open buffers,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,:sp[lit] file,Open a file in a new buffer and split window,Open a file in a new buffer and split window,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,:vs[plit] file,Open a file in a new buffer and vertically split window,Open a file in a new buffer and vertically split window,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,:vert[ical] ba[ll],Edit all buffers as vertical windows,Edit all buffers as vertical windows,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,:tab ba[ll],Edit all buffers as tabs,Edit all buffers as tabs,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,Ctrl + ws,Split window,Split window,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,Ctrl + wv,Split window vertically,Split window vertically,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,Ctrl + ww,Switch windows,Switch windows,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,Ctrl + wq,Quit a window,Quit a window,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,Ctrl + wx,Exchange current window with next one,Exchange current window with next one,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,Ctrl + w=,Make all windows equal height & width,Make all windows equal height & width,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,Ctrl + wh,Move cursor to the left window (vertical split),Move cursor to the left window (vertical split),General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,Ctrl + wl,Move cursor to the right window (vertical split),Move cursor to the right window (vertical split),General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,Ctrl + wj,Move cursor to the window below (horizontal split),Move cursor to the window below (horizontal split),General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,Ctrl + wk,Move cursor to the window above (horizontal split),Move cursor to the window above (horizontal split),General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,Ctrl + wH,Make current window full height at far left (leftmost vertical window),Make current window full height at far left (leftmost vertical window),General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,Ctrl + wL,Make current window full height at far right (rightmost vertical window),Make current window full height at far right (rightmost vertical window),General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,Ctrl + wJ,Make current window full width at the very bottom (bottommost horizontal window),Make current window full width at the very bottom (bottommost horizontal window),General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,Ctrl + wK,Make current window full width at the very top (topmost horizontal window),Make current window full width at the very top (topmost horizontal window),General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,zf,Manually define a fold up to motion,Manually define a fold up to motion,General,95.0,simple_ai_claude,001,20260111_122012
+Vim,OSA,zd,Delete fold under the cursor,Delete fold under the cursor,General,85.0,simple_ai_claude,001,20260111_122012

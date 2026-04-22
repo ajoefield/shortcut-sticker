@@ -1,0 +1,145 @@
+{
+  "timestamp": "20260111_122329",
+  "summary": {
+    "total_applications": 10,
+    "successful_apps": 8,
+    "problematic_apps": 2,
+    "total_shortcuts": 1815,
+    "statistics": {
+      "total_apps": 10,
+      "successful_apps": 8,
+      "count_mismatch_apps": 2,
+      "missing_platform_apps": 0,
+      "malformed_data_apps": 0,
+      "total_shortcuts": 1815,
+      "total_malformed": 208,
+      "avg_confidence": 95.07618501987976
+    }
+  },
+  "applications": [
+    {
+      "name": "kiro",
+      "platforms": {
+        "windows": 146,
+        "macos": 102,
+        "unknown": 34
+      },
+      "total_shortcuts": 282,
+      "status": "count_mismatch",
+      "issues": [
+        "Platform count imbalance: Windows=180, macOS=102 (ratio: 43.3%)",
+        "Found 30 malformed shortcuts"
+      ],
+      "confidence_score": 79.33838531040513,
+      "malformed_count": 30
+    },
+    {
+      "name": "rstudio",
+      "platforms": {
+        "macos": 145,
+        "unknown": 211,
+        "windows": 354
+      },
+      "total_shortcuts": 710,
+      "status": "count_mismatch",
+      "issues": [
+        "Platform count imbalance: Windows=565, macOS=145 (ratio: 74.3%)",
+        "Found 178 malformed shortcuts"
+      ],
+      "confidence_score": 75.65687912787459,
+      "malformed_count": 178
+    },
+    {
+      "name": "sublime_text",
+      "platforms": {
+        "macos": 46
+      },
+      "total_shortcuts": 46,
+      "status": "success",
+      "issues": [],
+      "confidence_score": 100.0,
+      "malformed_count": 0
+    },
+    {
+      "name": "jupyterlab",
+      "platforms": {
+        "macos": 49,
+        "windows": 49
+      },
+      "total_shortcuts": 98,
+      "status": "success",
+      "issues": [],
+      "confidence_score": 100.0,
+      "malformed_count": 0
+    },
+    {
+      "name": "docker",
+      "platforms": {
+        "macos": 48,
+        "windows": 48
+      },
+      "total_shortcuts": 96,
+      "status": "success",
+      "issues": [],
+      "confidence_score": 100.0,
+      "malformed_count": 0
+    },
+    {
+      "name": "vs_code",
+      "platforms": {
+        "windows": 96,
+        "macos": 85
+      },
+      "total_shortcuts": 181,
+      "status": "success",
+      "issues": [],
+      "confidence_score": 97.70833333333333,
+      "malformed_count": 0
+    },
+    {
+      "name": "macos",
+      "platforms": {
+        "macos": 60
+      },
+      "total_shortcuts": 60,
+      "status": "success",
+      "issues": [],
+      "confidence_score": 100.0,
+      "malformed_count": 0
+    },
+    {
+      "name": "photoshop",
+      "platforms": {
+        "windows": 50
+      },
+      "total_shortcuts": 50,
+      "status": "success",
+      "issues": [],
+      "confidence_score": 100.0,
+      "malformed_count": 0
+    },
+    {
+      "name": "intellij_idea",
+      "platforms": {
+        "macos": 93,
+        "windows": 103
+      },
+      "total_shortcuts": 196,
+      "status": "success",
+      "issues": [],
+      "confidence_score": 98.05825242718447,
+      "malformed_count": 0
+    },
+    {
+      "name": "vim",
+      "platforms": {
+        "osa": 96
+      },
+      "total_shortcuts": 96,
+      "status": "success",
+      "issues": [],
+      "confidence_score": 100.0,
+      "malformed_count": 0
+    }
+  ]
+}

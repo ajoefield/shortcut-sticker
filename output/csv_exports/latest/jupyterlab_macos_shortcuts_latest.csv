@@ -1,0 +1,50 @@
+application_name,platform,key_combination,title,description,category,confidence_score,extraction_method
+JupyterLab,macOS,⇧ + Enter,"Run selected cell or cells - if no cells below, insert a code cell below","Run selected cell or cells - if no cells below, insert a code cell below",General,95.0,simple_ai_claude
+JupyterLab,macOS,Enter,Enter edit mode in the active cell,Enter edit mode in the active cell,General,95.0,simple_ai_claude
+JupyterLab,macOS,Up Arrow,Scroll up,Scroll up,General,95.0,simple_ai_claude
+JupyterLab,macOS,Down Arrow,Scroll down,Scroll down,General,95.0,simple_ai_claude
+JupyterLab,macOS,A,Insert a new cell above the active cell,Insert a new cell above the active cell,General,95.0,simple_ai_claude
+JupyterLab,macOS,B,Insert a new cell below the active cell,Insert a new cell below the active cell,General,95.0,simple_ai_claude
+JupyterLab,macOS,M,Make the active cell a Markdown cell,Make the active cell a Markdown cell,General,95.0,simple_ai_claude
+JupyterLab,macOS,Y,Make the active cell a code cell,Make the active cell a code cell,General,95.0,simple_ai_claude
+JupyterLab,macOS,⇧ + Up Arrow,Select the current cell and the cell above,Select the current cell and the cell above,General,95.0,simple_ai_claude
+JupyterLab,macOS,⇧ + Down Arrow,Select the current cell and the cell below,Select the current cell and the cell below,General,95.0,simple_ai_claude
+JupyterLab,macOS,X,Cut the selected cell or cells,Cut the selected cell or cells,General,95.0,simple_ai_claude
+JupyterLab,macOS,C,Copy the selected cell or cells,Copy the selected cell or cells,General,95.0,simple_ai_claude
+JupyterLab,macOS,V,Paste the cell(s) which were copied or cut most recently,Paste the cell(s) which were copied or cut most recently,General,95.0,simple_ai_claude
+JupyterLab,macOS,⇧ + M,Merge multiple selected cells into one cell,Merge multiple selected cells into one cell,General,95.0,simple_ai_claude
+JupyterLab,macOS,D D,Delete the active cell,Delete the active cell,General,95.0,simple_ai_claude
+JupyterLab,macOS,0 0,Restart the kernel,Restart the kernel,General,95.0,simple_ai_claude
+JupyterLab,macOS,Z,Undo most recent command mode action,Undo most recent command mode action,General,95.0,simple_ai_claude
+JupyterLab,macOS,Esc,Enter command mode,Enter command mode,General,95.0,simple_ai_claude
+JupyterLab,macOS,Tab,Code completion (or indent if at start of line),Code completion (or indent if at start of line),General,95.0,simple_ai_claude
+JupyterLab,macOS,⇧ + Tab,Tooltip help,Tooltip help,General,95.0,simple_ai_claude
+JupyterLab,macOS,⇧ + Enter,"Run selected cell or cells - if no cells below, insert a code cell below","Run selected cell or cells - if no cells below, insert a code cell below",General,95.0,simple_ai_claude
+JupyterLab,macOS,Cmd + B,Toggle hide/show left sidebar,Toggle hide/show left sidebar,General,95.0,simple_ai_claude
+JupyterLab,macOS,Cmd + S,Save and checkpoint,Save and checkpoint,General,95.0,simple_ai_claude
+JupyterLab,macOS,Cmd + Shift + S,Save as,Save as,General,95.0,simple_ai_claude
+JupyterLab,macOS,Cmd + F,Find,Find,General,95.0,simple_ai_claude
+JupyterLab,macOS,Enter,Enter edit mode in the active cell,Enter edit mode in the active cell,General,95.0,simple_ai_claude
+JupyterLab,macOS,Up Arrow,Scroll up,Scroll up,General,95.0,simple_ai_claude
+JupyterLab,macOS,Down Arrow,Scroll down,Scroll down,General,95.0,simple_ai_claude
+JupyterLab,macOS,A,Insert a new cell above the active cell,Insert a new cell above the active cell,General,95.0,simple_ai_claude
+JupyterLab,macOS,B,Insert a new cell below the active cell,Insert a new cell below the active cell,General,95.0,simple_ai_claude
+JupyterLab,macOS,M,Make the active cell a Markdown cell,Make the active cell a Markdown cell,General,95.0,simple_ai_claude
+JupyterLab,macOS,Y,Make the active cell a code cell,Make the active cell a code cell,General,95.0,simple_ai_claude
+JupyterLab,macOS,⇧ + Up Arrow,Select the current cell and the cell above,Select the current cell and the cell above,General,95.0,simple_ai_claude
+JupyterLab,macOS,⇧ + Down Arrow,Select the current cell and the cell below,Select the current cell and the cell below,General,95.0,simple_ai_claude
+JupyterLab,macOS,Cmd + A,Select all cells,Select all cells,General,95.0,simple_ai_claude
+JupyterLab,macOS,X,Cut the selected cell or cells,Cut the selected cell or cells,General,95.0,simple_ai_claude
+JupyterLab,macOS,C,Copy the selected cell or cells,Copy the selected cell or cells,General,95.0,simple_ai_claude
+JupyterLab,macOS,V,Paste the cell(s) which were copied or cut most recently,Paste the cell(s) which were copied or cut most recently,General,95.0,simple_ai_claude
+JupyterLab,macOS,⇧ + M,Merge multiple selected cells into one cell,Merge multiple selected cells into one cell,General,95.0,simple_ai_claude
+JupyterLab,macOS,DD,Delete the active cell,Delete the active cell,General,95.0,simple_ai_claude
+JupyterLab,macOS,00,Restart the kernel,Restart the kernel,General,95.0,simple_ai_claude
+JupyterLab,macOS,Z,Undo most recent command mode action,Undo most recent command mode action,General,95.0,simple_ai_claude
+JupyterLab,macOS,Esc,Enter command mode,Enter command mode,General,95.0,simple_ai_claude
+JupyterLab,macOS,Tab,Code completion (or indent if at start of line),Code completion (or indent if at start of line),General,95.0,simple_ai_claude
+JupyterLab,macOS,⇧ + Tab,Tooltip help,Tooltip help,General,95.0,simple_ai_claude
+JupyterLab,macOS,Cmd + Shift + -,Split the active cell at the cursor,Split the active cell at the cursor,General,95.0,simple_ai_claude
+JupyterLab,macOS,Cmd + ],Indent,Indent,General,95.0,simple_ai_claude
+JupyterLab,macOS,Cmd + [,Dedent,Dedent,General,95.0,simple_ai_claude
+JupyterLab,macOS,Cmd + /,Toggle comment,Toggle comment,General,95.0,simple_ai_claude

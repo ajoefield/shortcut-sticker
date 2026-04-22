@@ -1,0 +1,47 @@
+application_name,platform,key_combination,title,description,category,confidence_score,extraction_method
+Sublime Text,macOS,⌘ + X,Cut line,Cut line,General,100.0,simple_ai_claude
+Sublime Text,macOS,⌘ + ↩,Insert line after,Insert line after,General,100.0,simple_ai_claude
+Sublime Text,macOS,⌘ + ⇧ + ↩,Insert line before,Insert line before,General,100.0,simple_ai_claude
+Sublime Text,macOS,⌘ + ⌃ + ↑,Move line/selection up,Move line/selection up,General,100.0,simple_ai_claude
+Sublime Text,macOS,⌘ + ⌃ + ↓,Move line/selection down,Move line/selection down,General,100.0,simple_ai_claude
+Sublime Text,macOS,⌘ + L,Select line - Repeat to select next lines,Select line - Repeat to select next lines,General,100.0,simple_ai_claude
+Sublime Text,macOS,⌘ + D,Select word - Repeat select others occurrences,Select word - Repeat select others occurrences,General,100.0,simple_ai_claude
+Sublime Text,macOS,⌃ + M,Jump to closing parentheses Repeat to jump to opening parentheses,Jump to closing parentheses Repeat to jump to opening parentheses,General,100.0,simple_ai_claude
+Sublime Text,macOS,⌃ + ⇧ + M,Select all contents of the current parentheses,Select all contents of the current parentheses,General,100.0,simple_ai_claude
+Sublime Text,macOS,"⌘ + K, ⌘ + K",Delete from cursor to end of line,Delete from cursor to end of line,General,100.0,simple_ai_claude
+Sublime Text,macOS,⌘ + K + ⌫,Delete from cursor to start of line,Delete from cursor to start of line,General,100.0,simple_ai_claude
+Sublime Text,macOS,⌘ + ],Indent current line(s),Indent current line(s),General,100.0,simple_ai_claude
+Sublime Text,macOS,⌘ + [,Un-indent current line(s),Un-indent current line(s),General,100.0,simple_ai_claude
+Sublime Text,macOS,⌘ + ⇧ + D,Duplicate line(s),Duplicate line(s),General,100.0,simple_ai_claude
+Sublime Text,macOS,⌘ + J,Join line below to the end of the current line,Join line below to the end of the current line,General,100.0,simple_ai_claude
+Sublime Text,macOS,⌘ + /,Comment/un-comment current line,Comment/un-comment current line,General,100.0,simple_ai_claude
+Sublime Text,macOS,⌘ + ⌥ + /,Block comment current selection,Block comment current selection,General,100.0,simple_ai_claude
+Sublime Text,macOS,⌘ + Y,"Redo, or repeat last keyboard shortcut command","Redo, or repeat last keyboard shortcut command",General,100.0,simple_ai_claude
+Sublime Text,macOS,⌘ + ⇧ + V,Paste and indent correctly,Paste and indent correctly,General,100.0,simple_ai_claude
+Sublime Text,macOS,⌃ + Space,Select next auto-complete suggestion,Select next auto-complete suggestion,General,100.0,simple_ai_claude
+Sublime Text,macOS,⌃ + U,Soft undo; jumps to your last change before undoing change when repeated,Soft undo; jumps to your last change before undoing change when repeated,General,100.0,simple_ai_claude
+Sublime Text,macOS,⌃ + ⇧ + Up,Column selection up,Column selection up,General,100.0,simple_ai_claude
+Sublime Text,macOS,⌃ + ⇧ + Down,Column selection down,Column selection down,General,100.0,simple_ai_claude
+Sublime Text,macOS,⌘ + P,Quick-open files by name,Quick-open files by name,General,100.0,simple_ai_claude
+Sublime Text,macOS,⌘ + R,Goto symbol,Goto symbol,General,100.0,simple_ai_claude
+Sublime Text,macOS,⌃ + G,Goto line in current file,Goto line in current file,General,100.0,simple_ai_claude
+Sublime Text,macOS,⌘ + ⇧ + P,Command prompt,Command prompt,General,100.0,simple_ai_claude
+Sublime Text,macOS,"⌘ + K, ⌘ + B",Toggle side bar,Toggle side bar,General,100.0,simple_ai_claude
+Sublime Text,macOS,⌃ + ⇧ + P,Show scope in status bar,Show scope in status bar,General,100.0,simple_ai_claude
+Sublime Text,macOS,⌘ + F,Find,Find,General,100.0,simple_ai_claude
+Sublime Text,macOS,⌘ + ⌥ + F,Replace,Replace,General,100.0,simple_ai_claude
+Sublime Text,macOS,⌘ + ⇧ + F,Find in files,Find in files,General,100.0,simple_ai_claude
+Sublime Text,macOS,⌘ + ⇧ + T,Open last closed tab,Open last closed tab,General,100.0,simple_ai_claude
+Sublime Text,macOS,^ + Tab,Cycle up through tabs,Cycle up through tabs,General,100.0,simple_ai_claude
+Sublime Text,macOS,⇧ + ^ + Tab,Cycle down through tabs,Cycle down through tabs,General,100.0,simple_ai_claude
+Sublime Text,macOS,⌘ + ⌥ + 2,Split view into two columns,Split view into two columns,General,100.0,simple_ai_claude
+Sublime Text,macOS,⌘ + ⌥ + 1,Revert view to single column,Revert view to single column,General,100.0,simple_ai_claude
+Sublime Text,macOS,⌘ + ⌥ + 5,Set view to grid (4 groups),Set view to grid (4 groups),General,100.0,simple_ai_claude
+Sublime Text,macOS,⌃ + [NUM],Jump to group where num is 1-4,Jump to group where num is 1-4,General,100.0,simple_ai_claude
+Sublime Text,macOS,⌃ + ⇧ + [NUM],Move file to specified group where num is 1-4,Move file to specified group where num is 1-4,General,100.0,simple_ai_claude
+Sublime Text,macOS,⌘ + F2,Toggle bookmark,Toggle bookmark,General,100.0,simple_ai_claude
+Sublime Text,macOS,F2,Next bookmark,Next bookmark,General,100.0,simple_ai_claude
+Sublime Text,macOS,⇧ + F2,Previous bookmark,Previous bookmark,General,100.0,simple_ai_claude
+Sublime Text,macOS,⇧ + ⌘ + F2,Clear bookmarks,Clear bookmarks,General,100.0,simple_ai_claude
+Sublime Text,macOS,"⌘ + K, ⌘ + U",Transform to Uppercase,Transform to Uppercase,General,100.0,simple_ai_claude
+Sublime Text,macOS,"⌘ + K, ⌘ + L",Transform to Lowercase,Transform to Lowercase,General,100.0,simple_ai_claude

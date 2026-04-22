@@ -1,0 +1,50 @@
+application_name,platform,key_combination,title,description,category,confidence_score,extraction_method,run_version,timestamp
+JupyterLab,Windows,Shift+Enter,"Run selected cell or cells - if no cells below, insert a code cell below","Run selected cell or cells - if no cells below, insert a code cell below",General,95.0,simple_ai_claude,001,20260111_122012
+JupyterLab,Windows,Ctrl + B,Toggle hide/show left sidebar,Toggle hide/show left sidebar,General,95.0,simple_ai_claude,001,20260111_122012
+JupyterLab,Windows,Ctrl + S,Save and checkpoint,Save and checkpoint,General,95.0,simple_ai_claude,001,20260111_122012
+JupyterLab,Windows,Ctrl + Shift + S,Save as,Save as,General,95.0,simple_ai_claude,001,20260111_122012
+JupyterLab,Windows,Ctrl + F,Find,Find,General,95.0,simple_ai_claude,001,20260111_122012
+JupyterLab,Windows,Enter,Enter edit mode in the active cell,Enter edit mode in the active cell,General,95.0,simple_ai_claude,001,20260111_122012
+JupyterLab,Windows,Up Arrow,Scroll up,Scroll up,General,95.0,simple_ai_claude,001,20260111_122012
+JupyterLab,Windows,Down Arrow,Scroll down,Scroll down,General,95.0,simple_ai_claude,001,20260111_122012
+JupyterLab,Windows,A,Insert a new cell above the active cell,Insert a new cell above the active cell,General,95.0,simple_ai_claude,001,20260111_122012
+JupyterLab,Windows,B,Insert a new cell below the active cell,Insert a new cell below the active cell,General,95.0,simple_ai_claude,001,20260111_122012
+JupyterLab,Windows,M,Make the active cell a Markdown cell,Make the active cell a Markdown cell,General,95.0,simple_ai_claude,001,20260111_122012
+JupyterLab,Windows,Y,Make the active cell a code cell,Make the active cell a code cell,General,95.0,simple_ai_claude,001,20260111_122012
+JupyterLab,Windows,Shift+Up Arrow,Select the current cell and the cell above,Select the current cell and the cell above,General,95.0,simple_ai_claude,001,20260111_122012
+JupyterLab,Windows,Shift+Down Arrow,Select the current cell and the cell below,Select the current cell and the cell below,General,95.0,simple_ai_claude,001,20260111_122012
+JupyterLab,Windows,Ctrl + A,Select all cells,Select all cells,General,95.0,simple_ai_claude,001,20260111_122012
+JupyterLab,Windows,X,Cut the selected cell or cells,Cut the selected cell or cells,General,95.0,simple_ai_claude,001,20260111_122012
+JupyterLab,Windows,C,Copy the selected cell or cells,Copy the selected cell or cells,General,95.0,simple_ai_claude,001,20260111_122012
+JupyterLab,Windows,V,Paste the cell(s) which were copied or cut most recently,Paste the cell(s) which were copied or cut most recently,General,95.0,simple_ai_claude,001,20260111_122012
+JupyterLab,Windows,Shift+M,Merge multiple selected cells into one cell,Merge multiple selected cells into one cell,General,95.0,simple_ai_claude,001,20260111_122012
+JupyterLab,Windows,D D,Delete the active cell,Delete the active cell,General,95.0,simple_ai_claude,001,20260111_122012
+JupyterLab,Windows,0 0,Restart the kernel,Restart the kernel,General,95.0,simple_ai_claude,001,20260111_122012
+JupyterLab,Windows,Z,Undo most recent command mode action,Undo most recent command mode action,General,95.0,simple_ai_claude,001,20260111_122012
+JupyterLab,Windows,Esc,Enter command mode,Enter command mode,General,95.0,simple_ai_claude,001,20260111_122012
+JupyterLab,Windows,Tab,Code completion (or indent if at start of line),Code completion (or indent if at start of line),General,95.0,simple_ai_claude,001,20260111_122012
+JupyterLab,Windows,Shift+Tab,Tooltip help,Tooltip help,General,95.0,simple_ai_claude,001,20260111_122012
+JupyterLab,Windows,Ctrl + Shift + -,Split the active cell at the cursor,Split the active cell at the cursor,General,95.0,simple_ai_claude,001,20260111_122012
+JupyterLab,Windows,Ctrl + ],Indent,Indent,General,95.0,simple_ai_claude,001,20260111_122012
+JupyterLab,Windows,Ctrl + [,Dedent,Dedent,General,95.0,simple_ai_claude,001,20260111_122012
+JupyterLab,Windows,Ctrl + /,Toggle comment,Toggle comment,General,95.0,simple_ai_claude,001,20260111_122012
+JupyterLab,Windows,Shift+Enter,"Run selected cell or cells - if no cells below, insert a code cell below","Run selected cell or cells - if no cells below, insert a code cell below",General,95.0,simple_ai_claude,001,20260111_122012
+JupyterLab,Windows,Enter,Enter edit mode in the active cell,Enter edit mode in the active cell,General,95.0,simple_ai_claude,001,20260111_122012
+JupyterLab,Windows,Up Arrow,Scroll up,Scroll up,General,95.0,simple_ai_claude,001,20260111_122012
+JupyterLab,Windows,Down Arrow,Scroll down,Scroll down,General,95.0,simple_ai_claude,001,20260111_122012
+JupyterLab,Windows,A,Insert a new cell above the active cell,Insert a new cell above the active cell,General,95.0,simple_ai_claude,001,20260111_122012
+JupyterLab,Windows,B,Insert a new cell below the active cell,Insert a new cell below the active cell,General,95.0,simple_ai_claude,001,20260111_122012
+JupyterLab,Windows,M,Make the active cell a Markdown cell,Make the active cell a Markdown cell,General,95.0,simple_ai_claude,001,20260111_122012
+JupyterLab,Windows,Y,Make the active cell a code cell,Make the active cell a code cell,General,95.0,simple_ai_claude,001,20260111_122012
+JupyterLab,Windows,Shift+Up Arrow,Select the current cell and the cell above,Select the current cell and the cell above,General,95.0,simple_ai_claude,001,20260111_122012
+JupyterLab,Windows,Shift+Down Arrow,Select the current cell and the cell below,Select the current cell and the cell below,General,95.0,simple_ai_claude,001,20260111_122012
+JupyterLab,Windows,X,Cut the selected cell or cells,Cut the selected cell or cells,General,95.0,simple_ai_claude,001,20260111_122012
+JupyterLab,Windows,C,Copy the selected cell or cells,Copy the selected cell or cells,General,95.0,simple_ai_claude,001,20260111_122012
+JupyterLab,Windows,V,Paste the cell(s) which were copied or cut most recently,Paste the cell(s) which were copied or cut most recently,General,95.0,simple_ai_claude,001,20260111_122012
+JupyterLab,Windows,Shift+M,Merge multiple selected cells into one cell,Merge multiple selected cells into one cell,General,95.0,simple_ai_claude,001,20260111_122012
+JupyterLab,Windows,DD,Delete the active cell,Delete the active cell,General,95.0,simple_ai_claude,001,20260111_122012
+JupyterLab,Windows,00,Restart the kernel,Restart the kernel,General,95.0,simple_ai_claude,001,20260111_122012
+JupyterLab,Windows,Z,Undo most recent command mode action,Undo most recent command mode action,General,95.0,simple_ai_claude,001,20260111_122012
+JupyterLab,Windows,Esc,Enter command mode,Enter command mode,General,95.0,simple_ai_claude,001,20260111_122012
+JupyterLab,Windows,Tab,Code completion (or indent if at start of line),Code completion (or indent if at start of line),General,95.0,simple_ai_claude,001,20260111_122012
+JupyterLab,Windows,Shift+Tab,Tooltip help,Tooltip help,General,95.0,simple_ai_claude,001,20260111_122012

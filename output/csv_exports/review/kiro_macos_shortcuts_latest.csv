@@ -1,0 +1,103 @@
+application_name,platform,key_combination,title,description,category,confidence_score,extraction_method
+Kiro,macOS,Cmd,++P,++P,General,75.0,python_list_parser
+Kiro,macOS,Cmd,++P,++P,General,75.0,python_list_parser
+Kiro,macOS,Cmd,++P,++P,General,75.0,python_list_parser
+Kiro,macOS,Cmd,++P,++P,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+K +S,+K +S,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+K +S,+K +S,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+K +S,+K +S,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+K +S,+K +S,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+K +S,+K +S,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+K +S,+K +S,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+K +S,+K +S,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+K +S,+K +S,General,75.0,python_list_parser
+Kiro,macOS,⌘ K,Action,Action,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+N,+N,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+N,+N,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+N,+N,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+N,+N,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+W,+W,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+W,+W,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+W,+W,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+W,+W,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+S,+S,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+S,+S,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+S,+S,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+S,+S,General,75.0,python_list_parser
+Kiro,macOS,Cmd,++S,++S,General,75.0,python_list_parser
+Kiro,macOS,Cmd,++S,++S,General,75.0,python_list_parser
+Kiro,macOS,Cmd,++S,++S,General,75.0,python_list_parser
+Kiro,macOS,Cmd,++S,++S,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+Z,+Z,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+Z,+Z,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+Z,+Z,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+Z,+Z,General,75.0,python_list_parser
+Kiro,macOS,Cmd,++Z,++Z,General,75.0,python_list_parser
+Kiro,macOS,Cmd,++Z,++Z,General,75.0,python_list_parser
+Kiro,macOS,Cmd,++Z,++Z,General,75.0,python_list_parser
+Kiro,macOS,Cmd,++Z,++Z,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+P,+P,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+P,+P,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+P,+P,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+P,+P,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+O,+O,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+O,+O,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+O,+O,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+O,+O,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+K +O,+K +O,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+K +O,+K +O,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+K +O,+K +O,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+K +O,+K +O,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+K +O,+K +O,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+K +O,+K +O,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+K +O,+K +O,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+K +O,+K +O,General,75.0,python_list_parser
+Kiro,macOS,Cmd,++O,++O,General,75.0,python_list_parser
+Kiro,macOS,Cmd,++O,++O,General,75.0,python_list_parser
+Kiro,macOS,Cmd,++O,++O,General,75.0,python_list_parser
+Kiro,macOS,Cmd,++O,++O,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+F,+F,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+F,+F,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+F,+F,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+F,+F,General,75.0,python_list_parser
+Kiro,macOS,Cmd,++F,++F,General,75.0,python_list_parser
+Kiro,macOS,Cmd,++F,++F,General,75.0,python_list_parser
+Kiro,macOS,Cmd,++F,++F,General,75.0,python_list_parser
+Kiro,macOS,Cmd,++F,++F,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+B,+B,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+B,+B,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+B,+B,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+B,+B,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+1/2/3,+1/2/3,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+1/2/3,+1/2/3,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+1/2/3,+1/2/3,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+1/2/3,+1/2/3,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+X,+X,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+X,+X,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+X,+X,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+X,+X,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+C,+C,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+C,+C,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+C,+C,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+C,+C,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+V,+V,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+V,+V,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+V,+V,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+V,+V,General,75.0,python_list_parser
+Kiro,macOS,Option,+/,+/,General,75.0,python_list_parser
+Kiro,macOS,Option,+/,+/,General,75.0,python_list_parser
+Kiro,macOS,Option,+/,+/,General,75.0,python_list_parser
+Kiro,macOS,Option,+/,+/,General,75.0,python_list_parser
+Kiro,macOS,Cmd,++K,++K,General,75.0,python_list_parser
+Kiro,macOS,Cmd,++K,++K,General,75.0,python_list_parser
+Kiro,macOS,Cmd,++K,++K,General,75.0,python_list_parser
+Kiro,macOS,Cmd,++K,++K,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+L,+L,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+L,+L,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+L,+L,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+L,+L,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+I,+I,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+I,+I,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+I,+I,General,75.0,python_list_parser
+Kiro,macOS,Cmd,+I,+I,General,75.0,python_list_parser
+Kiro,macOS,Cmd,( ++P / ++P ).,( ++P / ++P ).,General,75.0,python_list_parser

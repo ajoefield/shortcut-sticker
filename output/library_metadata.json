@@ -1,0 +1,34 @@
+{
+  "total_applications": 0,
+  "total_shortcuts": 0,
+  "last_scan": "2026-01-11T19:20:12.345890+00:00",
+  "needs_update": [
+    "VSCode_Windows",
+    "Kiro_Cross-platform",
+    "IntelliJ_Windows",
+    "VSCode_macOS",
+    "RStudio_Cross-platform",
+    "Mac_Unknown",
+    "IntelliJ_macOS",
+    "Vim_Unknown",
+    "Sublime_macOS",
+    "Docker_Cross-platform",
+    "jupyterlab_Windows",
+    "jupyterlab_macOS"
+  ],
+  "new_applications": [
+    "VSCode_Windows",
+    "Kiro_Cross-platform",
+    "IntelliJ_Windows",
+    "VSCode_macOS",
+    "RStudio_Cross-platform",
+    "Mac_Unknown",
+    "IntelliJ_macOS",
+    "Vim_Unknown",
+    "Sublime_macOS",
+    "Docker_Cross-platform",
+    "jupyterlab_Windows",
+    "jupyterlab_macOS"
+  ],
+  "updated_applications": []
+}

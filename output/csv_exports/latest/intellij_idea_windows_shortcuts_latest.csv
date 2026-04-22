@@ -1,0 +1,104 @@
+application_name,platform,key_combination,title,description,category,confidence_score,extraction_method
+IntelliJ IDEA,Windows,Ctrl+Shift+Space,Smart code completion,Smart code completion,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Double Shift,Search everywhere,Search everywhere,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Alt+Enter,Show intention actions and quick-fixes,Show intention actions and quick-fixes,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Alt+Ins,Generate code,Generate code,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+P,Parameter info,Parameter info,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+W,Extend selection,Extend selection,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+Shift+W,Shrink selection,Shrink selection,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+E,Recent files popup,Recent files popup,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Shift+F6,Rename,Rename,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Alt+#[0-9],Open corresponding tool window,Open corresponding tool window,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+S,Save all,Save all,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+Alt+Y,Synchronize,Synchronize,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+Shift+F12,Toggle maximizing editor,Toggle maximizing editor,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Alt+Shift+I,Inspect current file with current profile,Inspect current file with current profile,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+BackQuote (`),Quick switch current scheme,Quick switch current scheme,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+Alt+S,Open Settings dialog,Open Settings dialog,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+Alt+Shift+S,Open Project Structure dialog,Open Project Structure dialog,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+Shift+A,Find Action,Find Action,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,F8,Step over,Step over,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,F7,Step into,Step into,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Shift+F7,Smart step into,Smart step into,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Shift+F8,Step out,Step out,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Alt+F9,Run to cursor,Run to cursor,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Alt+F8,Evaluate expression,Evaluate expression,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,F9,Resume program,Resume program,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+F8,Toggle breakpoint,Toggle breakpoint,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+Shift+F8,View breakpoints,View breakpoints,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Double Shift,Search everywhere,Search everywhere,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+F,Find,Find,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,F3,Find next,Find next,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Shift+F3,Find previous,Find previous,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+R,Replace,Replace,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+Shift+F,Find in path,Find in path,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+Shift+R,Replace in path,Replace in path,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Alt+J,Select next occurrence,Select next occurrence,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+Alt+Shift+J,Select all occurrences,Select all occurrences,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Alt+Shift+J,Unselect occurrence,Unselect occurrence,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+Space,Basic code completion,Basic code completion,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+Shift+Space,Smart code completion,Smart code completion,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+Shift+Enter,Complete statement,Complete statement,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+P,Parameter info,Parameter info,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+Q,Quick documentation lookup,Quick documentation lookup,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Shift+F1,External Doc,External Doc,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+mouse,Brief Info,Brief Info,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+F1,Show descriptions of error at caret,Show descriptions of error at caret,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Alt+Insert,Generate code...,Generate code...,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+O,Override methods,Override methods,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+I,Implement methods,Implement methods,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+Alt+T,Surround with...,Surround with...,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+/,Comment/uncomment with line comment,Comment/uncomment with line comment,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+Shift+/,Comment/uncomment with block comment,Comment/uncomment with block comment,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+W,Extend selection,Extend selection,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+Shift+W,Shrink selection,Shrink selection,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Alt+Q,Context info,Context info,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Alt+Enter,Show intention actions and quick-fixes,Show intention actions and quick-fixes,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+Alt+L,Reformat code,Reformat code,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+Alt+O,Optimize imports,Optimize imports,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+Alt+I,Auto-indent line(s),Auto-indent line(s),General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Tab,Indent selected lines,Indent selected lines,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Shift+Tab,Unindent selected lines,Unindent selected lines,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,"Ctrl+X, Shift+Delete",Cut current line to clipboard,Cut current line to clipboard,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,"Ctrl+C, Ctrl+Insert",Copy current line to clipboard,Copy current line to clipboard,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,"Ctrl+V, Shift+Insert",Paste from clipboard,Paste from clipboard,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+Shift+V,Paste from recent buffers...,Paste from recent buffers...,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+D,Duplicate current line,Duplicate current line,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+Y,Delete line at caret,Delete line at caret,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+Shift+J,Smart line join,Smart line join,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+Enter,Smart line split,Smart line split,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Shift+Enter,Start new line,Start new line,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+Shift+U,Toggle case for word at caret or selected block,Toggle case for word at caret or selected block,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+Shift+],Select till code block end,Select till code block end,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+Shift+[,Select till code block start,Select till code block start,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+Delete,Delete to word end,Delete to word end,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+Backspace,Delete to word start,Delete to word start,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+NumPad+,Expand code block,Expand code block,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+NumPad-,Collapse code block,Collapse code block,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+Shift+NumPad+,Expand all,Expand all,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+Shift+NumPad-,Collapse all,Collapse all,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+F4,Close active editor tab,Close active editor tab,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,F5,Copy,Copy,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,F6,Move,Move,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Alt+Delete,Safe Delete,Safe Delete,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Shift+F6,Rename,Rename,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+Alt+Shift+T,Refactor this,Refactor this,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+F6,Change Signature,Change Signature,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+Alt+N,Inline,Inline,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+Alt+M,Extract Method,Extract Method,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+Alt+V,Extract Variable,Extract Variable,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+Alt+F,Extract Field,Extract Field,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+Alt+C,Extract Constant,Extract Constant,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+Alt+P,Extract Parameter,Extract Parameter,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+N,Go to class,Go to class,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+Shift+N,Go to file,Go to file,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+Alt+Shift+N,Go to symbol,Go to symbol,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Alt+Right,Go to next editor tab,Go to next editor tab,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Alt+Left,Go to previous editor tab,Go to previous editor tab,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,F12,Go back to previous tool window,Go back to previous tool window,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Esc,Go to editor (from tool window),Go to editor (from tool window),General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Shift+Esc,Hide active or last active window,Hide active or last active window,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+G,Go to line,Go to line,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+E,Recent files popup,Recent files popup,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+Shift+E,Recent locations popup,Recent locations popup,General,100.0,simple_ai_claude
+IntelliJ IDEA,Windows,Ctrl+Alt+Left,Navigate back,Navigate back,General,100.0,simple_ai_claude

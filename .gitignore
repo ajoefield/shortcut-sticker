@@ -52,3 +52,24 @@ Thumbs.db
 # Temporary files
 *.tmp
 *.temp
+
+# =============================================
+# Non-project files/folders at workspace root
+# (repo moved up from shortcut-sticker/)
+# =============================================
+
+enhanced_pipeline_env_312/
+aws-pdf-converter/
+shortcut_extractor/__pycache__
+
+
+# Root-level scripts and files not part of the project
+cleanup_outputs.py
+create_full_dataset.py
+extract_real_data.py
+load_full_shortcuts.py
+requirements.txt
+shortcut_designer_landing.html
+Shortcut-Stickers.code-workspace
+CANVAS_REDESIGN_PROPOSAL.md
+NAMING_CONVENTIONS.md

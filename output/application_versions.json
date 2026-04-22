@@ -1,0 +1,134 @@
+{
+  "VSCode_Windows": {
+    "application_name": "VS Code",
+    "platform": "Windows",
+    "version": null,
+    "file_name": "VSCode_Windows_shortcuts.pdf",
+    "file_hash": "7174b64797e735931c84a9b7a32b9727e27e4a7956e529e8b1ea539e98560f68",
+    "extraction_date": "2026-01-11T19:20:39.799861+00:00",
+    "shortcut_count": 96,
+    "last_updated": "2026-01-11T19:20:39.799861+00:00",
+    "extraction_version": 1
+  },
+  "Kiro_Cross-platform": {
+    "application_name": "Kiro",
+    "platform": "Unknown",
+    "version": null,
+    "file_name": "Kiro_Cross-platform_shortcuts.pdf",
+    "file_hash": "caa9413ef1cf01d7d70e79450e5754c78bce6fa42826ab8d7f66b3ef1b42fce0",
+    "extraction_date": "2026-01-11T19:20:39.942587+00:00",
+    "shortcut_count": 282,
+    "last_updated": "2026-01-11T19:20:39.942587+00:00",
+    "extraction_version": 1
+  },
+  "IntelliJ_Windows": {
+    "application_name": "IntelliJ IDEA",
+    "platform": "Windows",
+    "version": null,
+    "file_name": "IntelliJ_Windows_shortcuts.pdf",
+    "file_hash": "ee9f78ec1b17a74ac0cb632158d05ccc01344840648f430bf733245cafacea9f",
+    "extraction_date": "2026-01-11T19:21:03.139600+00:00",
+    "shortcut_count": 103,
+    "last_updated": "2026-01-11T19:21:03.139600+00:00",
+    "extraction_version": 1
+  },
+  "VSCode_macOS": {
+    "application_name": "VS Code",
+    "platform": "macOS",
+    "version": null,
+    "file_name": "VSCode_macOS_shortcuts.pdf",
+    "file_hash": "cfb2c08dd2a743e1204bb57b052f2ce5d2dcea94e258ed11dc13971b575a4f46",
+    "extraction_date": "2026-01-11T19:21:28.059074+00:00",
+    "shortcut_count": 85,
+    "last_updated": "2026-01-11T19:21:28.059074+00:00",
+    "extraction_version": 1
+  },
+  "RStudio_Cross-platform": {
+    "application_name": "RStudio",
+    "platform": "Unknown",
+    "version": null,
+    "file_name": "RStudio_Cross-platform_shortcuts.pdf",
+    "file_hash": "416402b44e7bb61c3b6160afcc805d0b43c5e9347dc5a3a5f0a0a95187394aac",
+    "extraction_date": "2026-01-11T19:21:28.318278+00:00",
+    "shortcut_count": 710,
+    "last_updated": "2026-01-11T19:21:28.318278+00:00",
+    "extraction_version": 1
+  },
+  "Mac_Unknown": {
+    "application_name": "macOS",
+    "platform": "macOS",
+    "version": null,
+    "file_name": "Mac_shortcuts.pdf",
+    "file_hash": "0f549a8c8bdaa1632da214cc2999d46b9c2c170b401e107edab4b8cd094bbd9b",
+    "extraction_date": "2026-01-11T19:21:45.922111+00:00",
+    "shortcut_count": 60,
+    "last_updated": "2026-01-11T19:21:45.922111+00:00",
+    "extraction_version": 1
+  },
+  "IntelliJ_macOS": {
+    "application_name": "IntelliJ IDEA",
+    "platform": "macOS",
+    "version": null,
+    "file_name": "IntelliJ_macOS_shortcuts.pdf",
+    "file_hash": "57e1721b25f423d52be0c0e40576a98bb05db50ff1cf14d829ed719f70cebcec",
+    "extraction_date": "2026-01-11T19:22:10.722564+00:00",
+    "shortcut_count": 93,
+    "last_updated": "2026-01-11T19:22:10.722564+00:00",
+    "extraction_version": 1
+  },
+  "Vim_Unknown": {
+    "application_name": "Vim",
+    "platform": "OSA",
+    "version": null,
+    "file_name": "Vim_OSA_shortcuts.pdf",
+    "file_hash": "267b6ec282d375b1f7080244395c4d512616ecec56c214e773fbd3ab9d41f30f",
+    "extraction_date": "2026-01-11T19:22:36.959991+00:00",
+    "shortcut_count": 96,
+    "last_updated": "2026-01-11T19:22:36.959991+00:00",
+    "extraction_version": 1
+  },
+  "Sublime_macOS": {
+    "application_name": "Sublime Text",
+    "platform": "macOS",
+    "version": null,
+    "file_name": "Sublime_macOS_shortcuts.pdf",
+    "file_hash": "74be76e5adba9ea07c48a6ef9cd3646891a389f773eef912588b754c14f10283",
+    "extraction_date": "2026-01-11T19:22:49.998974+00:00",
+    "shortcut_count": 46,
+    "last_updated": "2026-01-11T19:22:49.998974+00:00",
+    "extraction_version": 1
+  },
+  "Docker_Cross-platform": {
+    "application_name": "Docker",
+    "platform": "Windows",
+    "version": null,
+    "file_name": "Docker_Cross-platform_shortcuts.png",
+    "file_hash": "cb64b16dcfc2bd06d37c57a138d58fb49453132c6fd5689326fbe9abe59faa29",
+    "extraction_date": "2026-01-11T19:23:12.476199+00:00",
+    "shortcut_count": 96,
+    "last_updated": "2026-01-11T19:23:12.476199+00:00",
+    "extraction_version": 1
+  },
+  "jupyterlab_Windows": {
+    "application_name": "JupyterLab",
+    "platform": "macOS",
+    "version": null,
+    "file_name": "jupyterlab_Windows_shortcuts.txt",
+    "file_hash": "a0602b81ad7cd3b21ca9752a2bd6c40f1465401646921ea67ddb73c846f250c0",
+    "extraction_date": "2026-01-11T19:23:19.949873+00:00",
+    "shortcut_count": 49,
+    "last_updated": "2026-01-11T19:23:19.949873+00:00",
+    "extraction_version": 1
+  },
+  "jupyterlab_macOS": {
+    "application_name": "JupyterLab",
+    "platform": "macOS",
+    "version": null,
+    "file_name": "jupyterlab_macOS_shortcuts.txt",
+    "file_hash": "02ecdb0753a5ef616f4610e7d4bec20a83cbb822da9a2cabe52d02beb0e9ebf6",
+    "extraction_date": "2026-01-11T19:23:27.626024+00:00",
+    "shortcut_count": 49,
+    "last_updated": "2026-01-11T19:23:27.626024+00:00",
+    "extraction_version": 1
+  }
+}

@@ -1,0 +1,212 @@
+application_name,platform,key_combination,title,description,category,confidence_score,extraction_method
+RStudio,Unknown,:37,"/11/22, 11 AM","/11/22, 11 AM",General,75.0,python_list_parser
+RStudio,Unknown,Home,Action,Action,General,75.0,python_list_parser
+RStudio,Unknown,Left,+,+,General,75.0,python_list_parser
+RStudio,Unknown,end,Move cursor to of line,Move cursor to of line,General,75.0,python_list_parser
+RStudio,Unknown,End,Move cursor to of line,Move cursor to of line,General,75.0,python_list_parser
+RStudio,Unknown,Right,+,+,General,75.0,python_list_parser
+RStudio,Unknown,Down,Navigate command historyUp/,Navigate command historyUp/,General,75.0,python_list_parser
+RStudio,Unknown,Up,/,/,General,75.0,python_list_parser
+RStudio,Unknown,Down,/,/,General,75.0,python_list_parser
+RStudio,Unknown,Up,+,+,General,75.0,python_list_parser
+RStudio,Unknown,Up,+,+,General,75.0,python_list_parser
+RStudio,Unknown,Esc,Action,Action,General,75.0,python_list_parser
+RStudio,Unknown,Esc,Action,Action,General,75.0,python_list_parser
+RStudio,Unknown,F4,+Shift+,+Shift+,General,75.0,python_list_parser
+RStudio,Unknown,F4,++,++,General,75.0,python_list_parser
+RStudio,Unknown,:37,"May 04, 2022 14","May 04, 2022 14",General,75.0,python_list_parser
+RStudio,Unknown,:37,"/11/22, 11 AM","/11/22, 11 AM",General,75.0,python_list_parser
+RStudio,Unknown,Insert,chunk (Sweave and,chunk (Sweave and,General,75.0,python_list_parser
+RStudio,Unknown,Insert,code section,code section,General,75.0,python_list_parser
+RStudio,Unknown,Enter,Run current line/selection +,Run current line/selection +,General,75.0,python_list_parser
+RStudio,Unknown,Enter,+,+,General,75.0,python_list_parser
+RStudio,Unknown,end,document,document,General,75.0,python_list_parser
+RStudio,Unknown,Enter,+Shift+,+Shift+,General,75.0,python_list_parser
+RStudio,Unknown,Enter,+Alt+,+Alt+,General,75.0,python_list_parser
+RStudio,Unknown,:37,"/11/22, 11 AM","/11/22, 11 AM",General,75.0,python_list_parser
+RStudio,Unknown,Up,+Shift+,+Shift+,General,75.0,python_list_parser
+RStudio,Unknown,Up,+++,+++,General,75.0,python_list_parser
+RStudio,Unknown,Down,+Shift+,+Shift+,General,75.0,python_list_parser
+RStudio,Unknown,Down,+++,+++,General,75.0,python_list_parser
+RStudio,Unknown,tab,Switch to,Switch to,General,75.0,python_list_parser
+RStudio,Unknown,tab,Previous,Previous,General,75.0,python_list_parser
+RStudio,Unknown,F11,+,+,General,75.0,python_list_parser
+RStudio,Unknown,F11,+,+,General,75.0,python_list_parser
+RStudio,Unknown,tab,Previous (desktop),Previous (desktop),General,75.0,python_list_parser
+RStudio,Unknown,Tab,+Shift+,+Shift+,General,75.0,python_list_parser
+RStudio,Unknown,Tab,+Shift+,+Shift+,General,75.0,python_list_parser
+RStudio,Unknown,tab,Next,Next,General,75.0,python_list_parser
+RStudio,Unknown,F12,+,+,General,75.0,python_list_parser
+RStudio,Unknown,F12,+,+,General,75.0,python_list_parser
+RStudio,Unknown,tab,Next (desktop),Next (desktop),General,75.0,python_list_parser
+RStudio,Unknown,Tab,+,+,General,75.0,python_list_parser
+RStudio,Unknown,Tab,+,+,General,75.0,python_list_parser
+RStudio,Unknown,tab,First,First,General,75.0,python_list_parser
+RStudio,Unknown,F11,+Shift+,+Shift+,General,75.0,python_list_parser
+RStudio,Unknown,F11,+Shift+,+Shift+,General,75.0,python_list_parser
+RStudio,Unknown,tab,Last,Last,General,75.0,python_list_parser
+RStudio,Unknown,F12,+Shift+,+Shift+,General,75.0,python_list_parser
+RStudio,Unknown,F12,+Shift+,+Shift+,General,75.0,python_list_parser
+RStudio,Unknown,F9,+,+,General,75.0,python_list_parser
+RStudio,Unknown,F9,+,+,General,75.0,python_list_parser
+RStudio,Unknown,F10,+,+,General,75.0,python_list_parser
+RStudio,Unknown,F10,+,+,General,75.0,python_list_parser
+RStudio,Unknown,Up,Move Lines /,Move Lines /,General,75.0,python_list_parser
+RStudio,Unknown,Down,Move Lines /,Move Lines /,General,75.0,python_list_parser
+RStudio,Unknown,Up,+/,+/,General,75.0,python_list_parser
+RStudio,Unknown,Down,+/,+/,General,75.0,python_list_parser
+RStudio,Unknown,Up,+/,+/,General,75.0,python_list_parser
+RStudio,Unknown,Down,+/,+/,General,75.0,python_list_parser
+RStudio,Unknown,Up,Copy Lines /,Copy Lines /,General,75.0,python_list_parser
+RStudio,Unknown,Down,Copy Lines /,Copy Lines /,General,75.0,python_list_parser
+RStudio,Unknown,Up,+Alt+/,+Alt+/,General,75.0,python_list_parser
+RStudio,Unknown,Down,+Alt+/,+Alt+/,General,75.0,python_list_parser
+RStudio,Unknown,Up,+Option+/,+Option+/,General,75.0,python_list_parser
+RStudio,Unknown,Down,+Option+/,+Option+/,General,75.0,python_list_parser
+RStudio,Unknown,Up,+Alt+,+Alt+,General,75.0,python_list_parser
+RStudio,Unknown,Up,++,++,General,75.0,python_list_parser
+RStudio,Unknown,Down,+Alt+,+Alt+,General,75.0,python_list_parser
+RStudio,Unknown,Down,++,++,General,75.0,python_list_parser
+RStudio,Unknown,Up,Move Active Cursor,Move Active Cursor,General,75.0,python_list_parser
+RStudio,Unknown,Up,+Alt++,+Alt++,General,75.0,python_list_parser
+RStudio,Unknown,Up,+++,+++,General,75.0,python_list_parser
+RStudio,Unknown,Down,Move Active Cursor +Alt++,Move Active Cursor +Alt++,General,75.0,python_list_parser
+RStudio,Unknown,Down,Move Active Cursor +Alt++,Move Active Cursor +Alt++,General,75.0,python_list_parser
+RStudio,Unknown,Down,+++,+++,General,75.0,python_list_parser
+RStudio,Unknown,F3,"Win: , Linux: +G","Win: , Linux: +G",General,75.0,python_list_parser
+RStudio,Unknown,F3,"Win: +, Linux:","Win: +, Linux:",General,75.0,python_list_parser
+RStudio,Unknown,F3,+,+,General,75.0,python_list_parser
+RStudio,Unknown,F7,Action,Action,General,75.0,python_list_parser
+RStudio,Unknown,F7,Action,Action,General,75.0,python_list_parser
+RStudio,Unknown,:37,"/11/22, 11 AM","/11/22, 11 AM",General,75.0,python_list_parser
+RStudio,Unknown,Insert,Roxygen Skeleton,Roxygen Skeleton,General,75.0,python_list_parser
+RStudio,Unknown,Left,+/,+/,General,75.0,python_list_parser
+RStudio,Unknown,Right,+/,+/,General,75.0,python_list_parser
+RStudio,Unknown,Left,+/,+/,General,75.0,python_list_parser
+RStudio,Unknown,Right,+/,+/,General,75.0,python_list_parser
+RStudio,Unknown,End,Jump to Start/,Jump to Start/,General,75.0,python_list_parser
+RStudio,Unknown,Home,+/ or,+/ or,General,75.0,python_list_parser
+RStudio,Unknown,End,+/ or,+/ or,General,75.0,python_list_parser
+RStudio,Unknown,Up,+/,+/,General,75.0,python_list_parser
+RStudio,Unknown,Down,+/,+/,General,75.0,python_list_parser
+RStudio,Unknown,Home,+/ or +/,+/ or +/,General,75.0,python_list_parser
+RStudio,Unknown,End,+/ or +/,+/ or +/,General,75.0,python_list_parser
+RStudio,Unknown,Up,+/ or +/,+/ or +/,General,75.0,python_list_parser
+RStudio,Unknown,Down,+/ or +/,+/ or +/,General,75.0,python_list_parser
+RStudio,Unknown,Delete,Line,Line,General,75.0,python_list_parser
+RStudio,Unknown,Left,+Shift+/,+Shift+/,General,75.0,python_list_parser
+RStudio,Unknown,Right,+Shift+/,+Shift+/,General,75.0,python_list_parser
+RStudio,Unknown,Left,++/,++/,General,75.0,python_list_parser
+RStudio,Unknown,Right,++/,++/,General,75.0,python_list_parser
+RStudio,Unknown,Left,+Shift+,+Shift+,General,75.0,python_list_parser
+RStudio,Unknown,Left,++,++,General,75.0,python_list_parser
+RStudio,Unknown,End,Select to Line,Select to Line,General,75.0,python_list_parser
+RStudio,Unknown,Right,+Shift+,+Shift+,General,75.0,python_list_parser
+RStudio,Unknown,Right,++,++,General,75.0,python_list_parser
+RStudio,Unknown,Up,Select Page /,Select Page /,General,75.0,python_list_parser
+RStudio,Unknown,Down,Select Page /,Select Page /,General,75.0,python_list_parser
+RStudio,Unknown,Down,+PageUp/,+PageUp/,General,75.0,python_list_parser
+RStudio,Unknown,End,Select to Start/,Select to Start/,General,75.0,python_list_parser
+RStudio,Unknown,Home,+Shift+/ or,+Shift+/ or,General,75.0,python_list_parser
+RStudio,Unknown,End,+Shift+/ or,+Shift+/ or,General,75.0,python_list_parser
+RStudio,Unknown,Up,+Alt+/,+Alt+/,General,75.0,python_list_parser
+RStudio,Unknown,Down,+Alt+/,+Alt+/,General,75.0,python_list_parser
+RStudio,Unknown,Up,++/,++/,General,75.0,python_list_parser
+RStudio,Unknown,Down,++/,++/,General,75.0,python_list_parser
+RStudio,Unknown,Delete,Word,Word,General,75.0,python_list_parser
+RStudio,Unknown,Left,Word,Word,General,75.0,python_list_parser
+RStudio,Unknown,Delete,Word,Word,General,75.0,python_list_parser
+RStudio,Unknown,Right,Word,Word,General,75.0,python_list_parser
+RStudio,Unknown,Delete,+,+,General,75.0,python_list_parser
+RStudio,Unknown,Delete,to Line,to Line,General,75.0,python_list_parser
+RStudio,Unknown,End,to Line,to Line,General,75.0,python_list_parser
+RStudio,Unknown,Delete,to Line Start,to Line Start,General,75.0,python_list_parser
+RStudio,Unknown,Tab,(at beginning of line),(at beginning of line),General,75.0,python_list_parser
+RStudio,Unknown,Tab,(at beginning of line),(at beginning of line),General,75.0,python_list_parser
+RStudio,Unknown,Tab,+,+,General,75.0,python_list_parser
+RStudio,Unknown,Tab,+,+,General,75.0,python_list_parser
+RStudio,Unknown,up,Yank line to cursor,Yank line to cursor,General,75.0,python_list_parser
+RStudio,Unknown,Insert,currently yanked,currently yanked,General,75.0,python_list_parser
+RStudio,Unknown,Insert,assignment,assignment,General,75.0,python_list_parser
+RStudio,Unknown,Insert,pipe operator,pipe operator,General,75.0,python_list_parser
+RStudio,Unknown,F1,Action,Action,General,75.0,python_list_parser
+RStudio,Unknown,F1,Action,Action,General,75.0,python_list_parser
+RStudio,Unknown,F2,Action,Action,General,75.0,python_list_parser
+RStudio,Unknown,F2,Action,Action,General,75.0,python_list_parser
+RStudio,Unknown,Tab,or +,or +,General,75.0,python_list_parser
+RStudio,Unknown,Space,or +,or +,General,75.0,python_list_parser
+RStudio,Unknown,Tab,or +,or +,General,75.0,python_list_parser
+RStudio,Unknown,Space,or +,or +,General,75.0,python_list_parser
+RStudio,Unknown,Up,/,/,General,75.0,python_list_parser
+RStudio,Unknown,Down,/,/,General,75.0,python_list_parser
+RStudio,Unknown,Up,/,/,General,75.0,python_list_parser
+RStudio,Unknown,Down,/,/,General,75.0,python_list_parser
+RStudio,Unknown,Enter,"Accept selected candidate , , or","Accept selected candidate , , or",General,75.0,python_list_parser
+RStudio,Unknown,Tab,"Accept selected candidate , , or","Accept selected candidate , , or",General,75.0,python_list_parser
+RStudio,Unknown,Right,"Accept selected candidate , , or","Accept selected candidate , , or",General,75.0,python_list_parser
+RStudio,Unknown,Enter,", , or",", , or",General,75.0,python_list_parser
+RStudio,Unknown,Tab,", , or",", , or",General,75.0,python_list_parser
+RStudio,Unknown,Right,", , or",", , or",General,75.0,python_list_parser
+RStudio,Unknown,:37,"/11/22, 11 AM","/11/22, 11 AM",General,75.0,python_list_parser
+RStudio,Unknown,Esc,Action,Action,General,75.0,python_list_parser
+RStudio,Unknown,F7,+,+,General,75.0,python_list_parser
+RStudio,Unknown,F7,+,+,General,75.0,python_list_parser
+RStudio,Unknown,F1,+,+,General,75.0,python_list_parser
+RStudio,Unknown,F1,+,+,General,75.0,python_list_parser
+RStudio,Unknown,F1,+Shift+,+Shift+,General,75.0,python_list_parser
+RStudio,Unknown,F1,+Shift+,+Shift+,General,75.0,python_list_parser
+RStudio,Unknown,F2,+,+,General,75.0,python_list_parser
+RStudio,Unknown,F2,+,+,General,75.0,python_list_parser
+RStudio,Unknown,F2,+Shift+,+Shift+,General,75.0,python_list_parser
+RStudio,Unknown,F2,+Shift+,+Shift+,General,75.0,python_list_parser
+RStudio,Unknown,F5,+,+,General,75.0,python_list_parser
+RStudio,Unknown,F5,+Shift+,+Shift+,General,75.0,python_list_parser
+RStudio,Unknown,F5,+Shift+,+Shift+,General,75.0,python_list_parser
+RStudio,Unknown,F6,Show Find in Files Results +,Show Find in Files Results +,General,75.0,python_list_parser
+RStudio,Unknown,F6,+,+,General,75.0,python_list_parser
+RStudio,Unknown,F6,+Shift+,+Shift+,General,75.0,python_list_parser
+RStudio,Unknown,F6,+Shift+,+Shift+,General,75.0,python_list_parser
+RStudio,Unknown,F8,Sync Editor & PDF Preview +,Sync Editor & PDF Preview +,General,75.0,python_list_parser
+RStudio,Unknown,F8,+,+,General,75.0,python_list_parser
+RStudio,Unknown,F1,+Alt+,+Alt+,General,75.0,python_list_parser
+RStudio,Unknown,F1,++,++,General,75.0,python_list_parser
+RStudio,Unknown,F2,+Alt+,+Alt+,General,75.0,python_list_parser
+RStudio,Unknown,F2,++,++,General,75.0,python_list_parser
+RStudio,Unknown,F3,+Alt+,+Alt+,General,75.0,python_list_parser
+RStudio,Unknown,F3,+Options+,+Options+,General,75.0,python_list_parser
+RStudio,Unknown,:37,"/11/22, 11 AM","/11/22, 11 AM",General,75.0,python_list_parser
+RStudio,Unknown,F7,+Alt+,+Alt+,General,75.0,python_list_parser
+RStudio,Unknown,F7,+Option+,+Option+,General,75.0,python_list_parser
+RStudio,Unknown,F9,+,+,General,75.0,python_list_parser
+RStudio,Unknown,F9,+,+,General,75.0,python_list_parser
+RStudio,Unknown,F10,Action,Action,General,75.0,python_list_parser
+RStudio,Unknown,F10,Action,Action,General,75.0,python_list_parser
+RStudio,Unknown,F4,+,+,General,75.0,python_list_parser
+RStudio,Unknown,F4,+,+,General,75.0,python_list_parser
+RStudio,Unknown,F7,+,+,General,75.0,python_list_parser
+RStudio,Unknown,F7,+,+,General,75.0,python_list_parser
+RStudio,Unknown,F5,+,+,General,75.0,python_list_parser
+RStudio,Unknown,F5,+,+,General,75.0,python_list_parser
+RStudio,Unknown,F8,+,+,General,75.0,python_list_parser
+RStudio,Unknown,F8,+,+,General,75.0,python_list_parser
+RStudio,Unknown,F11,+Alt+,+Alt+,General,75.0,python_list_parser
+RStudio,Unknown,F11,+Option+,+Option+,General,75.0,python_list_parser
+RStudio,Unknown,F12,+Alt+,+Alt+,General,75.0,python_list_parser
+RStudio,Unknown,F12,+Option+,+Option+,General,75.0,python_list_parser
+RStudio,Unknown,Up,+/,+/,General,75.0,python_list_parser
+RStudio,Unknown,Down,+/,+/,General,75.0,python_list_parser
+RStudio,Unknown,Up,+/,+/,General,75.0,python_list_parser
+RStudio,Unknown,Down,+/,+/,General,75.0,python_list_parser
+RStudio,Unknown,Enter,Action,Action,General,75.0,python_list_parser
+RStudio,Unknown,F10,+Shift+,+Shift+,General,75.0,python_list_parser
+RStudio,Unknown,F10,++,++,General,75.0,python_list_parser
+RStudio,Unknown,:37,"/11/22, 11 AM","/11/22, 11 AM",General,75.0,python_list_parser
+RStudio,Unknown,F11,+Shift+,+Shift+,General,75.0,python_list_parser
+RStudio,Unknown,F11,++,++,General,75.0,python_list_parser
+RStudio,Unknown,F12,+Shift+,+Shift+,General,75.0,python_list_parser
+RStudio,Unknown,F12,++,++,General,75.0,python_list_parser
+RStudio,Unknown,Tab,Toggle Key Always,Toggle Key Always,General,75.0,python_list_parser
+RStudio,Unknown,F6,Action,Action,General,75.0,python_list_parser
+RStudio,Unknown,F6,Action,Action,General,75.0,python_list_parser
+RStudio,Unknown,F6,+,+,General,75.0,python_list_parser
+RStudio,Unknown,F6,+,+,General,75.0,python_list_parser

@@ -1,0 +1,49 @@
+application_name,platform,key_combination,title,description,category,confidence_score,extraction_method
+Docker,Windows,Ctrl+P,Open command palette,Open command palette,General,95.0,simple_ai_claude
+Docker,Windows,Ctrl+Shift+P,Open command palette,Open command palette,General,95.0,simple_ai_claude
+Docker,Windows,Ctrl+K Ctrl+S,Open keyboard shortcuts,Open keyboard shortcuts,General,95.0,simple_ai_claude
+Docker,Windows,"Ctrl+,",Open settings,Open settings,General,95.0,simple_ai_claude
+Docker,Windows,Ctrl+Shift+P,Run a command,Run a command,General,95.0,simple_ai_claude
+Docker,Windows,Ctrl+K Ctrl+O,Open a folder,Open a folder,General,95.0,simple_ai_claude
+Docker,Windows,Ctrl+K Ctrl+N,Open a new window,Open a new window,General,95.0,simple_ai_claude
+Docker,Windows,Ctrl+K Ctrl+W,Close window,Close window,General,95.0,simple_ai_claude
+Docker,Windows,Ctrl+K Ctrl+T,Open a new terminal,Open a new terminal,General,95.0,simple_ai_claude
+Docker,Windows,Ctrl+K Ctrl+C,Copy path of active file,Copy path of active file,General,95.0,simple_ai_claude
+Docker,Windows,Ctrl+K Ctrl+R,Reveal active file in Explorer,Reveal active file in Explorer,General,95.0,simple_ai_claude
+Docker,Windows,Ctrl+K Ctrl+P,Open active file in external program,Open active file in external program,General,95.0,simple_ai_claude
+Docker,Windows,Ctrl+K Ctrl+F,Format document,Format document,General,95.0,simple_ai_claude
+Docker,Windows,Ctrl+K Ctrl+I,Toggle inline view,Toggle inline view,General,95.0,simple_ai_claude
+Docker,Windows,Ctrl+K Ctrl+M,Toggle minimap,Toggle minimap,General,95.0,simple_ai_claude
+Docker,Windows,Ctrl+K Ctrl+H,Toggle panel,Toggle panel,General,95.0,simple_ai_claude
+Docker,Windows,Ctrl+K Ctrl+X,Clear output,Clear output,General,95.0,simple_ai_claude
+Docker,Windows,Ctrl+K Ctrl+Z,Zen mode,Zen mode,General,95.0,simple_ai_claude
+Docker,Windows,Ctrl+K Ctrl+U,Show references,Show references,General,95.0,simple_ai_claude
+Docker,Windows,Ctrl+K Ctrl+V,Open preview to the side,Open preview to the side,General,95.0,simple_ai_claude
+Docker,Windows,Ctrl+K Ctrl+E,Toggle explorer,Toggle explorer,General,95.0,simple_ai_claude
+Docker,Windows,Ctrl+K Ctrl+G,Toggle git,Toggle git,General,95.0,simple_ai_claude
+Docker,Windows,Ctrl+K Ctrl+D,Toggle debug,Toggle debug,General,95.0,simple_ai_claude
+Docker,Windows,Ctrl+K Ctrl+X,Toggle extensions,Toggle extensions,General,95.0,simple_ai_claude
+Docker,Windows,Ctrl+K Ctrl+B,Toggle breadcrumbs,Toggle breadcrumbs,General,95.0,simple_ai_claude
+Docker,Windows,Ctrl+K Ctrl+L,Focus on last active view,Focus on last active view,General,95.0,simple_ai_claude
+Docker,Windows,Ctrl+K Ctrl+F,Format selection,Format selection,General,95.0,simple_ai_claude
+Docker,Windows,Ctrl+K Ctrl+O,Open folder,Open folder,General,95.0,simple_ai_claude
+Docker,Windows,Ctrl+K Ctrl+N,New window,New window,General,95.0,simple_ai_claude
+Docker,Windows,Ctrl+K Ctrl+W,Close window,Close window,General,95.0,simple_ai_claude
+Docker,Windows,Ctrl+K Ctrl+T,Open new terminal,Open new terminal,General,95.0,simple_ai_claude
+Docker,Windows,Ctrl+K Ctrl+C,Copy path,Copy path,General,95.0,simple_ai_claude
+Docker,Windows,Ctrl+K Ctrl+R,Reveal in Explorer,Reveal in Explorer,General,95.0,simple_ai_claude
+Docker,Windows,Ctrl+K Ctrl+P,Open with,Open with,General,95.0,simple_ai_claude
+Docker,Windows,Ctrl+K Ctrl+F,Format document,Format document,General,95.0,simple_ai_claude
+Docker,Windows,Ctrl+K Ctrl+I,Toggle inline view,Toggle inline view,General,95.0,simple_ai_claude
+Docker,Windows,Ctrl+K Ctrl+M,Toggle minimap,Toggle minimap,General,95.0,simple_ai_claude
+Docker,Windows,Ctrl+K Ctrl+H,Toggle panel,Toggle panel,General,95.0,simple_ai_claude
+Docker,Windows,Ctrl+K Ctrl+X,Clear output,Clear output,General,95.0,simple_ai_claude
+Docker,Windows,Ctrl+K Ctrl+Z,Zen mode,Zen mode,General,95.0,simple_ai_claude
+Docker,Windows,Ctrl+K Ctrl+U,Show references,Show references,General,95.0,simple_ai_claude
+Docker,Windows,Ctrl+K Ctrl+V,Open preview to the side,Open preview to the side,General,95.0,simple_ai_claude
+Docker,Windows,Ctrl+K Ctrl+E,Toggle explorer,Toggle explorer,General,95.0,simple_ai_claude
+Docker,Windows,Ctrl+K Ctrl+G,Toggle git,Toggle git,General,95.0,simple_ai_claude
+Docker,Windows,Ctrl+K Ctrl+D,Toggle debug,Toggle debug,General,95.0,simple_ai_claude
+Docker,Windows,Ctrl+K Ctrl+X,Toggle extensions,Toggle extensions,General,95.0,simple_ai_claude
+Docker,Windows,Ctrl+K Ctrl+B,Toggle breadcrumbs,Toggle breadcrumbs,General,95.0,simple_ai_claude
+Docker,Windows,Ctrl+K Ctrl+L,Focus on last active view,Focus on last active view,General,95.0,simple_ai_claude

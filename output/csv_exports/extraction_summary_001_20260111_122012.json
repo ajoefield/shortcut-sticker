@@ -1,0 +1,184 @@
+{
+  "run_info": {
+    "version": "001",
+    "timestamp": "20260111_122012",
+    "extraction_method": "simple_ai_only"
+  },
+  "statistics": {
+    "total_files": 12,
+    "successful_files": 12,
+    "failed_files": 0,
+    "total_shortcuts": 1765,
+    "total_processing_time": 195.26,
+    "avg_time_per_file": 16.27,
+    "avg_shortcuts_per_file": 147.1
+  },
+  "application_breakdown": {
+    "VS Code": {
+      "files": 2,
+      "shortcuts": 181,
+      "avg_time": 26.178908586502075,
+      "platforms": [
+        "macOS",
+        "Windows"
+      ]
+    },
+    "Kiro": {
+      "files": 1,
+      "shortcuts": 282,
+      "avg_time": 0.142225980758667,
+      "platforms": [
+        "Unknown",
+        "Windows",
+        "macOS"
+      ]
+    },
+    "IntelliJ IDEA": {
+      "files": 2,
+      "shortcuts": 196,
+      "avg_time": 23.99824547767639,
+      "platforms": [
+        "macOS",
+        "Windows"
+      ]
+    },
+    "RStudio": {
+      "files": 1,
+      "shortcuts": 710,
+      "avg_time": 0.2586331367492676,
+      "platforms": [
+        "Unknown",
+        "Windows",
+        "macOS"
+      ]
+    },
+    "macOS": {
+      "files": 1,
+      "shortcuts": 60,
+      "avg_time": 17.603129863739014,
+      "platforms": [
+        "macOS"
+      ]
+    },
+    "Vim": {
+      "files": 1,
+      "shortcuts": 96,
+      "avg_time": 26.236945867538452,
+      "platforms": [
+        "OSA"
+      ]
+    },
+    "Sublime Text": {
+      "files": 1,
+      "shortcuts": 46,
+      "avg_time": 13.038477897644043,
+      "platforms": [
+        "macOS"
+      ]
+    },
+    "Docker": {
+      "files": 1,
+      "shortcuts": 96,
+      "avg_time": 22.472559213638306,
+      "platforms": [
+        "macOS",
+        "Windows"
+      ]
+    },
+    "JupyterLab": {
+      "files": 2,
+      "shortcuts": 98,
+      "avg_time": 7.574724078178406,
+      "platforms": [
+        "macOS",
+        "Windows"
+      ]
+    }
+  },
+  "file_results": [
+    {
+      "filename": "VS Code",
+      "success": true,
+      "shortcuts_extracted": 96,
+      "processing_time": 27.44,
+      "error": null
+    },
+    {
+      "filename": "Kiro",
+      "success": true,
+      "shortcuts_extracted": 282,
+      "processing_time": 0.14,
+      "error": null
+    },
+    {
+      "filename": "IntelliJ IDEA",
+      "success": true,
+      "shortcuts_extracted": 103,
+      "processing_time": 23.2,
+      "error": null
+    },
+    {
+      "filename": "VS Code",
+      "success": true,
+      "shortcuts_extracted": 85,
+      "processing_time": 24.92,
+      "error": null
+    },
+    {
+      "filename": "RStudio",
+      "success": true,
+      "shortcuts_extracted": 710,
+      "processing_time": 0.26,
+      "error": null
+    },
+    {
+      "filename": "macOS",
+      "success": true,
+      "shortcuts_extracted": 60,
+      "processing_time": 17.6,
+      "error": null
+    },
+    {
+      "filename": "IntelliJ IDEA",
+      "success": true,
+      "shortcuts_extracted": 93,
+      "processing_time": 24.8,
+      "error": null
+    },
+    {
+      "filename": "Vim",
+      "success": true,
+      "shortcuts_extracted": 96,
+      "processing_time": 26.24,
+      "error": null
+    },
+    {
+      "filename": "Sublime Text",
+      "success": true,
+      "shortcuts_extracted": 46,
+      "processing_time": 13.04,
+      "error": null
+    },
+    {
+      "filename": "Docker",
+      "success": true,
+      "shortcuts_extracted": 96,
+      "processing_time": 22.47,
+      "error": null
+    },
+    {
+      "filename": "JupyterLab",
+      "success": true,
+      "shortcuts_extracted": 49,
+      "processing_time": 7.47,
+      "error": null
+    },
+    {
+      "filename": "JupyterLab",
+      "success": true,
+      "shortcuts_extracted": 49,
+      "processing_time": 7.68,
+      "error": null
+    }
+  ]
+}

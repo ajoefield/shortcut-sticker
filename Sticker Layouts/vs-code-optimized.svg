@@ -1,0 +1,6 @@
+<svg viewBox="0 0 1125 1125" xmlns="http://www.w3.org/2000/svg">
+  <!-- Simplified VS Code logo for sticker printing -->
+  <rect width="1125" height="1125" fill="#FBFDFE"/>
+  <!-- Add your simplified logo paths here -->
+  <text x="562.5" y="600" text-anchor="middle" font-size="48" fill="#007ACC">VS Code Logo</text>
+</svg>

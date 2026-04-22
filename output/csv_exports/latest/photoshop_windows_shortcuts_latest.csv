@@ -1,0 +1,51 @@
+application_name,platform,key_combination,title,description,category,confidence_score,extraction_method
+Photoshop,Windows,Ctrl+N,New Document,Create new document,File,100,manual
+Photoshop,Windows,Ctrl+O,Open,Open file,File,100,manual
+Photoshop,Windows,Ctrl+S,Save,Save file,File,100,manual
+Photoshop,Windows,Ctrl+Shift+S,Save As,Save as new file,File,100,manual
+Photoshop,Windows,Ctrl+Alt+Shift+S,Save for Web,Save for web and devices,File,100,manual
+Photoshop,Windows,V,Move Tool,Select move tool,Tools,100,manual
+Photoshop,Windows,M,Marquee Tool,Select marquee tool,Tools,100,manual
+Photoshop,Windows,L,Lasso Tool,Select lasso tool,Tools,100,manual
+Photoshop,Windows,W,Magic Wand,Select magic wand tool,Tools,100,manual
+Photoshop,Windows,C,Crop Tool,Select crop tool,Tools,100,manual
+Photoshop,Windows,I,Eyedropper,Select eyedropper tool,Tools,100,manual
+Photoshop,Windows,J,Healing Brush,Select healing brush tool,Tools,100,manual
+Photoshop,Windows,B,Brush Tool,Select brush tool,Tools,100,manual
+Photoshop,Windows,S,Clone Stamp,Select clone stamp tool,Tools,100,manual
+Photoshop,Windows,Y,History Brush,Select history brush tool,Tools,100,manual
+Photoshop,Windows,E,Eraser Tool,Select eraser tool,Tools,100,manual
+Photoshop,Windows,G,Gradient Tool,Select gradient tool,Tools,100,manual
+Photoshop,Windows,O,Dodge Tool,Select dodge tool,Tools,100,manual
+Photoshop,Windows,P,Pen Tool,Select pen tool,Tools,100,manual
+Photoshop,Windows,T,Type Tool,Select type tool,Tools,100,manual
+Photoshop,Windows,A,Path Selection,Select path selection tool,Tools,100,manual
+Photoshop,Windows,U,Shape Tool,Select shape tool,Tools,100,manual
+Photoshop,Windows,R,Rotate View,Select rotate view tool,Tools,100,manual
+Photoshop,Windows,H,Hand Tool,Select hand tool,Tools,100,manual
+Photoshop,Windows,Z,Zoom Tool,Select zoom tool,Tools,100,manual
+Photoshop,Windows,Ctrl+Z,Undo,Undo last action,Edit,100,manual
+Photoshop,Windows,Ctrl+Shift+Z,Redo,Redo last action,Edit,100,manual
+Photoshop,Windows,Ctrl+Alt+Z,Step Backward,Step backward in history,Edit,100,manual
+Photoshop,Windows,Ctrl+Shift+Alt+Z,Step Forward,Step forward in history,Edit,100,manual
+Photoshop,Windows,Ctrl+J,Duplicate Layer,Duplicate current layer,Layer,100,manual
+Photoshop,Windows,Ctrl+Shift+N,New Layer,Create new layer,Layer,100,manual
+Photoshop,Windows,Ctrl+E,Merge Down,Merge layer down,Layer,100,manual
+Photoshop,Windows,Ctrl+Shift+E,Merge Visible,Merge visible layers,Layer,100,manual
+Photoshop,Windows,Ctrl+G,Group Layers,Group selected layers,Layer,100,manual
+Photoshop,Windows,Ctrl+Shift+G,Ungroup Layers,Ungroup layers,Layer,100,manual
+Photoshop,Windows,Ctrl+T,Free Transform,Free transform,Transform,100,manual
+Photoshop,Windows,Ctrl+Shift+T,Transform Again,Repeat last transform,Transform,100,manual
+Photoshop,Windows,Ctrl+0,Fit on Screen,Fit image on screen,View,100,manual
+Photoshop,Windows,Ctrl+1,Actual Pixels,View at actual pixels,View,100,manual
+Photoshop,Windows,Ctrl++,Zoom In,Zoom in,View,100,manual
+Photoshop,Windows,Ctrl+-,Zoom Out,Zoom out,View,100,manual
+Photoshop,Windows,Space,Hand Tool (temp),Temporarily activate hand tool,Tools,100,manual
+Photoshop,Windows,Ctrl+Space,Zoom Tool (temp),Temporarily activate zoom tool,Tools,100,manual
+Photoshop,Windows,Alt+Space,Zoom Out (temp),Temporarily activate zoom out,Tools,100,manual
+Photoshop,Windows,F,Screen Mode,Cycle screen modes,View,100,manual
+Photoshop,Windows,Tab,Hide Panels,Hide/show panels,View,100,manual
+Photoshop,Windows,Shift+Tab,Hide Toolbox,Hide/show toolbox and panels,View,100,manual
+Photoshop,Windows,Ctrl+R,Show Rulers,Show/hide rulers,View,100,manual
+Photoshop,Windows,Ctrl+;,Show Guides,Show/hide guides,View,100,manual
+Photoshop,Windows,Ctrl+',Show Grid,Show/hide grid,View,100,manual

@@ -1,0 +1,15 @@
+{
+  "cleanup_timestamp": "2026-01-11T11:44:00.391375",
+  "directories_cleaned": [
+    "output/csv_exports",
+    "output/json_exports",
+    "output/ndjson_exports",
+    "output/review_queue"
+  ],
+  "files_cleaned": [
+    "output/application_versions.json",
+    "output/library_index.json",
+    "output/library_metadata.json"
+  ],
+  "status": "completed"
+}

@@ -1,0 +1,86 @@
+application_name,platform,key_combination,title,description,category,confidence_score,extraction_method
+VS Code,macOS,"⇧⌘P, F1",Show Command Palette,Show Command Palette,General,100.0,simple_ai_claude
+VS Code,macOS,⌘P,"Quick Open, Go to File…","Quick Open, Go to File…",General,100.0,simple_ai_claude
+VS Code,macOS,⇧⌘N,New window/instance,New window/instance,General,100.0,simple_ai_claude
+VS Code,macOS,⌘W,Close window/instance,Close window/instance,General,100.0,simple_ai_claude
+VS Code,macOS,"⌘,",User Settings,User Settings,General,100.0,simple_ai_claude
+VS Code,macOS,⌘K ⌘S,Keyboard Shortcuts,Keyboard Shortcuts,General,100.0,simple_ai_claude
+VS Code,macOS,⌘X,Cut line (empty selection),Cut line (empty selection),General,100.0,simple_ai_claude
+VS Code,macOS,⌘C,Copy line (empty selection),Copy line (empty selection),General,100.0,simple_ai_claude
+VS Code,macOS,"⌥↓, ⌥↑",Move line down/up,Move line down/up,General,100.0,simple_ai_claude
+VS Code,macOS,"⇧⌥↓, ⇧⌥↑",Copy line down/up,Copy line down/up,General,100.0,simple_ai_claude
+VS Code,macOS,⇧⌘K,Delete line,Delete line,General,100.0,simple_ai_claude
+VS Code,macOS,"⌘Enter, ⇧⌘Enter",Insert line below/above,Insert line below/above,General,100.0,simple_ai_claude
+VS Code,macOS,⇧⌘\,Jump to matching bracket,Jump to matching bracket,General,100.0,simple_ai_claude
+VS Code,macOS,"⌘], ⌘[",Indent/outdent line,Indent/outdent line,General,100.0,simple_ai_claude
+VS Code,macOS,"Home, End",Go to beginning/end of line,Go to beginning/end of line,General,100.0,simple_ai_claude
+VS Code,macOS,"⌘↑, ⌘↓",Go to beginning/end of file,Go to beginning/end of file,General,100.0,simple_ai_claude
+VS Code,macOS,"⌃PgUp, ⌃PgDn",Scroll line up/down,Scroll line up/down,General,100.0,simple_ai_claude
+VS Code,macOS,"⌘PgUp, ⌘PgDn",Scroll page up/down,Scroll page up/down,General,100.0,simple_ai_claude
+VS Code,macOS,"⌥⌘[, ⌥⌘]",Fold/unfold region,Fold/unfold region,General,100.0,simple_ai_claude
+VS Code,macOS,"⌘K ⌘[, ⌘K ⌘]",Fold/unfold all subregions,Fold/unfold all subregions,General,100.0,simple_ai_claude
+VS Code,macOS,"⌘K ⌘0, ⌘K ⌘J",Fold/unfold all regions,Fold/unfold all regions,General,100.0,simple_ai_claude
+VS Code,macOS,⌘K ⌘C,Add line comment,Add line comment,General,100.0,simple_ai_claude
+VS Code,macOS,⌘K ⌘U,Remove line comment,Remove line comment,General,100.0,simple_ai_claude
+VS Code,macOS,⌘/,Toggle line comment,Toggle line comment,General,100.0,simple_ai_claude
+VS Code,macOS,⇧⌥A,Toggle block comment,Toggle block comment,General,100.0,simple_ai_claude
+VS Code,macOS,⌥Z,Toggle word wrap,Toggle word wrap,General,100.0,simple_ai_claude
+VS Code,macOS,⌥ + click,Insert cursor,Insert cursor,General,100.0,simple_ai_claude
+VS Code,macOS,⌥⌘↑,Insert cursor above,Insert cursor above,General,100.0,simple_ai_claude
+VS Code,macOS,⌥⌘↓,Insert cursor below,Insert cursor below,General,100.0,simple_ai_claude
+VS Code,macOS,⌘U,Undo last cursor operation,Undo last cursor operation,General,100.0,simple_ai_claude
+VS Code,macOS,⇧⌥I,Insert cursor at end of each line selected,Insert cursor at end of each line selected,General,100.0,simple_ai_claude
+VS Code,macOS,⌘L,Select current line,Select current line,General,100.0,simple_ai_claude
+VS Code,macOS,⇧⌘L,Select all occurrences of current selection,Select all occurrences of current selection,General,100.0,simple_ai_claude
+VS Code,macOS,⌘F2,Select all occurrences of current word,Select all occurrences of current word,General,100.0,simple_ai_claude
+VS Code,macOS,"⌃⇧⌘→, ⌃⇧⌘←",Expand / shrink selection,Expand / shrink selection,General,100.0,simple_ai_claude
+VS Code,macOS,⇧⌥ + drag mouse,Column (box) selection,Column (box) selection,General,100.0,simple_ai_claude
+VS Code,macOS,"⇧⌥⌘↑, ⇧⌥⌘↓",Column (box) selection up/down,Column (box) selection up/down,General,100.0,simple_ai_claude
+VS Code,macOS,"⇧⌥⌘←, ⇧⌥⌘→",Column (box) selection left/right,Column (box) selection left/right,General,100.0,simple_ai_claude
+VS Code,macOS,⇧⌥⌘PgUp,Column (box) selection page up,Column (box) selection page up,General,100.0,simple_ai_claude
+VS Code,macOS,⇧⌥⌘PgDn,Column (box) selection page down,Column (box) selection page down,General,100.0,simple_ai_claude
+VS Code,macOS,⌘F,Find,Find,General,100.0,simple_ai_claude
+VS Code,macOS,⌥⌘F,Replace,Replace,General,100.0,simple_ai_claude
+VS Code,macOS,"⌘G, ⇧⌘G",Find next/previous,Find next/previous,General,100.0,simple_ai_claude
+VS Code,macOS,⌥Enter,Select all occurrences of Find match,Select all occurrences of Find match,General,100.0,simple_ai_claude
+VS Code,macOS,⌘D,Add selection to next Find match,Add selection to next Find match,General,100.0,simple_ai_claude
+VS Code,macOS,⌘K ⌘D,Move last selection to next Find match,Move last selection to next Find match,General,100.0,simple_ai_claude
+VS Code,macOS,"⌃Space, ⌘I",Trigger suggestion,Trigger suggestion,General,100.0,simple_ai_claude
+VS Code,macOS,⇧⌘Space,Trigger parameter hints,Trigger parameter hints,General,100.0,simple_ai_claude
+VS Code,macOS,⇧⌥F,Format document,Format document,General,100.0,simple_ai_claude
+VS Code,macOS,⌘K ⌘F,Format selection,Format selection,General,100.0,simple_ai_claude
+VS Code,macOS,F12,Go to Definition,Go to Definition,General,100.0,simple_ai_claude
+VS Code,macOS,⌥F12,Peek Definition,Peek Definition,General,100.0,simple_ai_claude
+VS Code,macOS,⌘K F12,Open Definition to the side,Open Definition to the side,General,100.0,simple_ai_claude
+VS Code,macOS,⌘.,Quick Fix,Quick Fix,General,100.0,simple_ai_claude
+VS Code,macOS,⇧F12,Show References,Show References,General,100.0,simple_ai_claude
+VS Code,macOS,F2,Rename Symbol,Rename Symbol,General,100.0,simple_ai_claude
+VS Code,macOS,⌘K ⌘X,Trim trailing whitespace,Trim trailing whitespace,General,100.0,simple_ai_claude
+VS Code,macOS,⌘K M,Change file language,Change file language,General,100.0,simple_ai_claude
+VS Code,macOS,⌘T,Show all Symbols,Show all Symbols,General,100.0,simple_ai_claude
+VS Code,macOS,⌃G,Go to Line...,Go to Line...,General,100.0,simple_ai_claude
+VS Code,macOS,⌘P,Go to File...,Go to File...,General,100.0,simple_ai_claude
+VS Code,macOS,⇧⌘O,Go to Symbol...,Go to Symbol...,General,100.0,simple_ai_claude
+VS Code,macOS,⇧⌘M,Show Problems panel,Show Problems panel,General,100.0,simple_ai_claude
+VS Code,macOS,"F8, ⇧F8",Go to next/previous error or warning,Go to next/previous error or warning,General,100.0,simple_ai_claude
+VS Code,macOS,⌃⇧Tab,Navigate editor group history,Navigate editor group history,General,100.0,simple_ai_claude
+VS Code,macOS,"⌃-, ⌃⇧-",Go back/forward,Go back/forward,General,100.0,simple_ai_claude
+VS Code,macOS,⌃⇧M,Toggle Tab moves focus,Toggle Tab moves focus,General,100.0,simple_ai_claude
+VS Code,macOS,⌘W,Close editor,Close editor,General,100.0,simple_ai_claude
+VS Code,macOS,⌘K F,Close folder,Close folder,General,100.0,simple_ai_claude
+VS Code,macOS,⌘\,Split editor,Split editor,General,100.0,simple_ai_claude
+VS Code,macOS,"⌘1, ⌘2, ⌘3","Focus into 1st, 2nd, 3rd editor group","Focus into 1st, 2nd, 3rd editor group",General,100.0,simple_ai_claude
+VS Code,macOS,"⌘K ⌘←, ⌘K ⌘→",Focus into previous/next editor group,Focus into previous/next editor group,General,100.0,simple_ai_claude
+VS Code,macOS,"⌘K ⇧⌘←, ⌘K ⇧⌘→",Move editor left/right,Move editor left/right,General,100.0,simple_ai_claude
+VS Code,macOS,"⌘K ←, ⌘K →",Move active editor group,Move active editor group,General,100.0,simple_ai_claude
+VS Code,macOS,⌘N,New File,New File,General,100.0,simple_ai_claude
+VS Code,macOS,⌘O,Open File...,Open File...,General,100.0,simple_ai_claude
+VS Code,macOS,⌘S,Save,Save,General,100.0,simple_ai_claude
+VS Code,macOS,⇧⌘S,Save As...,Save As...,General,100.0,simple_ai_claude
+VS Code,macOS,⌥⌘S,Save All,Save All,General,100.0,simple_ai_claude
+VS Code,macOS,⌘W,Close,Close,General,100.0,simple_ai_claude
+VS Code,macOS,⌘K ⌘W,Close All,Close All,General,100.0,simple_ai_claude
+VS Code,macOS,⇧⌘T,Reopen closed editor,Reopen closed editor,General,100.0,simple_ai_claude
+VS Code,macOS,⌘K Enter,Keep preview mode editor open,Keep preview mode editor open,General,100.0,simple_ai_claude
+VS Code,macOS,"⌃Tab, ⌃⇧Tab",Open next / previous,Open next / previous,General,100.0,simple_ai_claude
+VS Code,macOS,⌘K P,Copy path of active file,Copy path of active file,General,100.0,simple_ai_claude
