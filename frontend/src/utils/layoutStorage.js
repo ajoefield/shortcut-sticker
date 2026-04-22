@@ -99,7 +99,8 @@ export const serializeLayout = (state) => {
     layoutTitle: state.layoutTitle,
     customSections: state.customSections,
     selectedShortcuts: state.selectedShortcuts,
-    selectedPlatforms: state.selectedPlatforms
+    selectedPlatforms: state.selectedPlatforms,
+    lockedSections: state.lockedSections || []
   };
 };
 

@@ -13,7 +13,7 @@ export const useDarkMode = () => {
 
 export default function AppShell() {
   const [open, setOpen] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(() => 
+  const [isDarkMode, setIsDarkMode] = useState(() =>
     window.matchMedia('(prefers-color-scheme: dark)').matches
   );
   const location = useLocation();
@@ -55,7 +55,6 @@ export default function AppShell() {
       }}>
         <div style={{
           maxWidth: '1200px',
-          padding: '0 20px',
           margin: '0 auto',
           display: 'flex',
           alignItems: 'center',
@@ -89,7 +88,7 @@ export default function AppShell() {
               fontSize: '12px'
             }}>Beta</span>
           </Link>
-          
+
           <div style={{
             display: window.innerWidth >= 768 ? 'flex' : 'none',
             alignItems: 'center',
@@ -147,7 +146,7 @@ export default function AppShell() {
               }}>Sign up</Link>
             </div>
           </div>
-          
+
           <button
             type="button"
             aria-label="Open menu"

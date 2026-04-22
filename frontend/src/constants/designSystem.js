@@ -207,24 +207,132 @@ export const TEXT_SIZES = [
   { id: 'large', name: 'Large Text', description: 'Fewer shortcuts, larger text' }
 ];
 
-// Section Limits - Based on proven working designs
-// These limits ensure text remains legible when printed
-export const SECTION_LIMITS = {
-  maxSections: {
-    small: 4,   // 4 sections for small text
-    medium: 4,  // 4 sections for medium text
-    large: 4    // 4 sections for large text
-  },
-  maxShortcutsPerSection: {
-    small: 10,   // 4 sections × 10 = 40 shortcuts max
-    medium: 8,   // 4 sections × 8 = 32 shortcuts max
-    large: 6     // 4 sections × 6 = 24 shortcuts max
-  },
-  maxTotalShortcuts: {
-    small: 40,   // Conservative limit for legibility
-    medium: 32,  // Balanced
-    large: 24    // Large text, fewer shortcuts
+// Legacy static limits (replaced by calculateSectionCapacity algorithm)
+// Kept as reference for the approximate ranges at 4 sections:
+//   small:  ~10/section, ~40 total
+//   medium: ~8/section,  ~32 total
+//   large:  ~6/section,  ~24 total
+
+// ─── Dynamic Section Capacity Algorithm ───
+// Calculates how many shortcuts actually fit in a section based on
+// real pixel math: image size → available height → row height → capacity.
+
+// Row height (px) for one shortcut line at each text size
+const ROW_HEIGHTS = {
+  small:  18,  // 13px desc + ~3px gap + 2px row padding
+  medium: 24,  // 16px desc + ~4px gap + 4px row padding (medium rowGap×2 + lineHeight)
+  large:  32   // 19px desc + ~6px gap + 7px row padding
+};
+
+// Section header height (header text + bottom margin)
+const SECTION_HEADER_HEIGHT = {
+  small:  30,  // 18px header + 10px margin + 2px
+  medium: 36,  // 22px header + 10px margin + 4px
+  large:  44   // 26px header + 10px margin + 8px
+};
+
+/**
+ * Calculate how many shortcuts fit per section given the current config.
+ *
+ * @param {string} imageSize   – '3.75' or '3'
+ * @param {string} textSize    – 'small' | 'medium' | 'large'
+ * @param {number} sectionCount – number of sections currently on the canvas
+ * @param {boolean} hasTitle   – whether a layout title is displayed
+ * @returns {{ perSection: number, total: number }}
+ */
+export const calculateSectionCapacity = (imageSize, textSize, sectionCount, hasTitle = false) => {
+  const size = IMAGE_SIZES[imageSize] || IMAGE_SIZES['3.75'];
+  const sp   = getSpacing(imageSize);
+
+  // Total canvas height minus outer padding (top + bottom) and border
+  let availableHeight = size.displayHeight - sp.outerPadding * 2 - sp.borderWidth * 2;
+
+  // Subtract layout title if present
+  if (hasTitle) {
+    const titleHeight = textSize === 'large' ? 28 : textSize === 'medium' ? 24 : 20;
+    availableHeight -= titleHeight + sp.sectionGap;
   }
+
+  // Sections are laid out in a 2-column grid.
+  // Number of rows of sections = ceil(sectionCount / 2)
+  const sectionRows = Math.ceil(sectionCount / 2);
+
+  // Gaps between section rows
+  const totalGaps = (sectionRows - 1) * sp.sectionGap;
+
+  // Height available for section rows
+  const heightForSections = availableHeight - totalGaps;
+
+  // Height of one section row
+  const sectionRowHeight = heightForSections / sectionRows;
+
+  // Inside a section: subtract padding (top + bottom), border, and header
+  const innerHeight = sectionRowHeight
+    - sp.sectionPadding * 2
+    - sp.sectionBorderWidth * 2
+    - SECTION_HEADER_HEIGHT[textSize];
+
+  // How many shortcut rows fit
+  const rowH = ROW_HEIGHTS[textSize];
+  const perSection = Math.max(1, Math.floor(innerHeight / rowH));
+
+  return {
+    perSection,
+    total: perSection * sectionCount
+  };
+};
+
+/**
+ * Calculate per-column capacity for each section based on its column position.
+ * Left column = even indices (0, 2, 4…), right column = odd indices (1, 3, 5…).
+ * Each column independently divides its available height among its sections.
+ *
+ * @param {string} imageSize
+ * @param {string} textSize
+ * @param {number} sectionCount
+ * @param {boolean} hasTitle
+ * @returns {{ perSection: number[], columnCapacity: [number, number], total: number }}
+ */
+export const calculateColumnCapacity = (imageSize, textSize, sectionCount, hasTitle = false) => {
+  const size = IMAGE_SIZES[imageSize] || IMAGE_SIZES['3.75'];
+  const sp   = getSpacing(imageSize);
+
+  let availableHeight = size.displayHeight - sp.outerPadding * 2 - sp.borderWidth * 2;
+  if (hasTitle) {
+    const titleHeight = textSize === 'large' ? 28 : textSize === 'medium' ? 24 : 20;
+    availableHeight -= titleHeight + sp.sectionGap;
+  }
+
+  // Count sections per column (2-column grid, left=even indices, right=odd)
+  const leftCount = Math.ceil(sectionCount / 2);   // indices 0,2,4…
+  const rightCount = Math.floor(sectionCount / 2);  // indices 1,3,5…
+
+  const rowH = ROW_HEIGHTS[textSize];
+  const headerH = SECTION_HEADER_HEIGHT[textSize];
+  const sectionOverhead = sp.sectionPadding * 2 + sp.sectionBorderWidth * 2 + headerH;
+
+  const calcPerSection = (colCount) => {
+    if (colCount === 0) return 0;
+    const gaps = (colCount - 1) * sp.sectionGap;
+    const heightPerSection = (availableHeight - gaps) / colCount;
+    const inner = heightPerSection - sectionOverhead;
+    return Math.max(1, Math.floor(inner / rowH));
+  };
+
+  const leftPer = calcPerSection(leftCount);
+  const rightPer = calcPerSection(rightCount);
+
+  // Build per-section array matching customSections order
+  const perSection = [];
+  for (let i = 0; i < sectionCount; i++) {
+    perSection.push(i % 2 === 0 ? leftPer : rightPer);
+  }
+
+  return {
+    perSection,
+    columnCapacity: [leftPer * leftCount, rightPer * rightCount],
+    total: leftPer * leftCount + rightPer * rightCount
+  };
 };
 
 // Helper function to format shortcut keys with symbols
@@ -275,16 +383,33 @@ export const formatShortcutKey = (key, platform = 'macos') => {
 };
 
 // Helper function to get max shortcuts for current configuration
-export const getMaxShortcuts = (imageSize, textSize) => {
-  return SECTION_LIMITS.maxTotalShortcuts[textSize] || 32;
+export const getMaxShortcuts = (imageSize, textSize, sectionCount = 4, hasTitle = false) => {
+  return calculateSectionCapacity(imageSize, textSize, sectionCount, hasTitle).total;
 };
 
-// Helper function to get max sections for text size
-export const getMaxSections = (textSize) => {
-  return SECTION_LIMITS.maxSections[textSize] || 4;
+// Helper function to get max sections for text size and image size
+// Sections are in a 2-column grid, so max rows = available height / min section height
+export const getMaxSections = (textSize, imageSize = '3.75', hasTitle = false) => {
+  const size = IMAGE_SIZES[imageSize] || IMAGE_SIZES['3.75'];
+  const sp = getSpacing(imageSize);
+
+  let availableHeight = size.displayHeight - sp.outerPadding * 2 - sp.borderWidth * 2;
+  if (hasTitle) {
+    const titleHeight = textSize === 'large' ? 28 : textSize === 'medium' ? 24 : 20;
+    availableHeight -= titleHeight + sp.sectionGap;
+  }
+
+  // Minimum usable section height: header + padding + at least 1 shortcut row
+  const minSectionHeight = SECTION_HEADER_HEIGHT[textSize] + sp.sectionPadding * 2 + sp.sectionBorderWidth * 2 + ROW_HEIGHTS[textSize];
+
+  // How many rows of sections can fit
+  const maxRows = Math.floor((availableHeight + sp.sectionGap) / (minSectionHeight + sp.sectionGap));
+
+  // 2 columns per row
+  return Math.max(2, maxRows * 2);
 };
 
 // Helper function to get max shortcuts per section
-export const getMaxShortcutsPerSection = (textSize) => {
-  return SECTION_LIMITS.maxShortcutsPerSection[textSize] || 8;
+export const getMaxShortcutsPerSection = (textSize, imageSize = '3.75', sectionCount = 4, hasTitle = false) => {
+  return calculateSectionCapacity(imageSize, textSize, sectionCount, hasTitle).perSection;
 };

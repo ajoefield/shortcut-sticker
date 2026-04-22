@@ -8,9 +8,10 @@ import {
   TEXT_SIZES,
   getSpacing,
   formatShortcutKey,
-  getMaxShortcuts,
   getMaxSections,
-  getMaxShortcutsPerSection
+  getMaxShortcutsPerSection,
+  calculateSectionCapacity,
+  calculateColumnCapacity
 } from '../constants/designSystem';
 import { exportToPNG, exportToSVG } from '../utils/exportCanvas';
 import {
@@ -48,6 +49,7 @@ export default function CreateLayout() {
   const { isDarkMode } = useDarkMode();
   const { isAuthenticated, token } = useAuth();
   const canvasRef = useRef(null);
+  const zoomContainerRef = useRef(null);
 
   // Get current palette
   const palette = COLOR_PALETTES[colorPalette] || COLOR_PALETTES.classic;
@@ -72,10 +74,22 @@ export default function CreateLayout() {
   const [canvasZoom, setCanvasZoom] = useState(1);
   const [touchStartDistance, setTouchStartDistance] = useState(0);
   const [touchStartZoom, setTouchStartZoom] = useState(1);
+  const [lockedSections, setLockedSections] = useState(new Set());
+  const [contextMenu, setContextMenu] = useState(null); // { x, y } or null
+  const [reorderDrag, setReorderDrag] = useState(null); // { sectionId, fromIndex } or null
+  const [sectionDrag, setSectionDrag] = useState(null); // index in customSections being dragged
+  const [sectionDragOver, setSectionDragOver] = useState(null); // index being hovered for drop indicator
+  const [isPanning, setIsPanning] = useState(false);
+  const [panStart, setPanStart] = useState({ x: 0, y: 0, scrollLeft: 0, scrollTop: 0 });
 
 
-  const MAX_SHORTCUTS_PER_SECTION = getMaxShortcutsPerSection(textSize);
-  const MAX_TOTAL_SHORTCUTS = getMaxShortcuts(imageSize, textSize);
+  // Column-aware capacity: per-section limits based on column position
+  const columnCapacity = calculateColumnCapacity(imageSize, textSize, customSections.length, !!layoutTitle);
+  const perSectionLimits = columnCapacity.perSection; // array matching customSections order
+  const MAX_TOTAL_SHORTCUTS = columnCapacity.total;
+
+  // Helper: get the per-section shortcut limit for a given section index
+  const getSectionLimit = (sectionIndex) => perSectionLimits[sectionIndex] ?? perSectionLimits[0] ?? 10;
 
   const getTotalShortcuts = () => {
     return Object.values(selectedShortcuts).reduce((total, section) =>
@@ -84,10 +98,9 @@ export default function CreateLayout() {
   };
 
   const addSection = () => {
-    // Check if we've reached the max sections for current text size
-    const maxSections = getMaxSections(textSize);
+    const maxSections = getMaxSections(textSize, imageSize, !!layoutTitle);
     if (customSections.length >= maxSections) {
-      alert(`Maximum ${maxSections} sections for ${textSize} text size. Maximum sections reached for legible layout.`);
+      alert(`Maximum ${maxSections} sections for this layout configuration.`);
       return;
     }
 
@@ -103,7 +116,90 @@ export default function CreateLayout() {
         delete newState[sectionId];
         return newState;
       });
+      setLockedSections(prev => {
+        const next = new Set(prev);
+        next.delete(sectionId);
+        return next;
+      });
     }
+  };
+
+  const toggleSectionLock = (sectionId) => {
+    setLockedSections(prev => {
+      const next = new Set(prev);
+      if (next.has(sectionId)) {
+        next.delete(sectionId);
+      } else {
+        next.add(sectionId);
+      }
+      return next;
+    });
+  };
+
+  const handleCanvasContextMenu = (e) => {
+    e.preventDefault();
+    // Position relative to the viewport
+    setContextMenu({ x: e.clientX, y: e.clientY });
+  };
+
+  const closeContextMenu = () => setContextMenu(null);
+
+  // Remove a single shortcut from a section by index and compact the array
+  const deleteShortcutFromSection = (sectionId, index) => {
+    setSelectedShortcuts(prev => {
+      const arr = [...(prev[sectionId] || [])];
+      arr.splice(index, 1);
+      // Compact: remove trailing nulls
+      while (arr.length > 0 && arr[arr.length - 1] == null) arr.pop();
+      return { ...prev, [sectionId]: arr };
+    });
+  };
+
+  // Reorder a shortcut within a section (move fromIndex → toIndex)
+  const reorderShortcutInSection = (sectionId, fromIndex, toIndex) => {
+    if (fromIndex === toIndex) return;
+    setSelectedShortcuts(prev => {
+      const arr = [...(prev[sectionId] || [])].filter(s => s); // compact first
+      const [moved] = arr.splice(fromIndex, 1);
+      arr.splice(toIndex, 0, moved);
+      return { ...prev, [sectionId]: arr };
+    });
+  };
+
+  // Add a shortcut to the end of a section (compact, no gaps)
+  const addShortcutToSection = (sectionId, shortcut) => {
+    setSelectedShortcuts(prev => {
+      const arr = [...(prev[sectionId] || [])].filter(s => s); // compact
+      arr.push(shortcut);
+      return { ...prev, [sectionId]: arr };
+    });
+  };
+
+  // Reorder sections in the grid (move fromIndex → toIndex in customSections array)
+  const reorderSections = (fromIndex, toIndex) => {
+    if (fromIndex === toIndex) return;
+    setCustomSections(prev => {
+      const arr = [...prev];
+      const [moved] = arr.splice(fromIndex, 1);
+      arr.splice(toIndex, 0, moved);
+      return arr;
+    });
+  };
+
+  // Move a shortcut from one section to another (cross-section drag)
+  const moveShortcutBetweenSections = (fromSectionId, fromIndex, toSectionId, toIndex) => {
+    setSelectedShortcuts(prev => {
+      const fromArr = [...(prev[fromSectionId] || [])].filter(s => s);
+      const toArr = [...(prev[toSectionId] || [])].filter(s => s);
+      if (fromIndex >= fromArr.length) return prev;
+      const [moved] = fromArr.splice(fromIndex, 1);
+      if (toIndex !== undefined && toIndex !== null) {
+        toArr.splice(toIndex, 0, moved);
+      } else {
+        toArr.push(moved);
+      }
+      return { ...prev, [fromSectionId]: fromArr, [toSectionId]: toArr };
+    });
   };
 
   const updateSectionName = (sectionId, newName) => {
@@ -288,10 +384,8 @@ export default function CreateLayout() {
     setSelectedShortcuts(prev => {
       const newState = { ...prev };
       Object.keys(newState).forEach(sectionIndex => {
-        newState[sectionIndex] = newState[sectionIndex].map(shortcut =>
-          shortcut && shortcut.key === shortcutToRemove.key && shortcut.command === shortcutToRemove.command
-            ? null
-            : shortcut
+        newState[sectionIndex] = newState[sectionIndex].filter(shortcut =>
+          !(shortcut && shortcut.key === shortcutToRemove.key && shortcut.command === shortcutToRemove.command)
         );
       });
       return newState;
@@ -413,7 +507,8 @@ export default function CreateLayout() {
       layoutTitle,
       customSections,
       selectedShortcuts,
-      selectedPlatforms
+      selectedPlatforms,
+      lockedSections: [...lockedSections]
     });
 
     try {
@@ -459,7 +554,8 @@ export default function CreateLayout() {
       layoutTitle,
       customSections,
       selectedShortcuts,
-      selectedPlatforms
+      selectedPlatforms,
+      lockedSections: [...lockedSections]
     });
 
     saveToLocalStorage(layoutData);
@@ -483,7 +579,8 @@ export default function CreateLayout() {
       layoutTitle,
       customSections,
       selectedShortcuts,
-      selectedPlatforms
+      selectedPlatforms,
+      lockedSections: [...lockedSections]
     });
 
     const appNames = layoutType === 'single' ? selectedApp : selectedApps.join('-');
@@ -527,6 +624,7 @@ export default function CreateLayout() {
       setCustomSections(layoutData.customSections);
       setSelectedShortcuts(layoutData.selectedShortcuts);
       setSelectedPlatforms(layoutData.selectedPlatforms || []);
+      setLockedSections(new Set(layoutData.lockedSections || []));
       setShowLayout(true);
 
       alert('Layout loaded successfully!');
@@ -562,14 +660,6 @@ export default function CreateLayout() {
     setIsDragging(false);
   };
 
-  const handleWheel = (e) => {
-    if (e.ctrlKey || e.metaKey) {
-      e.preventDefault();
-      const delta = e.deltaY > 0 ? -0.1 : 0.1;
-      setCanvasZoom(prev => Math.max(0.5, Math.min(2, prev + delta)));
-    }
-  };
-
   const setZoomLevel = (level) => {
     setCanvasZoom(level);
   };
@@ -581,34 +671,116 @@ export default function CreateLayout() {
     return Math.sqrt(dx * dx + dy * dy);
   };
 
-  const handleTouchStart = (e) => {
-    if (e.touches.length === 2) {
-      e.preventDefault();
-      const distance = getTouchDistance(e.touches);
-      setTouchStartDistance(distance);
-      setTouchStartZoom(canvasZoom);
-    }
-  };
-
-  const handleTouchMove = (e) => {
-    if (e.touches.length === 2) {
-      e.preventDefault();
-      const distance = getTouchDistance(e.touches);
-      const scale = distance / touchStartDistance;
-      const newZoom = touchStartZoom * scale;
-      setCanvasZoom(Math.max(0.5, Math.min(2, newZoom)));
-    }
-  };
-
-  const handleTouchEnd = (e) => {
-    if (e.touches.length < 2) {
-      setTouchStartDistance(0);
-    }
-  };
-
   useEffect(() => {
     fetchApps();
   }, []);
+
+  // Attach non-passive touch/wheel listeners for zoom (React events are passive by default)
+  useEffect(() => {
+    const el = zoomContainerRef.current;
+    if (!el) return;
+
+    const onWheel = (e) => {
+      if (e.ctrlKey || e.metaKey) {
+        e.preventDefault();
+        const delta = e.deltaY > 0 ? -0.1 : 0.1;
+        setCanvasZoom(prev => Math.max(0.5, Math.min(2, prev + delta)));
+      }
+    };
+
+    const onTouchStart = (e) => {
+      if (e.touches.length === 2) {
+        e.preventDefault();
+        const distance = getTouchDistance(e.touches);
+        setTouchStartDistance(distance);
+        setTouchStartZoom(canvasZoom);
+      }
+    };
+
+    const onTouchMove = (e) => {
+      if (e.touches.length === 2) {
+        e.preventDefault();
+        const distance = getTouchDistance(e.touches);
+        if (touchStartDistance === 0) return;
+        const scale = distance / touchStartDistance;
+        const newZoom = touchStartZoom * scale;
+        setCanvasZoom(Math.max(0.5, Math.min(2, newZoom)));
+      }
+    };
+
+    const onTouchEnd = (e) => {
+      if (e.touches.length < 2) {
+        setTouchStartDistance(0);
+      }
+    };
+
+    el.addEventListener('wheel', onWheel, { passive: false });
+    el.addEventListener('touchstart', onTouchStart, { passive: false });
+    el.addEventListener('touchmove', onTouchMove, { passive: false });
+    el.addEventListener('touchend', onTouchEnd);
+
+    // Panning: click-and-drag to scroll the container when zoomed
+    const onMouseDown = (e) => {
+      // Only pan on direct clicks on the container background (not on sections, buttons, etc.)
+      if (e.target !== el && !e.target.closest('[data-print-canvas]') === null) return;
+      // Don't pan if clicking inside a section or on interactive elements
+      if (e.target.closest('button, input, select, [draggable="true"], [data-section-handle]')) return;
+      // Middle-click always pans, left-click only on the container/canvas background
+      if (e.button !== 1 && e.button !== 0) return;
+      if (e.button === 0 && e.target !== el) {
+        // Left-click: only pan if clicking directly on the zoom wrapper or canvas background
+        const isCanvasBg = e.target.closest('[data-print-canvas]') && !e.target.closest('[data-section-handle]') && !e.target.closest('[draggable]');
+        if (!isCanvasBg && e.target !== el) return;
+      }
+
+      setIsPanning(true);
+      setPanStart({
+        x: e.clientX,
+        y: e.clientY,
+        scrollLeft: el.scrollLeft,
+        scrollTop: el.scrollTop
+      });
+      el.style.cursor = 'grabbing';
+      e.preventDefault();
+    };
+
+    const onMouseMove = (e) => {
+      if (!isPanning) return;
+      const dx = e.clientX - panStart.x;
+      const dy = e.clientY - panStart.y;
+      el.scrollLeft = panStart.scrollLeft - dx;
+      el.scrollTop = panStart.scrollTop - dy;
+    };
+
+    const onMouseUp = () => {
+      if (isPanning) {
+        setIsPanning(false);
+        el.style.cursor = '';
+      }
+    };
+
+    el.addEventListener('mousedown', onMouseDown);
+    window.addEventListener('mousemove', onMouseMove);
+    window.addEventListener('mouseup', onMouseUp);
+
+    return () => {
+      el.removeEventListener('wheel', onWheel);
+      el.removeEventListener('touchstart', onTouchStart);
+      el.removeEventListener('touchmove', onTouchMove);
+      el.removeEventListener('touchend', onTouchEnd);
+      el.removeEventListener('mousedown', onMouseDown);
+      window.removeEventListener('mousemove', onMouseMove);
+      window.removeEventListener('mouseup', onMouseUp);
+    };
+  }, [canvasZoom, touchStartDistance, touchStartZoom, isPanning, panStart]);
+
+  // Close context menu on any click
+  useEffect(() => {
+    if (!contextMenu) return;
+    const handleClick = () => setContextMenu(null);
+    window.addEventListener('click', handleClick);
+    return () => window.removeEventListener('click', handleClick);
+  }, [contextMenu]);
 
   // Check for layout to load from UserHome
   useEffect(() => {
@@ -630,6 +802,7 @@ export default function CreateLayout() {
           setCustomSections(layoutData.customSections);
           setSelectedShortcuts(layoutData.selectedShortcuts);
           setSelectedPlatforms(layoutData.selectedPlatforms || []);
+          setLockedSections(new Set(layoutData.lockedSections || []));
           setSaveLayoutName(layout.name || '');
           setShowLayout(true);
 
@@ -642,6 +815,419 @@ export default function CreateLayout() {
       }
     }
   }, []);
+
+  // Render a single section — used by both left and right columns
+  const renderSection = (section, sectionIndex) => {
+    const isLocked = lockedSections.has(section.id);
+    const sectionShortcutCount = (selectedShortcuts[section.id] || []).filter(s => s).length;
+    const isSectionBeingDragged = sectionDrag === sectionIndex;
+    const isSectionDragTarget = sectionDragOver === sectionIndex && sectionDrag !== null && sectionDrag !== sectionIndex;
+    return (
+      <div
+        key={section.id}
+        onDragOver={(e) => {
+          // Only respond to section reorder drags
+          if (sectionDrag === null) return;
+          e.preventDefault();
+          e.stopPropagation();
+          setSectionDragOver(sectionIndex);
+        }}
+        onDragLeave={() => {
+          if (sectionDragOver === sectionIndex) setSectionDragOver(null);
+        }}
+        onDrop={(e) => {
+          const sectionData = e.dataTransfer.getData('application/section-reorder');
+          if (!sectionData) return;
+          e.preventDefault();
+          e.stopPropagation();
+          const { fromIndex } = JSON.parse(sectionData);
+          reorderSections(fromIndex, sectionIndex);
+          setSectionDrag(null);
+          setSectionDragOver(null);
+        }}
+        style={{
+          background: palette.sectionBackground,
+          border: isSectionDragTarget
+            ? `2px solid #3b82f6`
+            : `${spacing.sectionBorderWidth}px solid ${palette.sectionBorder}`,
+          borderRadius: `${spacing.sectionBorderRadius}px`,
+          padding: `${spacing.sectionPadding}px`,
+          display: 'flex',
+          flexDirection: 'column',
+          position: 'relative',
+          overflow: 'hidden',
+          minHeight: 0,
+          opacity: isSectionBeingDragged ? 0.4 : 1,
+          transition: 'opacity 0.15s ease, border-color 0.15s ease',
+          // Locked sections shrink to content; unlocked stretch to fill
+          ...(isLocked
+            ? { flex: '0 0 auto', alignSelf: 'flex-start' }
+            : { flex: 1 })
+        }}>
+        <div
+          data-section-handle
+          draggable={!isExporting}
+          onDragStart={(e) => {
+            e.stopPropagation();
+            e.dataTransfer.setData('application/section-reorder', JSON.stringify({ fromIndex: sectionIndex }));
+            e.dataTransfer.effectAllowed = 'move';
+            setSectionDrag(sectionIndex);
+          }}
+          onDragEnd={() => {
+            setSectionDrag(null);
+            setSectionDragOver(null);
+          }}
+          style={{
+            margin: '0 0 10px 0',
+            fontSize: typography.sectionHeader,
+            fontWeight: TYPOGRAPHY.fontWeights.bold,
+            color: palette.text,
+            fontFamily: TYPOGRAPHY.fontFamily.primary,
+            lineHeight: 1.5,
+            paddingBottom: '4px',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            cursor: !isExporting ? 'grab' : 'default'
+          }}
+        >
+          {editingSection === section.id && !isExporting ? (
+            <input
+              autoFocus
+              defaultValue={section.name}
+              onBlur={(e) => {
+                const val = e.target.value.trim();
+                if (val) {
+                  updateSectionName(section.id, val);
+                } else {
+                  // Revert to original name on empty input
+                  e.target.value = section.name;
+                }
+                setEditingSection(null);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  const val = e.target.value.trim();
+                  if (!val) {
+                    // Visual feedback: flash red border for empty name
+                    e.target.style.border = '1px solid #ef4444';
+                    e.target.style.animation = 'none';
+                    void e.target.offsetWidth; // trigger reflow
+                    e.target.style.animation = 'shake 0.3s ease';
+                    return; // don't blur — keep editing
+                  }
+                  e.target.blur(); // triggers onBlur → saves
+                } else if (e.key === 'Escape') {
+                  e.target.value = section.name; // revert before blur fires
+                  e.target.blur();
+                }
+              }}
+              onChange={(e) => {
+                // Reset border color when user starts typing again
+                e.target.style.border = `1px solid ${palette.border}`;
+              }}
+              style={{
+                fontSize: 'inherit',
+                fontWeight: 'inherit',
+                fontFamily: 'inherit',
+                color: 'inherit',
+                background: 'transparent',
+                border: `1px solid ${palette.border}`,
+                borderRadius: '4px',
+                padding: '0 4px',
+                outline: 'none',
+                width: '100%',
+                maxWidth: '200px',
+                lineHeight: 'inherit',
+                transition: 'border-color 0.2s ease'
+              }}
+            />
+          ) : (
+            <span
+              onDoubleClick={() => { if (!isExporting) setEditingSection(section.id); }}
+              style={{ cursor: isExporting ? 'default' : 'text' }}
+              title={isExporting ? '' : 'Double-click to rename'}
+            >
+              {section.name}
+            </span>
+          )}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            {!isExporting && (
+              <button
+                onClick={() => toggleSectionLock(section.id)}
+                title={isLocked ? 'Unlock section to edit' : 'Lock section (finalize)'}
+                style={{
+                  background: isLocked ? '#dc2626' : '#22c55e',
+                  border: 'none',
+                  cursor: 'pointer',
+                  fontSize: '10px',
+                  padding: '2px 6px',
+                  borderRadius: '8px',
+                  lineHeight: 1.4,
+                  color: '#ffffff',
+                  fontWeight: 600,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '3px'
+                }}
+              >
+                {isLocked ? '🔒' : '🔓'}
+                <span style={{ fontSize: '9px' }}>{isLocked ? 'Locked' : 'Open'}</span>
+              </button>
+            )}
+          </div>
+        </div>
+        {customSections.length > 1 && !isExporting && (
+          <button
+            onClick={() => removeSection(section.id)}
+            className="no-export"
+            style={{
+              position: 'absolute',
+              top: '4px',
+              right: '4px',
+              background: '#ef4444',
+              color: 'white',
+              border: 'none',
+              borderRadius: '50%',
+              width: '16px',
+              height: '16px',
+              fontSize: '10px',
+              cursor: 'pointer'
+            }}
+          >
+            ×
+          </button>
+        )}
+        <div
+          style={{
+            ...(isLocked ? {} : { flex: 1 }),
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '2px',
+            overflow: isLocked ? 'visible' : 'auto',
+            minHeight: 0
+          }}
+        >
+          {/* Filled shortcut rows — draggable for reorder, with delete */}
+          {(selectedShortcuts[section.id] || []).filter(s => s).map((shortcut, idx) => {
+            const formattedKey = formatShortcutKey(shortcut.key, shortcut.platform || 'macos');
+            return (
+              <div
+                key={`filled-${idx}`}
+                draggable={!isExporting && !isLocked}
+                onDragStart={(e) => {
+                  e.stopPropagation();
+                  setReorderDrag({ sectionId: section.id, fromIndex: idx });
+                  e.dataTransfer.setData('application/reorder', JSON.stringify({ sectionId: section.id, fromIndex: idx }));
+                  e.dataTransfer.effectAllowed = 'move';
+                }}
+                onDragEnd={() => setReorderDrag(null)}
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  e.dataTransfer.dropEffect = 'move';
+                }}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  // Check if this is a reorder/move from a section
+                  const reorderData = e.dataTransfer.getData('application/reorder');
+                  if (reorderData) {
+                    const { sectionId: fromSection, fromIndex } = JSON.parse(reorderData);
+                    if (fromSection === section.id) {
+                      // Same section — reorder
+                      reorderShortcutInSection(section.id, fromIndex, idx);
+                    } else if (!isLocked && !lockedSections.has(fromSection)) {
+                      // Cross-section move — check capacity
+                      const filledCount = (selectedShortcuts[section.id] || []).filter(s => s).length;
+                      if (filledCount < getSectionLimit(sectionIndex)) {
+                        moveShortcutBetweenSections(fromSection, fromIndex, section.id, idx);
+                      }
+                    }
+                    return;
+                  }
+                  // Otherwise it's a new shortcut from the sidebar — insert at this position
+                  try {
+                    const droppedShortcut = JSON.parse(e.dataTransfer.getData('text/plain'));
+                    const filledCount = (selectedShortcuts[section.id] || []).filter(s => s).length;
+                    if (filledCount >= getSectionLimit(sectionIndex) || getTotalShortcuts() >= MAX_TOTAL_SHORTCUTS) return;
+                    setSelectedShortcuts(prev => {
+                      const arr = [...(prev[section.id] || [])].filter(s => s);
+                      arr.splice(idx, 0, droppedShortcut);
+                      return { ...prev, [section.id]: arr };
+                    });
+                  } catch (_) { }
+                }}
+                style={{
+                  background: reorderDrag && reorderDrag.sectionId === section.id && reorderDrag.fromIndex === idx
+                    ? (isDarkMode ? 'rgba(59,130,246,0.15)' : 'rgba(59,130,246,0.08)')
+                    : 'transparent',
+                  border: 'none',
+                  borderRadius: '0px',
+                  minHeight: textSize === 'large' ? '22px' : textSize === 'medium' ? '20px' : '18px',
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  justifyContent: 'flex-start',
+                  padding: `${spacing.shortcutRowGap[textSize]}px 0px`,
+                  fontSize: typography.description,
+                  color: palette.text,
+                  fontWeight: TYPOGRAPHY.fontWeights.regular,
+                  lineHeight: typography.lineHeight,
+                  fontFamily: TYPOGRAPHY.fontFamily.primary,
+                  letterSpacing: TYPOGRAPHY.letterSpacing,
+                  cursor: (!isExporting && !isLocked) ? 'grab' : 'default',
+                  position: 'relative'
+                }}
+                onMouseEnter={(e) => {
+                  const btn = e.currentTarget.querySelector('[data-delete-btn]');
+                  if (btn) btn.style.opacity = '0.7';
+                }}
+                onMouseLeave={(e) => {
+                  const btn = e.currentTarget.querySelector('[data-delete-btn]');
+                  if (btn) btn.style.opacity = '0';
+                }}
+              >
+                <div style={{
+                  display: 'flex',
+                  width: '100%',
+                  gap: `${spacing.keyDescriptionGap}px`,
+                  alignItems: 'flex-start'
+                }}>
+                  <div style={{
+                    fontWeight: TYPOGRAPHY.fontWeights.semibold,
+                    fontSize: typography.shortcutKey,
+                    minWidth: '60px',
+                    fontFamily: TYPOGRAPHY.fontFamily.monospace,
+                    color: palette.text,
+                    whiteSpace: 'nowrap',
+                    textAlign: 'left'
+                  }}>
+                    {formattedKey}
+                  </div>
+                  <div style={{
+                    fontSize: typography.description,
+                    color: palette.textSecondary || palette.text,
+                    overflow: 'hidden',
+                    flex: 1,
+                    fontFamily: TYPOGRAPHY.fontFamily.primary,
+                    textAlign: 'left',
+                    lineHeight: typography.lineHeight,
+                    wordBreak: 'break-word',
+                    hyphens: 'auto'
+                  }}>
+                    {shortcut.command}
+                  </div>
+                </div>
+                {/* Delete button — floating overlay, visible on hover only */}
+                {!isExporting && !isLocked && (
+                  <button
+                    data-delete-btn
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      deleteShortcutFromSection(section.id, idx);
+                    }}
+                    title="Remove shortcut"
+                    style={{
+                      position: 'absolute',
+                      right: '-2px',
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      background: isDarkMode ? '#374151' : '#ffffff',
+                      border: '1px solid',
+                      borderColor: isDarkMode ? '#4b5563' : '#e2e8f0',
+                      borderRadius: '50%',
+                      cursor: 'pointer',
+                      color: '#ef4444',
+                      fontSize: '10px',
+                      width: '16px',
+                      height: '16px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      padding: 0,
+                      lineHeight: 1,
+                      opacity: 0,
+                      transition: 'opacity 0.15s ease',
+                      boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+                      zIndex: 5
+                    }}
+                    onMouseEnter={(e) => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.background = '#fef2f2'; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.opacity = '0.7'; e.currentTarget.style.background = isDarkMode ? '#374151' : '#ffffff'; }}
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+            );
+          })}
+
+          {/* Single drop zone at bottom — hidden when locked or exporting */}
+          {!isExporting && !isLocked && (() => {
+            const filledCount = (selectedShortcuts[section.id] || []).filter(s => s).length;
+            if (filledCount >= getSectionLimit(sectionIndex)) return null;
+            return (
+              <div
+                style={{
+                  minHeight: textSize === 'large' ? '22px' : textSize === 'medium' ? '20px' : '18px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  padding: `${spacing.shortcutRowGap[textSize]}px 0px`
+                }}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  // Check for cross-section reorder drop — append to end
+                  const reorderData = e.dataTransfer.getData('application/reorder');
+                  if (reorderData) {
+                    const { sectionId: fromSection, fromIndex } = JSON.parse(reorderData);
+                    if (fromSection !== section.id && !isLocked && !lockedSections.has(fromSection)) {
+                      const filledCount = (selectedShortcuts[section.id] || []).filter(s => s).length;
+                      if (filledCount < getSectionLimit(sectionIndex)) {
+                        moveShortcutBetweenSections(fromSection, fromIndex, section.id, null);
+                      }
+                    }
+                    return;
+                  }
+                  try {
+                    const droppedShortcut = JSON.parse(e.dataTransfer.getData('text/plain'));
+                    if (getTotalShortcuts() >= MAX_TOTAL_SHORTCUTS) {
+                      alert(`Maximum ${MAX_TOTAL_SHORTCUTS} total shortcuts`);
+                      return;
+                    }
+                    addShortcutToSection(section.id, droppedShortcut);
+                  } catch (_) { }
+                }}
+                onDragOver={(e) => e.preventDefault()}
+              >
+                <div style={{
+                  display: 'flex',
+                  width: '100%',
+                  gap: `${spacing.keyDescriptionGap}px`,
+                  alignItems: 'center'
+                }}>
+                  <div style={{
+                    fontWeight: TYPOGRAPHY.fontWeights.semibold,
+                    fontSize: typography.shortcutKey,
+                    minWidth: '60px',
+                    color: palette.placeholder,
+                    fontFamily: TYPOGRAPHY.fontFamily.monospace
+                  }}>
+                    Key
+                  </div>
+                  <div style={{
+                    fontSize: typography.description,
+                    color: palette.placeholder,
+                    flex: 1,
+                    fontFamily: TYPOGRAPHY.fontFamily.primary
+                  }}>
+                    Description
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
+        </div>
+      </div>
+    );
+  };
 
   if (!showLayout) {
     return (
@@ -854,7 +1440,7 @@ export default function CreateLayout() {
                   >
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <span style={{ fontSize: '16px', fontWeight: '500' }}>{size.name}</span>
-                      <span style={{ fontSize: '14px', color: '#64748b' }}>~{IMAGE_SIZES[imageSize].shortcuts[size.id]} shortcuts</span>
+                      <span style={{ fontSize: '14px', color: '#64748b' }}>~{calculateSectionCapacity(imageSize, size.id, 4).total} shortcuts</span>
                     </div>
                     <span style={{ fontSize: '12px', color: '#64748b' }}>{size.description}</span>
                   </button>
@@ -1222,6 +1808,26 @@ export default function CreateLayout() {
               display: 'flex',
               flexDirection: 'column'
             }}>
+              {/* Disclaimer Banner */}
+              <div style={{
+                background: isDarkMode ? '#1e3a5f' : '#eff6ff',
+                border: isDarkMode ? '1px solid #2563eb' : '1px solid #bfdbfe',
+                borderRadius: '8px',
+                padding: '8px 14px',
+                marginBottom: '12px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                fontSize: '12px',
+                color: isDarkMode ? '#93c5fd' : '#1e40af',
+                lineHeight: 1.4
+              }}>
+                <span style={{ fontSize: '14px' }}>💡</span>
+                <span>
+                  Drag shortcuts from the sidebar into sections. Lock a section when done to shrink it to size. Right-click the canvas to add more sections. Drag section headers to reorder.
+                </span>
+              </div>
+
               {/* Layout Title */}
               <div style={{
                 marginBottom: '16px',
@@ -1286,7 +1892,7 @@ export default function CreateLayout() {
                       value={textSize}
                       onChange={(e) => {
                         const newSize = e.target.value;
-                        const maxSections = getMaxSections(newSize);
+                        const maxSections = getMaxSections(newSize, imageSize, !!layoutTitle);
 
                         // If switching to a size with fewer max sections, trim sections
                         if (customSections.length > maxSections) {
@@ -1308,7 +1914,7 @@ export default function CreateLayout() {
                         }
 
                         // Trim shortcuts per section if exceeding new limit
-                        const newMaxPerSection = getMaxShortcutsPerSection(newSize);
+                        const newMaxPerSection = getMaxShortcutsPerSection(newSize, imageSize, customSections.length, !!layoutTitle);
                         setSelectedShortcuts(prev => {
                           const trimmedShortcuts = {};
                           Object.keys(prev).forEach(sectionId => {
@@ -1335,9 +1941,9 @@ export default function CreateLayout() {
                         color: '#3b82f6'
                       }}
                     >
-                      <option value="small">Small ({IMAGE_SIZES[imageSize].shortcuts.small} shortcuts)</option>
-                      <option value="medium">Medium ({IMAGE_SIZES[imageSize].shortcuts.medium} shortcuts)</option>
-                      <option value="large">Large ({IMAGE_SIZES[imageSize].shortcuts.large} shortcuts)</option>
+                      <option value="small">Small ({calculateSectionCapacity(imageSize, 'small', customSections.length, !!layoutTitle).total} shortcuts)</option>
+                      <option value="medium">Medium ({calculateSectionCapacity(imageSize, 'medium', customSections.length, !!layoutTitle).total} shortcuts)</option>
+                      <option value="large">Large ({calculateSectionCapacity(imageSize, 'large', customSections.length, !!layoutTitle).total} shortcuts)</option>
                     </select>
                   </div>
                   <div style={{
@@ -1369,16 +1975,16 @@ export default function CreateLayout() {
                   </div>
                   <button
                     onClick={addSection}
-                    disabled={customSections.length >= getMaxSections(textSize)}
+                    disabled={customSections.length >= getMaxSections(textSize, imageSize, !!layoutTitle)}
                     style={{
                       padding: '6px 12px',
-                      background: customSections.length >= getMaxSections(textSize) ? '#ccc' : '#00aaff',
+                      background: customSections.length >= getMaxSections(textSize, imageSize, !!layoutTitle) ? '#ccc' : '#00aaff',
                       color: 'white',
                       border: 'none',
                       borderRadius: '4px',
                       fontSize: '12px',
-                      cursor: customSections.length >= getMaxSections(textSize) ? 'not-allowed' : 'pointer',
-                      opacity: customSections.length >= getMaxSections(textSize) ? 0.5 : 1
+                      cursor: customSections.length >= getMaxSections(textSize, imageSize, !!layoutTitle) ? 'not-allowed' : 'pointer',
+                      opacity: customSections.length >= getMaxSections(textSize, imageSize, !!layoutTitle) ? 0.5 : 1
                     }}
                   >
                     + Add Section
@@ -1563,6 +2169,7 @@ export default function CreateLayout() {
                   <button
                     onClick={() => {
                       setSelectedShortcuts({});
+                      setLockedSections(new Set());
                       setCustomSections([
                         { id: 0, name: 'Section 1' },
                         { id: 1, name: 'Section 2' }
@@ -1590,6 +2197,7 @@ export default function CreateLayout() {
                       setTextSize('medium');
                       setColorPalette('classic');
                       setSelectedShortcuts({});
+                      setLockedSections(new Set());
                       setCustomSections([
                         { id: 0, name: 'Section 1' },
                         { id: 1, name: 'Section 2' }
@@ -1612,19 +2220,103 @@ export default function CreateLayout() {
 
               {/* Layout Grid */}
               <div
+                ref={zoomContainerRef}
                 style={{
                   flex: 1,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   overflow: 'auto',
-                  touchAction: 'none'
+                  touchAction: 'none',
+                  position: 'relative'
                 }}
-                onWheel={handleWheel}
-                onTouchStart={handleTouchStart}
-                onTouchMove={handleTouchMove}
-                onTouchEnd={handleTouchEnd}
+                onContextMenu={handleCanvasContextMenu}
               >
+                {/* Right-click context menu */}
+                {contextMenu && (
+                  <div
+                    style={{
+                      position: 'fixed',
+                      top: contextMenu.y,
+                      left: contextMenu.x,
+                      background: isDarkMode ? '#374151' : '#ffffff',
+                      border: isDarkMode ? '1px solid #4b5563' : '1px solid #e2e8f0',
+                      borderRadius: '8px',
+                      boxShadow: '0 4px 16px rgba(0,0,0,0.15)',
+                      zIndex: 1000,
+                      padding: '4px 0',
+                      minWidth: '180px'
+                    }}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <button
+                      onClick={() => { addSection(); closeContextMenu(); }}
+                      disabled={customSections.length >= getMaxSections(textSize, imageSize, !!layoutTitle)}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        width: '100%',
+                        padding: '8px 14px',
+                        background: 'none',
+                        border: 'none',
+                        cursor: customSections.length >= getMaxSections(textSize, imageSize, !!layoutTitle) ? 'not-allowed' : 'pointer',
+                        fontSize: '13px',
+                        color: isDarkMode ? '#e5e7eb' : '#1f2937',
+                        opacity: customSections.length >= getMaxSections(textSize, imageSize, !!layoutTitle) ? 0.4 : 1,
+                        textAlign: 'left'
+                      }}
+                    >
+                      ➕ Add Section {customSections.length >= getMaxSections(textSize, imageSize, !!layoutTitle) && '(max reached)'}
+                    </button>
+                    {lockedSections.size < customSections.length && (
+                      <button
+                        onClick={() => {
+                          setLockedSections(new Set(customSections.map(s => s.id)));
+                          closeContextMenu();
+                        }}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '8px',
+                          width: '100%',
+                          padding: '8px 14px',
+                          background: 'none',
+                          border: 'none',
+                          cursor: 'pointer',
+                          fontSize: '13px',
+                          color: isDarkMode ? '#e5e7eb' : '#1f2937',
+                          textAlign: 'left'
+                        }}
+                      >
+                        🔒 Lock All Sections
+                      </button>
+                    )}
+                    {lockedSections.size > 0 && (
+                      <button
+                        onClick={() => {
+                          setLockedSections(new Set());
+                          closeContextMenu();
+                        }}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '8px',
+                          width: '100%',
+                          padding: '8px 14px',
+                          background: 'none',
+                          border: 'none',
+                          cursor: 'pointer',
+                          fontSize: '13px',
+                          color: isDarkMode ? '#e5e7eb' : '#1f2937',
+                          textAlign: 'left'
+                        }}
+                      >
+                        🔓 Unlock All Sections
+                      </button>
+                    )}
+                  </div>
+                )}
                 <div style={{
                   transform: `scale(${canvasZoom})`,
                   transformOrigin: 'center',
@@ -1660,292 +2352,43 @@ export default function CreateLayout() {
                       </div>
                     )}
 
-                    {/* Sections Grid */}
+                    {/* Sections Grid — two independent flex columns */}
                     <div style={{
-                      display: 'grid',
-                      gridTemplateColumns: 'repeat(2, 1fr)',
+                      display: 'flex',
+                      flexDirection: 'row',
                       gap: `${spacing.sectionGap}px`,
                       flex: 1,
                       overflow: 'hidden',
                       minHeight: 0
                     }}>
-                      {customSections.map((section) => (
-                        <div key={section.id} style={{
-                          background: palette.sectionBackground,
-                          border: `${spacing.sectionBorderWidth}px solid ${palette.sectionBorder}`,
-                          borderRadius: `${spacing.sectionBorderRadius}px`,
-                          padding: `${spacing.sectionPadding}px`,
-                          display: 'flex',
-                          flexDirection: 'column',
-                          position: 'relative',
-                          overflow: 'hidden',
-                          minHeight: 0
-                        }}>
-                          <div
-                            style={{
-                              margin: '0 0 10px 0',
-                              fontSize: typography.sectionHeader,
-                              fontWeight: TYPOGRAPHY.fontWeights.bold,
-                              color: palette.text,
-                              fontFamily: TYPOGRAPHY.fontFamily.primary,
-                              lineHeight: 1.5,
-                              paddingBottom: '4px',
-                              display: 'flex',
-                              justifyContent: 'space-between',
-                              alignItems: 'center'
-                            }}
-                          >
-                            <span>{section.name}</span>
-                            {!isExporting && (() => {
-                              const sectionCount = (selectedShortcuts[section.id] || []).filter(s => s).length;
-                              const percentage = (sectionCount / MAX_SHORTCUTS_PER_SECTION) * 100;
-                              const color = percentage >= 100 ? '#ef4444' : percentage >= 75 ? '#f59e0b' : '#10b981';
-                              return (
-                                <span style={{
-                                  fontSize: '10px',
-                                  fontWeight: TYPOGRAPHY.fontWeights.regular,
-                                  color: color,
-                                  fontFamily: TYPOGRAPHY.fontFamily.primary
-                                }}>
-                                  {sectionCount}/{MAX_SHORTCUTS_PER_SECTION}
-                                </span>
-                              );
-                            })()}
-                          </div>
-                          {customSections.length > 1 && !isExporting && (
-                            <button
-                              onClick={() => removeSection(section.id)}
-                              className="no-export"
-                              style={{
-                                position: 'absolute',
-                                top: '4px',
-                                right: '4px',
-                                background: '#ef4444',
-                                color: 'white',
-                                border: 'none',
-                                borderRadius: '50%',
-                                width: '16px',
-                                height: '16px',
-                                fontSize: '10px',
-                                cursor: 'pointer'
-                              }}
-                            >
-                              ×
-                            </button>
-                          )}
-                          <div
-                            style={{
-                              flex: 1,
-                              display: 'flex',
-                              flexDirection: 'column',
-                              gap: '2px',
-                              overflow: 'auto',
-                              minHeight: 0
-                            }}
-                            onDoubleClick={() => setEditingSection(editingSection === section.id ? null : section.id)}
-                          >
-                            {/* Only show filled shortcuts, or show empty slots in edit mode */}
-                            {(selectedShortcuts[section.id] || [])
-                              .map((shortcut, slotIndex) => ({ shortcut, slotIndex }))
-                              .filter(({ shortcut }) => shortcut || !isExporting) // Filter out null during export
-                              .map(({ shortcut, slotIndex }) => {
-                                const sectionShortcuts = (selectedShortcuts[section.id] || []).filter(s => s).length;
-                                // Calculate character limit based on actual available space in section
-                                const sectionWidth = (IMAGE_SIZES[imageSize].displayWidth - spacing.outerPadding * 2 - spacing.sectionGap) / 2;
-                                const availableWidth = sectionWidth - spacing.sectionPadding * 2 - 60; // section width - padding - key width
-                                const charWidth = textSize === 'large' ? 6 : textSize === 'medium' ? 5 : 4.5;
-                                const maxChars = Math.max(15, Math.floor(availableWidth / charWidth));
-
-                                // Format the shortcut key with symbols
-                                const formattedKey = shortcut ? formatShortcutKey(shortcut.key, shortcut.platform || 'macos') : 'Key';
-
-                                return (
-                                  <div
-                                    key={slotIndex}
-                                    style={{
-                                      background: 'transparent',
-                                      border: 'none',
-                                      borderRadius: '0px',
-                                      minHeight: textSize === 'large' ? '22px' : textSize === 'medium' ? '20px' : '18px',
-                                      display: shortcut ? 'flex' : (isExporting ? 'none' : 'flex'),
-                                      alignItems: 'flex-start',
-                                      justifyContent: 'flex-start',
-                                      padding: `${spacing.shortcutRowGap[textSize]}px 0px`,
-                                      fontSize: typography.description,
-                                      color: shortcut ? palette.text : palette.placeholder,
-                                      fontWeight: TYPOGRAPHY.fontWeights.regular,
-                                      lineHeight: typography.lineHeight,
-                                      fontFamily: TYPOGRAPHY.fontFamily.primary,
-                                      letterSpacing: TYPOGRAPHY.letterSpacing
-                                    }}
-                                    onDrop={(e) => {
-                                      e.preventDefault();
-                                      const droppedShortcut = JSON.parse(e.dataTransfer.getData('text/plain'));
-
-                                      // Check limits
-                                      if (sectionShortcuts >= MAX_SHORTCUTS_PER_SECTION) {
-                                        alert(`Maximum ${MAX_SHORTCUTS_PER_SECTION} shortcuts per section`);
-                                        return;
-                                      }
-                                      if (getTotalShortcuts() >= MAX_TOTAL_SHORTCUTS) {
-                                        alert(`Maximum ${MAX_TOTAL_SHORTCUTS} total shortcuts`);
-                                        return;
-                                      }
-
-                                      setSelectedShortcuts(prev => {
-                                        const newShortcuts = [...(prev[section.id] || [])];
-                                        newShortcuts[slotIndex] = droppedShortcut;
-                                        return {
-                                          ...prev,
-                                          [section.id]: newShortcuts
-                                        };
-                                      });
-                                    }}
-                                    onDragOver={(e) => e.preventDefault()}
-                                  >
-                                    {shortcut ? (
-                                      <div style={{
-                                        display: 'flex',
-                                        width: '100%',
-                                        gap: `${spacing.keyDescriptionGap}px`,
-                                        alignItems: 'flex-start'
-                                      }}>
-                                        <div style={{
-                                          fontWeight: TYPOGRAPHY.fontWeights.semibold,
-                                          fontSize: typography.shortcutKey,
-                                          minWidth: '60px',
-                                          fontFamily: TYPOGRAPHY.fontFamily.monospace,
-                                          color: palette.text,
-                                          whiteSpace: 'nowrap',
-                                          textAlign: 'left'
-                                        }}>
-                                          {formattedKey}
-                                        </div>
-                                        <div style={{
-                                          fontSize: typography.description,
-                                          color: palette.textSecondary || palette.text,
-                                          overflow: 'hidden',
-                                          flex: 1,
-                                          fontFamily: TYPOGRAPHY.fontFamily.primary,
-                                          textAlign: 'left',
-                                          lineHeight: typography.lineHeight,
-                                          wordBreak: 'break-word',
-                                          hyphens: 'auto'
-                                        }}>
-                                          {shortcut.command}
-                                        </div>
-                                      </div>
-                                    ) : (
-                                      !isExporting && <div style={{
-                                        display: 'flex',
-                                        width: '100%',
-                                        gap: `${spacing.keyDescriptionGap}px`,
-                                        alignItems: 'center'
-                                      }}>
-                                        <div style={{
-                                          fontWeight: TYPOGRAPHY.fontWeights.semibold,
-                                          fontSize: typography.shortcutKey,
-                                          minWidth: '60px',
-                                          color: palette.placeholder,
-                                          fontFamily: TYPOGRAPHY.fontFamily.monospace
-                                        }}>
-                                          Key
-                                        </div>
-                                        <div style={{
-                                          fontSize: typography.description,
-                                          color: palette.placeholder,
-                                          flex: 1,
-                                          fontFamily: TYPOGRAPHY.fontFamily.primary
-                                        }}>
-                                          Description
-                                        </div>
-                                      </div>
-                                    )}
-                                  </div>
-                                );
-                              })}
-
-                            {/* Add empty slots for editing (limited by MAX_SHORTCUTS_PER_SECTION) */}
-                            {!isExporting && Array.from({
-                              length: Math.max(
-                                0,
-                                Math.min(
-                                  3 - (selectedShortcuts[section.id] || []).filter(s => s).length,
-                                  MAX_SHORTCUTS_PER_SECTION - (selectedShortcuts[section.id] || []).filter(s => s).length
-                                )
-                              )
-                            }).map((_, emptyIndex) => {
-                              const slotIndex = (selectedShortcuts[section.id] || []).length + emptyIndex;
-                              const sectionShortcuts = (selectedShortcuts[section.id] || []).filter(s => s).length;
-
-                              return (
-                                <div
-                                  key={`empty-${slotIndex}`}
-                                  style={{
-                                    background: 'transparent',
-                                    border: 'none',
-                                    minHeight: textSize === 'large' ? '22px' : textSize === 'medium' ? '20px' : '18px',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    padding: `${spacing.shortcutRowGap[textSize]}px 0px`
-                                  }}
-                                  onDrop={(e) => {
-                                    e.preventDefault();
-                                    const droppedShortcut = JSON.parse(e.dataTransfer.getData('text/plain'));
-
-                                    // Check limits before adding
-                                    if (sectionShortcuts >= MAX_SHORTCUTS_PER_SECTION) {
-                                      alert(`Maximum ${MAX_SHORTCUTS_PER_SECTION} shortcuts per section for ${textSize} text size`);
-                                      return;
-                                    }
-                                    if (getTotalShortcuts() >= MAX_TOTAL_SHORTCUTS) {
-                                      alert(`Maximum ${MAX_TOTAL_SHORTCUTS} total shortcuts for ${textSize} text size`);
-                                      return;
-                                    }
-
-                                    setSelectedShortcuts(prev => {
-                                      const newShortcuts = [...(prev[section.id] || [])];
-                                      newShortcuts[slotIndex] = droppedShortcut;
-                                      return {
-                                        ...prev,
-                                        [section.id]: newShortcuts
-                                      };
-                                    });
-                                  }}
-                                  onDragOver={(e) => e.preventDefault()}
-                                >
-                                  <div style={{
-                                    display: 'flex',
-                                    width: '100%',
-                                    gap: `${spacing.keyDescriptionGap}px`,
-                                    alignItems: 'center'
-                                  }}>
-                                    <div style={{
-                                      fontWeight: TYPOGRAPHY.fontWeights.semibold,
-                                      fontSize: typography.shortcutKey,
-                                      minWidth: '60px',
-                                      color: palette.placeholder,
-                                      fontFamily: TYPOGRAPHY.fontFamily.monospace
-                                    }}>
-                                      Key
-                                    </div>
-                                    <div style={{
-                                      fontSize: typography.description,
-                                      color: palette.placeholder,
-                                      flex: 1,
-                                      fontFamily: TYPOGRAPHY.fontFamily.primary
-                                    }}>
-                                      Description
-                                    </div>
-                                  </div>
-                                </div>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      ))}
-                      {/* Bottom spacer to ensure padding */}
-                      <div style={{ gridColumn: '1 / -1', height: '1px' }}></div>
+                      {/* Left column: even indices (0, 2, 4…) */}
+                      <div style={{
+                        flex: 1,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: `${spacing.sectionGap}px`,
+                        overflow: 'hidden',
+                        minHeight: 0
+                      }}>
+                        {customSections.filter((_, i) => i % 2 === 0).map((section) => {
+                          const sectionIndex = customSections.indexOf(section);
+                          return renderSection(section, sectionIndex);
+                        })}
+                      </div>
+                      {/* Right column: odd indices (1, 3, 5…) */}
+                      <div style={{
+                        flex: 1,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: `${spacing.sectionGap}px`,
+                        overflow: 'hidden',
+                        minHeight: 0
+                      }}>
+                        {customSections.filter((_, i) => i % 2 === 1).map((section) => {
+                          const sectionIndex = customSections.indexOf(section);
+                          return renderSection(section, sectionIndex);
+                        })}
+                      </div>
                     </div>
 
                     {/* Logo at bottom right */}
@@ -1987,6 +2430,6 @@ export default function CreateLayout() {
         layoutName={saveLayoutName}
         setLayoutName={setSaveLayoutName}
       />
-    </div>
+    </div >
   );
 }
