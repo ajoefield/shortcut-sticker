@@ -1,0 +1,13 @@
+{
+  "enabled": true,
+  "name": "Append to Docs",
+  "description": "When your message contains '/docs', reads the chat conversation and appends relevant content to files in the docs folder without overwriting.",
+  "version": "1",
+  "when": {
+    "type": "promptSubmit"
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "IMPORTANT: Only act if the user's message contains '/docs'. If it does NOT contain '/docs', do nothing and reply 'Skipping — no /docs command found.'\n\nIf '/docs' IS present: Look at the full conversation context in this chat. Identify any content that should be saved to documentation files in /Users/joefeelap/Create Web Apps/shortcut-sticker/docs/. For each relevant file in that docs folder, READ the existing file first, then use fsAppend to ADD new content from the chat to the end of the file. NEVER overwrite existing content. If a file doesn't exist yet, create it with fsWrite. Summarize what you appended and to which files when done."
+  }
+}

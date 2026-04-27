@@ -81,9 +81,9 @@
 - [x] Per-section drop handler capacity checks (replaced global `MAX_SHORTCUTS_PER_SECTION`)
 - [x] Total shortcut counter uses column-aware total
 - [x] Unlocked sections stretch to fill remaining column space via `flex: 1`
-- [ ] Text size selector dropdown shows column-aware totals
+- [x] Text size selector dropdown shows column-aware totals
 - [ ] Overflow enforcement on section divs
-- [ ] Recalculate per-column limits on section add/remove
+- [x] Recalculate per-column limits on section add/remove (useEffect trims shortcuts when capacity shrinks)
 - [ ] Trim shortcuts when text size change exceeds per-column limit
 - [ ] Export parity (exported layout matches preview)
 - [ ] Visual polish (hover states, drag highlights, smooth transitions, dark mode)
@@ -234,3 +234,5 @@
 - Steering: `.kiro/steering/canvas-layout.md` — domain knowledge for canvas files
 - Spec: `.kiro/specs/canvas-section-management.md` — full requirements + task tracking
 - Hook: `canvas-build-check` — auto-runs `vite build` after canvas file edits
+
+- [x] Text size selector dropdown shows column-aware totals (was using `calculateSectionCapacity`, now uses `calculateColumnCapacity`)

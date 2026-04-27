@@ -95,6 +95,44 @@ Improve the Create Layout canvas so sections are dynamic, lockable, and user-fri
 - Drop handlers and capacity checks use the per-section limit for the target section
 - Total shortcut count display uses the column-aware total (sum of both columns)
 
+### REQ-15: Print-Accurate Preview Mode (Dual-View)
+- The current canvas renders at display resolution (600×600px for 3.75") with large screen-readable fonts (13–22px), which artificially limits shortcut capacity to far fewer than what physically fits on a printed sticker (~20–24 shortcuts per section)
+- The root cause: `calculateColumnCapacity` uses `displayHeight` (600px) instead of `exportHeight` (1125px), so the capacity algorithm thinks there's less space than the real sticker has
+- Two rendering modes are needed:
+  - **Edit Mode** (default): Current behavior — large readable fonts for comfortable drag-and-drop editing. Capacity limits are based on export dimensions (not display), so users can add the full number of shortcuts that will fit on the physical sticker. Text may appear to overflow the display canvas, but the sticker preview is understood to be a zoomed-in editing view.
+  - **Preview Mode**: Renders the sticker at true print proportions — the canvas is drawn at export resolution (1125×1125 or 900×900) and CSS-scaled down to fit the viewport. Fonts, spacing, and layout match exactly what the printed sticker will look like. This is a read-only view (no drag-and-drop editing).
+- A toggle button in the toolbar switches between "Edit" and "Preview" modes
+- In Preview Mode:
+  - The sticker renders at `exportWidth × exportHeight` with proportionally scaled fonts (e.g., `small` description = ~6.9px at export scale, which looks correct when the 1125px canvas is scaled down to ~600px on screen)
+  - All spacing values (`outerPadding`, `sectionGap`, `sectionPadding`, etc.) are multiplied by the export scale factor (`exportWidth / displayWidth` = 1.875× for 3.75")
+  - Typography sizes are multiplied by the same scale factor
+  - The canvas is wrapped in a `transform: scale()` to fit the viewport, similar to how zoom already works
+  - Drag-and-drop, delete buttons, placeholders, and other edit-only UI elements are hidden
+  - Zoom controls still work to inspect detail
+- Capacity calculation changes:
+  - `calculateColumnCapacity` and `calculateSectionCapacity` gain an optional `useExportDimensions` parameter (default: `false` for backward compatibility)
+  - When `true`, they use `exportHeight` instead of `displayHeight`, and scale spacing/row heights by the export scale factor
+  - Edit mode uses export-based capacity (higher limits), Preview mode also uses export-based capacity (same limits, just rendered at true scale)
+- The shortcut counter in the toolbar always shows the export-based capacity (the real physical limit)
+- Export (PNG/SVG) continues to work as before — it already renders at export resolution
+
+### REQ-16: Export-Based Capacity as Default
+- All capacity calculations should use export dimensions by default, since that represents the real physical sticker
+- The `displayWidth/displayHeight` values are only for on-screen rendering convenience — they should not limit how many shortcuts the user can add
+- This means the "small" text size with 4 sections on a 3.75" sticker should allow ~20+ shortcuts per section (matching real printed stickers), not the current ~10
+- The text size selector and shortcut counter should reflect these higher, accurate limits
+- Edit mode renders shortcuts at screen-readable sizes but allows the full export-based count — shortcuts that don't visually fit in the display canvas are still present and will appear correctly in Preview mode and in the exported image
+
+### REQ-15: High-Fidelity Export with html-to-image
+- Replace `html2canvas` with `html-to-image` library for PNG export
+- `html-to-image` uses SVG `<foreignObject>` to leverage the browser's own rendering engine, producing pixel-identical output to the on-screen preview
+- PNG export uses `toPng()` with `pixelRatio` set to `exportWidth / displayWidth` (~1.875x for 3.75" at 300 DPI)
+- SVG export uses `toSvg()` instead of the current manual `generateSVG` function, which hardcodes positions and doesn't match the flex layout
+- Filter out `.no-export` elements and export UI (lock buttons, delete buttons) via the `filter` option
+- Eliminates known `html2canvas` issues: missed custom fonts, CSS property gaps (`box-shadow`, `backdrop-filter`), and subtle layout drift at high DPI
+- Export dimensions remain the same: 1125×1125 for 3.75", 900×900 for 3"
+- The existing zoom-reset-before-export flow stays the same
+
 ## Tasks
 
 ### TASK-1: Dynamic capacity algorithm ✅
@@ -191,22 +229,61 @@ Improve the Create Layout canvas so sections are dynamic, lockable, and user-fri
 - [x] Replace single `MAX_SHORTCUTS_PER_SECTION` with a per-section array from `calculateColumnCapacity().perSection`
 - [x] Each section's drop handler checks its own column-aware limit (not a global one)
 - [x] Update total shortcut counter to use column-aware total
-- [ ] Update text size selector dropdown to show column-aware totals
-- [ ] Enforce `overflow: hidden` on each section div to prevent visual overflow
-- [ ] When sections are added/removed, recalculate per-column limits
-- [ ] Trim shortcuts when switching text size if a section exceeds its new per-column limit
-- [ ] Section reorder (TASK-11) still works — reordering changes which column a section lands in
+- [x] Update text size selector dropdown to show column-aware totals
+- [x] Enforce `overflow: hidden` on each section div to prevent visual overflow
+- [x] When sections are added/removed, recalculate per-column limits
+- [x] Trim shortcuts when switching text size if a section exceeds its new per-column limit
+- [x] Section reorder (TASK-11) still works — reordering changes which column a section lands in
 - [ ] Export parity — exported layout must match preview (both use same column layout)
 - [ ] Test with odd section counts (3, 5, 7) to verify left/right columns size independently
 
 ### TASK-13: Visual polish 🔲
-- [ ] Hover states on shortcut rows
-- [ ] Drag-over highlight on drop targets
-- [ ] Smooth transitions on lock/unlock size changes
+- [x] Hover states on shortcut rows
+- [x] Drag-over highlight on drop targets
+- [x] Smooth transitions on lock/unlock size changes
 - [ ] Consistent dark mode support for all new elements
+
+### TASK-14: Export-based capacity calculation ✅
+- [x] Add `useExportDimensions` parameter to `calculateSectionCapacity`, `calculateColumnCapacity`, `getMaxSections`, `getMaxShortcuts`, `getMaxShortcutsPerSection`
+- [x] All call sites in CreateLayout.jsx pass `true` for the export flag (currently no-op; reserved for Preview mode)
+- [x] Verified display-based capacity already matches real printed sticker density (~25 total per side at medium text with 5-6 sections)
+- [x] `useExportDimensions` parameter is a no-op for now — display dimensions are the correct constraint for physical stickers
+- [x] Parameter reserved for TASK-15/16 Preview mode rendering at export resolution
+
+### TASK-15: Preview mode toggle 🔲
+- [ ] Add `previewMode` state (boolean, default false)
+- [ ] Add "Edit / Preview" toggle button in the toolbar (next to zoom controls)
+- [ ] In Preview mode: render the canvas at `exportWidth × exportHeight` (e.g., 1125×1125)
+- [ ] Scale all typography and spacing by the export scale factor (`exportWidth / displayWidth`)
+- [ ] Wrap the preview canvas in `transform: scale(displayWidth / exportWidth)` so it fits the same viewport space
+- [ ] Hide all edit-only UI in preview mode: drag handles, delete buttons, placeholders, lock/unlock pills, section remove buttons, section name editing
+- [ ] Preview mode is read-only — no drag-and-drop, no drops accepted
+- [ ] Zoom controls (buttons + pinch + Ctrl+scroll) still work in preview mode
+- [ ] Panning still works in preview mode
+- [ ] Toggle smoothly transitions between modes (CSS transition on transform)
+
+### TASK-16: Preview mode export parity 🔲
+- [ ] Verify that Preview mode rendering matches PNG export output pixel-for-pixel
+- [ ] Both Preview mode and export use the same scale factor, font sizes, and spacing
+- [ ] The `exportToPNG` function should work identically whether called from Edit or Preview mode
+- [ ] SVG export (`exportToSVG`) should also match the preview rendering
+
+### TASK-17: Replace html2canvas with html-to-image 🔲
+- [ ] Install `html-to-image` package (`npm install html-to-image`)
+- [ ] Remove `html2canvas` dependency (`npm uninstall html2canvas`)
+- [ ] Rewrite `exportToPNG` in `exportCanvas.js` to use `toPng()` with `pixelRatio` for 300 DPI scaling
+- [ ] Rewrite `exportToSVG` to use `toSvg()` instead of manual `generateSVG` — eliminates layout mismatch between preview and SVG export
+- [ ] Remove the `generateSVG` and `escapeXML` helper functions (no longer needed)
+- [ ] Keep the `.no-export` element filtering via the `filter` option
+- [ ] Keep the zoom-reset-before-export flow in `CreateLayout.jsx` (reset to 1x, wait for re-render, export, restore)
+- [ ] Verify PNG export at both sizes (3.75" → 1125px, 3" → 900px) matches on-screen preview pixel-for-pixel
+- [ ] Verify SVG export renders correctly when opened in a browser and image viewer
+- [ ] Test with all color palettes (especially Dark Mode with dark backgrounds)
+- [ ] Test that custom fonts (Inter, SF Mono) embed correctly in exported images
 
 ## File References
 - #[[file:shortcut-sticker/frontend/src/pages/CreateLayout.jsx]]
 - #[[file:shortcut-sticker/frontend/src/constants/designSystem.js]]
 - #[[file:shortcut-sticker/frontend/src/utils/layoutStorage.js]]
 - #[[file:shortcut-sticker/frontend/src/components/SaveModal.jsx]]
+- #[[file:shortcut-sticker/frontend/src/utils/exportCanvas.js]]

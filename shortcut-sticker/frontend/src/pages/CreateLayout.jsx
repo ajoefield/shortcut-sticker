@@ -81,10 +81,13 @@ export default function CreateLayout() {
   const [sectionDragOver, setSectionDragOver] = useState(null); // index being hovered for drop indicator
   const [isPanning, setIsPanning] = useState(false);
   const [panStart, setPanStart] = useState({ x: 0, y: 0, scrollLeft: 0, scrollTop: 0 });
+  const [hoveredRow, setHoveredRow] = useState(null); // { sectionId, index } or null
+  const [dropTargetRow, setDropTargetRow] = useState(null); // { sectionId, index } or null — row being dragged over
 
 
   // Column-aware capacity: per-section limits based on column position
-  const columnCapacity = calculateColumnCapacity(imageSize, textSize, customSections.length, !!layoutTitle);
+  // Uses export dimensions so limits reflect the real printed sticker density
+  const columnCapacity = calculateColumnCapacity(imageSize, textSize, customSections.length, !!layoutTitle, true);
   const perSectionLimits = columnCapacity.perSection; // array matching customSections order
   const MAX_TOTAL_SHORTCUTS = columnCapacity.total;
 
@@ -98,7 +101,7 @@ export default function CreateLayout() {
   };
 
   const addSection = () => {
-    const maxSections = getMaxSections(textSize, imageSize, !!layoutTitle);
+    const maxSections = getMaxSections(textSize, imageSize, !!layoutTitle, true);
     if (customSections.length >= maxSections) {
       alert(`Maximum ${maxSections} sections for this layout configuration.`);
       return;
@@ -782,6 +785,27 @@ export default function CreateLayout() {
     return () => window.removeEventListener('click', handleClick);
   }, [contextMenu]);
 
+  // When sections are added/removed/reordered (or size config changes), trim shortcuts
+  // that exceed the new per-column limits for each section.
+  // Uses customSections (not just .length) so reordering also triggers re-trimming,
+  // since moving a section between columns can change its per-section capacity.
+  useEffect(() => {
+    const limits = calculateColumnCapacity(imageSize, textSize, customSections.length, !!layoutTitle, true).perSection;
+    setSelectedShortcuts(prev => {
+      let changed = false;
+      const next = { ...prev };
+      customSections.forEach((section, idx) => {
+        const limit = limits[idx] ?? limits[0] ?? 10;
+        const arr = (next[section.id] || []).filter(s => s);
+        if (arr.length > limit) {
+          next[section.id] = arr.slice(0, limit);
+          changed = true;
+        }
+      });
+      return changed ? next : prev;
+    });
+  }, [customSections, imageSize, textSize, layoutTitle]);
+
   // Check for layout to load from UserHome
   useEffect(() => {
     const loadLayoutData = localStorage.getItem('loadLayout');
@@ -858,7 +882,7 @@ export default function CreateLayout() {
           overflow: 'hidden',
           minHeight: 0,
           opacity: isSectionBeingDragged ? 0.4 : 1,
-          transition: 'opacity 0.15s ease, border-color 0.15s ease',
+          transition: 'opacity 0.15s ease, border-color 0.15s ease, flex-grow 0.3s ease, flex-shrink 0.3s ease, flex-basis 0.3s ease, align-self 0.3s ease',
           // Locked sections shrink to content; unlocked stretch to fill
           ...(isLocked
             ? { flex: '0 0 auto', alignSelf: 'flex-start' }
@@ -968,7 +992,8 @@ export default function CreateLayout() {
                   fontWeight: 600,
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '3px'
+                  gap: '3px',
+                  transition: 'background 0.25s ease'
                 }}
               >
                 {isLocked ? '🔒' : '🔓'}
@@ -1004,8 +1029,9 @@ export default function CreateLayout() {
             display: 'flex',
             flexDirection: 'column',
             gap: '2px',
-            overflow: isLocked ? 'visible' : 'auto',
-            minHeight: 0
+            overflow: isLocked ? 'hidden' : 'auto',
+            minHeight: 0,
+            transition: 'flex-grow 0.3s ease'
           }}
         >
           {/* Filled shortcut rows — draggable for reorder, with delete */}
@@ -1021,14 +1047,24 @@ export default function CreateLayout() {
                   e.dataTransfer.setData('application/reorder', JSON.stringify({ sectionId: section.id, fromIndex: idx }));
                   e.dataTransfer.effectAllowed = 'move';
                 }}
-                onDragEnd={() => setReorderDrag(null)}
+                onDragEnd={() => { setReorderDrag(null); setDropTargetRow(null); }}
                 onDragOver={(e) => {
                   e.preventDefault();
                   e.dataTransfer.dropEffect = 'move';
+                  if (!isLocked) setDropTargetRow({ sectionId: section.id, index: idx });
+                }}
+                onDragLeave={(e) => {
+                  // Only clear if leaving this element (not entering a child)
+                  if (!e.currentTarget.contains(e.relatedTarget)) {
+                    if (dropTargetRow && dropTargetRow.sectionId === section.id && dropTargetRow.index === idx) {
+                      setDropTargetRow(null);
+                    }
+                  }
                 }}
                 onDrop={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
+                  setDropTargetRow(null);
                   // Check if this is a reorder/move from a section
                   const reorderData = e.dataTransfer.getData('application/reorder');
                   if (reorderData) {
@@ -1060,9 +1096,16 @@ export default function CreateLayout() {
                 style={{
                   background: reorderDrag && reorderDrag.sectionId === section.id && reorderDrag.fromIndex === idx
                     ? (isDarkMode ? 'rgba(59,130,246,0.15)' : 'rgba(59,130,246,0.08)')
-                    : 'transparent',
+                    : (!isExporting && hoveredRow && hoveredRow.sectionId === section.id && hoveredRow.index === idx)
+                      ? (isDarkMode ? 'rgba(59,130,246,0.12)' : 'rgba(59,130,246,0.06)')
+                      : (dropTargetRow && dropTargetRow.sectionId === section.id && dropTargetRow.index === idx)
+                        ? (isDarkMode ? 'rgba(59,130,246,0.10)' : 'rgba(59,130,246,0.05)')
+                        : 'transparent',
                   border: 'none',
-                  borderRadius: '0px',
+                  borderTop: (dropTargetRow && dropTargetRow.sectionId === section.id && dropTargetRow.index === idx)
+                    ? '2px solid #3b82f6'
+                    : '2px solid transparent',
+                  borderRadius: '2px',
                   minHeight: textSize === 'large' ? '22px' : textSize === 'medium' ? '20px' : '18px',
                   display: 'flex',
                   alignItems: 'flex-start',
@@ -1075,13 +1118,16 @@ export default function CreateLayout() {
                   fontFamily: TYPOGRAPHY.fontFamily.primary,
                   letterSpacing: TYPOGRAPHY.letterSpacing,
                   cursor: (!isExporting && !isLocked) ? 'grab' : 'default',
-                  position: 'relative'
+                  position: 'relative',
+                  transition: 'background 0.15s ease'
                 }}
                 onMouseEnter={(e) => {
+                  if (!isExporting) setHoveredRow({ sectionId: section.id, index: idx });
                   const btn = e.currentTarget.querySelector('[data-delete-btn]');
                   if (btn) btn.style.opacity = '0.7';
                 }}
                 onMouseLeave={(e) => {
+                  setHoveredRow(null);
                   const btn = e.currentTarget.querySelector('[data-delete-btn]');
                   if (btn) btn.style.opacity = '0';
                 }}
@@ -1170,10 +1216,19 @@ export default function CreateLayout() {
                   minHeight: textSize === 'large' ? '22px' : textSize === 'medium' ? '20px' : '18px',
                   display: 'flex',
                   alignItems: 'center',
-                  padding: `${spacing.shortcutRowGap[textSize]}px 0px`
+                  padding: `${spacing.shortcutRowGap[textSize]}px 0px`,
+                  borderRadius: '4px',
+                  border: (dropTargetRow && dropTargetRow.sectionId === section.id && dropTargetRow.index === 'placeholder')
+                    ? '1.5px dashed #3b82f6'
+                    : '1.5px dashed transparent',
+                  background: (dropTargetRow && dropTargetRow.sectionId === section.id && dropTargetRow.index === 'placeholder')
+                    ? (isDarkMode ? 'rgba(59,130,246,0.10)' : 'rgba(59,130,246,0.05)')
+                    : 'transparent',
+                  transition: 'background 0.15s ease, border-color 0.15s ease'
                 }}
                 onDrop={(e) => {
                   e.preventDefault();
+                  setDropTargetRow(null);
                   // Check for cross-section reorder drop — append to end
                   const reorderData = e.dataTransfer.getData('application/reorder');
                   if (reorderData) {
@@ -1195,7 +1250,17 @@ export default function CreateLayout() {
                     addShortcutToSection(section.id, droppedShortcut);
                   } catch (_) { }
                 }}
-                onDragOver={(e) => e.preventDefault()}
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  setDropTargetRow({ sectionId: section.id, index: 'placeholder' });
+                }}
+                onDragLeave={(e) => {
+                  if (!e.currentTarget.contains(e.relatedTarget)) {
+                    if (dropTargetRow && dropTargetRow.sectionId === section.id && dropTargetRow.index === 'placeholder') {
+                      setDropTargetRow(null);
+                    }
+                  }
+                }}
               >
                 <div style={{
                   display: 'flex',
@@ -1440,7 +1505,7 @@ export default function CreateLayout() {
                   >
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <span style={{ fontSize: '16px', fontWeight: '500' }}>{size.name}</span>
-                      <span style={{ fontSize: '14px', color: '#64748b' }}>~{calculateSectionCapacity(imageSize, size.id, 4).total} shortcuts</span>
+                      <span style={{ fontSize: '14px', color: '#64748b' }}>~{calculateSectionCapacity(imageSize, size.id, 4, false, true).total} shortcuts</span>
                     </div>
                     <span style={{ fontSize: '12px', color: '#64748b' }}>{size.description}</span>
                   </button>
@@ -1892,7 +1957,7 @@ export default function CreateLayout() {
                       value={textSize}
                       onChange={(e) => {
                         const newSize = e.target.value;
-                        const maxSections = getMaxSections(newSize, imageSize, !!layoutTitle);
+                        const maxSections = getMaxSections(newSize, imageSize, !!layoutTitle, true);
 
                         // If switching to a size with fewer max sections, trim sections
                         if (customSections.length > maxSections) {
@@ -1913,17 +1978,21 @@ export default function CreateLayout() {
                           alert(`Switched to ${newSize} text. Reduced to ${maxSections} sections to fit.`);
                         }
 
-                        // Trim shortcuts per section if exceeding new limit
-                        const newMaxPerSection = getMaxShortcutsPerSection(newSize, imageSize, customSections.length, !!layoutTitle);
+                        // Trim shortcuts per section using column-aware per-section limits
+                        const activeSections = customSections.length > maxSections
+                          ? customSections.slice(0, maxSections)
+                          : customSections;
+                        const newLimits = calculateColumnCapacity(imageSize, newSize, activeSections.length, !!layoutTitle, true).perSection;
                         setSelectedShortcuts(prev => {
                           const trimmedShortcuts = {};
-                          Object.keys(prev).forEach(sectionId => {
-                            const sectionShortcuts = prev[sectionId].filter(s => s);
-                            if (sectionShortcuts.length > newMaxPerSection) {
-                              trimmedShortcuts[sectionId] = sectionShortcuts.slice(0, newMaxPerSection);
-                              console.warn(`Section ${sectionId} trimmed from ${sectionShortcuts.length} to ${newMaxPerSection} shortcuts`);
+                          activeSections.forEach((section, idx) => {
+                            const limit = newLimits[idx] ?? newLimits[0] ?? 10;
+                            const sectionShortcuts = (prev[section.id] || []).filter(s => s);
+                            if (sectionShortcuts.length > limit) {
+                              trimmedShortcuts[section.id] = sectionShortcuts.slice(0, limit);
+                              console.warn(`Section ${section.id} trimmed from ${sectionShortcuts.length} to ${limit} shortcuts (column-aware)`);
                             } else {
-                              trimmedShortcuts[sectionId] = prev[sectionId];
+                              trimmedShortcuts[section.id] = prev[section.id] || [];
                             }
                           });
                           return trimmedShortcuts;
@@ -1941,9 +2010,9 @@ export default function CreateLayout() {
                         color: '#3b82f6'
                       }}
                     >
-                      <option value="small">Small ({calculateSectionCapacity(imageSize, 'small', customSections.length, !!layoutTitle).total} shortcuts)</option>
-                      <option value="medium">Medium ({calculateSectionCapacity(imageSize, 'medium', customSections.length, !!layoutTitle).total} shortcuts)</option>
-                      <option value="large">Large ({calculateSectionCapacity(imageSize, 'large', customSections.length, !!layoutTitle).total} shortcuts)</option>
+                      <option value="small">Small ({calculateColumnCapacity(imageSize, 'small', customSections.length, !!layoutTitle, true).total} shortcuts)</option>
+                      <option value="medium">Medium ({calculateColumnCapacity(imageSize, 'medium', customSections.length, !!layoutTitle, true).total} shortcuts)</option>
+                      <option value="large">Large ({calculateColumnCapacity(imageSize, 'large', customSections.length, !!layoutTitle, true).total} shortcuts)</option>
                     </select>
                   </div>
                   <div style={{
@@ -1975,16 +2044,16 @@ export default function CreateLayout() {
                   </div>
                   <button
                     onClick={addSection}
-                    disabled={customSections.length >= getMaxSections(textSize, imageSize, !!layoutTitle)}
+                    disabled={customSections.length >= getMaxSections(textSize, imageSize, !!layoutTitle, true)}
                     style={{
                       padding: '6px 12px',
-                      background: customSections.length >= getMaxSections(textSize, imageSize, !!layoutTitle) ? '#ccc' : '#00aaff',
+                      background: customSections.length >= getMaxSections(textSize, imageSize, !!layoutTitle, true) ? '#ccc' : '#00aaff',
                       color: 'white',
                       border: 'none',
                       borderRadius: '4px',
                       fontSize: '12px',
-                      cursor: customSections.length >= getMaxSections(textSize, imageSize, !!layoutTitle) ? 'not-allowed' : 'pointer',
-                      opacity: customSections.length >= getMaxSections(textSize, imageSize, !!layoutTitle) ? 0.5 : 1
+                      cursor: customSections.length >= getMaxSections(textSize, imageSize, !!layoutTitle, true) ? 'not-allowed' : 'pointer',
+                      opacity: customSections.length >= getMaxSections(textSize, imageSize, !!layoutTitle, true) ? 0.5 : 1
                     }}
                   >
                     + Add Section
@@ -2251,7 +2320,7 @@ export default function CreateLayout() {
                   >
                     <button
                       onClick={() => { addSection(); closeContextMenu(); }}
-                      disabled={customSections.length >= getMaxSections(textSize, imageSize, !!layoutTitle)}
+                      disabled={customSections.length >= getMaxSections(textSize, imageSize, !!layoutTitle, true)}
                       style={{
                         display: 'flex',
                         alignItems: 'center',
@@ -2260,14 +2329,14 @@ export default function CreateLayout() {
                         padding: '8px 14px',
                         background: 'none',
                         border: 'none',
-                        cursor: customSections.length >= getMaxSections(textSize, imageSize, !!layoutTitle) ? 'not-allowed' : 'pointer',
+                        cursor: customSections.length >= getMaxSections(textSize, imageSize, !!layoutTitle, true) ? 'not-allowed' : 'pointer',
                         fontSize: '13px',
                         color: isDarkMode ? '#e5e7eb' : '#1f2937',
-                        opacity: customSections.length >= getMaxSections(textSize, imageSize, !!layoutTitle) ? 0.4 : 1,
+                        opacity: customSections.length >= getMaxSections(textSize, imageSize, !!layoutTitle, true) ? 0.4 : 1,
                         textAlign: 'left'
                       }}
                     >
-                      ➕ Add Section {customSections.length >= getMaxSections(textSize, imageSize, !!layoutTitle) && '(max reached)'}
+                      ➕ Add Section {customSections.length >= getMaxSections(textSize, imageSize, !!layoutTitle, true) && '(max reached)'}
                     </button>
                     {lockedSections.size < customSections.length && (
                       <button

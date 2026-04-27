@@ -413,3 +413,63 @@ jupyterlab_Windows_shortcuts.txt → jupyterlab_windows_shortcuts_latest.csv
 - **Problem**: `calculateSectionCapacity` assumed all sections share equal row height (`ceil(sectionCount/2)` rows). With 5 sections (3 left, 2 right), left sections get less height each than right sections.
 - **Solution**: `calculateColumnCapacity` in designSystem.js computes per-column limits independently. Returns a `perSection` array where even indices get left-column capacity and odd indices get right-column capacity.
 - **Status**: Function implemented, partially wired into CreateLayout.jsx. Full integration is TASK-12.
+
+### Section Reorder with Independent Flex Columns (2026-04-26)
+- **Problem**: After replacing the CSS grid with two independent flex columns, section reorder needed to work across columns. When a section moves from index 2 (left column) to index 3 (right column), its per-section capacity changes because the target column may have a different number of sections.
+- **How reorder works**: `reorderSections(fromIndex, toIndex)` splices the flat `customSections` array. Column assignment is purely derived from the new index position (even = left, odd = right). No special cross-column logic needed — the array order IS the column assignment.
+- **Bug found**: The shortcut trimming `useEffect` depended on `customSections.length`, which doesn't change during reorder. If a section moved to a column with lower per-section capacity, excess shortcuts were never trimmed.
+- **Fix**: Changed the dependency from `customSections.length` to `customSections` (the full array reference). React's `setCustomSections` always creates a new array reference, so the effect fires on every reorder. The effect then recalculates per-column limits via `calculateColumnCapacity` and trims any sections that exceed their new limit.
+- **Key insight**: When state derivation depends on array ORDER (not just length), the dependency must be the array itself, not `.length`.
+
+### Text Size Switch — Column-Aware Shortcut Trimming (2026-04-26)
+- **Problem**: The text size `onChange` handler used `getMaxShortcutsPerSection()` to compute a single global limit and trimmed all sections uniformly. With independent flex columns, sections in different columns can have different capacities (a column with 2 sections has more height per section than a column with 3).
+- **Solution**: Replaced the global trim with `calculateColumnCapacity(imageSize, newSize, activeSections.length, !!layoutTitle).perSection`, which returns a per-section limit array. Each section is trimmed to its own column-specific limit based on its index position (even = left column, odd = right column).
+- **Edge case**: When switching text size also reduces the max section count (e.g., large text supports fewer sections), the handler first trims sections, then computes capacity for the remaining `activeSections` — not the original `customSections`. This prevents calculating limits for sections that no longer exist.
+- **Consistency**: This was the last remaining usage of `getMaxShortcutsPerSection` in a capacity-enforcement path. The `useEffect` that trims on section add/remove already used `calculateColumnCapacity`. Now both paths are consistent.
+
+### Reactive Shortcut Trimming on Section Count Change (2026-04-26)
+- **Problem**: `columnCapacity`, `perSectionLimits`, and `MAX_TOTAL_SHORTCUTS` were computed as derived values on every render — so the UI always showed correct limits and drop handlers enforced them. But shortcuts already placed in sections were never trimmed when adding a new section reduced per-column capacity. Example: with 4 sections (2 per column), each section might hold 8 shortcuts. Adding a 5th section (3 left, 2 right) reduces left-column per-section capacity to ~5 — but existing sections kept their 8 shortcuts, overflowing the visual space.
+- **Solution**: Added a `useEffect` that watches `[customSections.length, imageSize, textSize, layoutTitle]`. On change, it recalculates per-column limits via `calculateColumnCapacity()` and trims any section whose shortcut count exceeds its new limit using `arr.slice(0, limit)`.
+- **Optimization**: Uses functional state update (`setSelectedShortcuts(prev => ...)`) with a `changed` flag — only returns a new object if trimming actually occurred, avoiding unnecessary re-renders.
+- **Why not in `addSection`/`removeSection` directly**: The trimming logic depends on the new `customSections` state, which isn't available synchronously inside the same event handler that calls `setCustomSections`. A `useEffect` runs after the state update, when the new section count is reflected. It also covers other triggers (imageSize, textSize, layoutTitle changes) without duplicating logic.
+- **Dependency choice**: `customSections.length` (not `customSections` itself) because this effect only needs to fire when sections are added or removed — not when they're reordered. Reorder trimming is handled by a separate concern (the reorder `useEffect` depends on the full array reference).
+
+
+### Smooth Lock/Unlock Transitions — Flex Property Animation (2026-04-26)
+- **Problem**: Toggling a section's lock state caused an instant snap between `flex: 1` (unlocked, stretch to fill) and `flex: '0 0 auto'` (locked, shrink to content). The section container already had `transition: 'opacity 0.15s ease, border-color 0.15s ease'` but didn't include the flex properties that actually change on lock/unlock.
+- **Solution**: Extended the transition to include `flex-grow 0.3s ease, flex-shrink 0.3s ease, flex-basis 0.3s ease, align-self 0.3s ease`. Also added `flex-grow 0.3s ease` to the inner shortcuts content div and `background 0.25s ease` to the lock pill button.
+- **Why individual flex properties**: The `flex` shorthand (`flex: 1` or `flex: 0 0 auto`) sets `flex-grow`, `flex-shrink`, and `flex-basis` simultaneously. CSS transitions work on individual properties, not shorthands — so each sub-property needs its own transition declaration.
+- **Why 0.3s**: Fast enough to feel responsive (user doesn't wait), slow enough to be perceptible as a smooth animation rather than a snap. The 0.15s for opacity/border-color is faster because those are visual accents, not layout changes.
+- **Lock pill button**: The green (#22c55e) → red (#dc2626) color swap on the lock/unlock pill was also instant. Added `transition: 'background 0.25s ease'` for a smooth color blend.
+- **No `max-height` hack needed**: Since the sections are in flex columns and the flex properties themselves are animatable, the browser handles the height change natively through flex distribution. No need for the common `max-height: 9999px` transition workaround.
+
+
+### Drag-Over Highlight — Insertion Line vs Background Tint (2026-04-26)
+- **Problem**: When dragging a shortcut (from sidebar or between sections), there was no visual feedback on the drop target. Users couldn't tell where the shortcut would land — on an existing row (insert at position) or the placeholder zone (append to end).
+- **Solution**: Added `dropTargetRow` state tracking `{ sectionId, index }` (or `'placeholder'` for the bottom zone). Filled rows show a `2px solid #3b82f6` top border as an insertion line. The placeholder zone shows a `1.5px dashed #3b82f6` border with background tint.
+- **Why top border, not background-only**: A background tint alone is ambiguous — it could mean "replace this row" or "insert above" or "insert below". A top-border insertion line clearly communicates "the new shortcut will be inserted above this row", matching the actual `arr.splice(idx, 0, droppedShortcut)` behavior.
+- **Why dashed border on placeholder**: The placeholder zone is conceptually different from filled rows — it's an "append to end" target, not an "insert at position" target. The dashed border style visually distinguishes it from the solid insertion line on filled rows.
+- **DragLeave child element check**: `onDragLeave` fires when entering a child element (e.g., the key or description text inside a row). Without `e.currentTarget.contains(e.relatedTarget)`, the highlight would flicker as the cursor moves over child elements. The contains check ensures we only clear the highlight when truly leaving the row.
+- **Priority cascade**: The row background uses a ternary chain: reorder source > mouse hover > drop target > transparent. This ensures the "being dragged" highlight takes precedence over the "being hovered" highlight, which takes precedence over the "drop target" highlight.
+- **Cleanup on drag-end**: `onDragEnd` on the drag source clears both `reorderDrag` and `dropTargetRow`. This handles the case where the user drops outside any valid target — the highlight still clears.
+
+
+### Shortcut Row Hover States — State-Based vs CSS (2026-04-26)
+- **Problem**: Shortcut rows in the canvas sections had no visual hover feedback. Users couldn't easily tell which row they were about to interact with (drag, delete, etc.).
+- **Solution**: Added `hoveredRow` React state (`{ sectionId, index }`) set via `onMouseEnter`/`onMouseLeave`. The row's inline `background` style checks this state to apply a subtle blue tint.
+- **Why not CSS `:hover`**: Inline styles can't use pseudo-selectors. The existing `onMouseEnter`/`onMouseLeave` handlers (which control delete button opacity) were already in place — adding hover background to the same handlers keeps all hover behavior in one place.
+- **Priority chain**: The `background` style uses a ternary chain: drag highlight (highest) → hover highlight → transparent (default). This ensures the drag state always wins when a row is being reordered.
+- **Export safety**: Hover state is gated behind `!isExporting` — during export, all rows render with transparent background regardless of mouse position.
+- **Colors**: `rgba(59,130,246,0.06)` light mode, `rgba(59,130,246,0.12)` dark mode — subtle enough to not distract but visible enough to provide clear feedback. Uses the same blue (#3b82f6) as the drag highlight for visual consistency.
+
+
+### Export-Based Capacity — Why It's a No-Op (2026-04-26)
+- **Problem**: The spec originally assumed that `calculateColumnCapacity` using `displayHeight` (600px) instead of `exportHeight` (1125px) was artificially limiting shortcut capacity. The hypothesis was that scaling to export dimensions would allow ~20-24 shortcuts per section, matching "real printed sticker density."
+- **Investigation**: Three scaling approaches were tested:
+  1. Scale everything proportionally (canvas height, row heights, spacing) by 1.875× — capacity unchanged because scale factors cancel out in the division
+  2. Scale only canvas height (keep row heights at display values) — gives 25 shortcuts per section (100 total with 4 sections) — physically impossible on a 3.75" sticker
+  3. Use display dimensions as-is — gives 8/section at medium text (32 total with 4 sections)
+- **User clarification**: Target is ~25 shortcuts per sticker SIDE (total), not per section. With 3-8 sections, that's 3-8 per section.
+- **Resolution**: Display-based capacity (approach 3) already matches the physical constraint. Medium text with 5-6 sections gives ~24-28 total — right in the target range. The `useExportDimensions` parameter was kept as a no-op (scale = 1) for future Preview mode rendering.
+- **Key insight**: The display canvas dimensions (600×600 for 3.75") were already calibrated to match real printed sticker density. Export dimensions (1125×1125) exist for DPI/resolution quality, not for determining how many shortcuts fit. The physical constraint is legibility at 300 DPI on a 3.75" square, which the display-calibrated row heights and font sizes already model correctly.
+- **Lesson**: Don't confuse pixel resolution with physical capacity. A 1125px canvas at 300 DPI represents the same 3.75" physical space as a 600px canvas at ~160 DPI. The number of legible text rows is determined by physical size and font size, not pixel count.

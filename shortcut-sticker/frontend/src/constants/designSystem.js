@@ -238,9 +238,12 @@ const SECTION_HEADER_HEIGHT = {
  * @param {string} textSize    – 'small' | 'medium' | 'large'
  * @param {number} sectionCount – number of sections currently on the canvas
  * @param {boolean} hasTitle   – whether a layout title is displayed
+ * @param {boolean} useExportDimensions – reserved for Preview mode (TASK-15/16).
+ *   Currently has no effect; capacity is based on display dimensions which already
+ *   match real printed sticker density (~25 shortcuts per side at medium text).
  * @returns {{ perSection: number, total: number }}
  */
-export const calculateSectionCapacity = (imageSize, textSize, sectionCount, hasTitle = false) => {
+export const calculateSectionCapacity = (imageSize, textSize, sectionCount, hasTitle = false, useExportDimensions = false) => {
   const size = IMAGE_SIZES[imageSize] || IMAGE_SIZES['3.75'];
   const sp   = getSpacing(imageSize);
 
@@ -291,9 +294,10 @@ export const calculateSectionCapacity = (imageSize, textSize, sectionCount, hasT
  * @param {string} textSize
  * @param {number} sectionCount
  * @param {boolean} hasTitle
+ * @param {boolean} useExportDimensions – reserved for Preview mode (TASK-15/16)
  * @returns {{ perSection: number[], columnCapacity: [number, number], total: number }}
  */
-export const calculateColumnCapacity = (imageSize, textSize, sectionCount, hasTitle = false) => {
+export const calculateColumnCapacity = (imageSize, textSize, sectionCount, hasTitle = false, useExportDimensions = false) => {
   const size = IMAGE_SIZES[imageSize] || IMAGE_SIZES['3.75'];
   const sp   = getSpacing(imageSize);
 
@@ -383,13 +387,13 @@ export const formatShortcutKey = (key, platform = 'macos') => {
 };
 
 // Helper function to get max shortcuts for current configuration
-export const getMaxShortcuts = (imageSize, textSize, sectionCount = 4, hasTitle = false) => {
-  return calculateSectionCapacity(imageSize, textSize, sectionCount, hasTitle).total;
+export const getMaxShortcuts = (imageSize, textSize, sectionCount = 4, hasTitle = false, useExportDimensions = false) => {
+  return calculateSectionCapacity(imageSize, textSize, sectionCount, hasTitle, useExportDimensions).total;
 };
 
 // Helper function to get max sections for text size and image size
 // Sections are in a 2-column grid, so max rows = available height / min section height
-export const getMaxSections = (textSize, imageSize = '3.75', hasTitle = false) => {
+export const getMaxSections = (textSize, imageSize = '3.75', hasTitle = false, useExportDimensions = false) => {
   const size = IMAGE_SIZES[imageSize] || IMAGE_SIZES['3.75'];
   const sp = getSpacing(imageSize);
 
@@ -410,6 +414,6 @@ export const getMaxSections = (textSize, imageSize = '3.75', hasTitle = false) =
 };
 
 // Helper function to get max shortcuts per section
-export const getMaxShortcutsPerSection = (textSize, imageSize = '3.75', sectionCount = 4, hasTitle = false) => {
-  return calculateSectionCapacity(imageSize, textSize, sectionCount, hasTitle).perSection;
+export const getMaxShortcutsPerSection = (textSize, imageSize = '3.75', sectionCount = 4, hasTitle = false, useExportDimensions = false) => {
+  return calculateSectionCapacity(imageSize, textSize, sectionCount, hasTitle, useExportDimensions).perSection;
 };
